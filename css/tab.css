@@ -1,0 +1,119 @@
+/*
+ * Tab, extends aliceui/tab
+ * namespace .ui-tab
+ */
+
+/* Tab in Common */
+.ui-tab {
+	margin: 0;
+	padding: 0;
+	background-color: #f1f1f1; 
+}
+
+.ui-tab ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.ui-tab li {
+	list-style: none;
+	vertical-align: top;
+	position: relative;
+	top: 1px;
+}
+
+.ui-tab-items {
+	border-bottom: 1px solid #E5E5E5;
+	font-size: 14px;
+}
+
+.ui-tab-item {
+	display: inline-block!important;
+	/**display: inline;*/
+	*zoom: 1;
+	*margin-right: 4px;
+}
+
+.ui-tab-item a {
+	line-height: 30px;
+	height: 30px;
+	padding: 0 10px;
+	border-bottom: none;
+	color: #4D4D4D;
+	display: inline-block!important;
+	*zoom: 1;
+	cursor: pointer;
+}
+
+.ui-tab-item a,.ui-tab-item a:hover,
+.ui-tab-item a:active {
+	color: #4D4D4D;
+}
+
+.ui-tab-item-current a {
+	font-weight: bold;
+	height: 31px;
+}
+
+.ui-tab-item a:hover {
+	background: #f6f6f6;
+	text-decoration: none;
+}
+
+.ui-tab-item-current a:hover {
+	background: #fff;
+}
+
+.ui-tab-content {
+	display: none;
+	vertical-align: middle;
+}
+.ui-tab-align{
+	vertical-align: middle;
+}
+
+.ui-tab-content-current {
+	display: block;
+}
+
+/* Transparent Tab */
+.ui-tab-transparent .ui-tab-items {
+	border-bottom: 0;
+}
+
+.ui-tab-transparent .ui-tab-item {
+	position: relative;
+}
+
+.ui-tab-transparent .ui-tab-item a {
+	font-size: 14px;
+	border: none;
+	padding: 4px 32px 0;
+	color: #999;
+}
+
+.ui-tab-transparent .ui-tab-item a,
+.ui-tab-transparent .ui-tab-item a:hover,
+.ui-tab-transparent .ui-tab-item a:active {
+	font-weight: normal;
+}
+
+.ui-tab-transparent .ui-tab-item-current,
+.ui-tab-transparent .ui-tab-item:hover {
+  background: #fff;
+	border-top: 4px solid #00a8e8;
+}
+
+.ui-tab-transparent .ui-tab-item-current a,
+.ui-tab-transparent .ui-tab-item:hover a {
+	padding-top: 0;
+	padding: 0 32px;
+	border-top: none;
+	color: #474747;
+}
+
+.ui-tab-transparent .ui-tab-item-current a.ui-tab-item-link {
+  border-left: 1px solid #E0E0E0;
+  border-right: 1px solid #E0E0E0;
+}
