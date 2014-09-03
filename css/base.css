@@ -407,3 +407,13 @@ a {
 .mh400 {
   min-height: 400px;
 }
+
+form input.error,form textarea.error {
+	border:1px solid #dd4a38;
+}
+
+form label.error {
+	display:block;
+	color:red;
+	font-weight: normal;
+}
