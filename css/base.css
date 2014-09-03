@@ -123,6 +123,15 @@ footer {
   display: inline-block;
   padding: 10px 15px;
 }
+.src-btn {
+  border-radius: 3px;
+  font-size: 1em;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 2px 2px 2px #888;
+  display: inline-block;
+  padding: 3px 5px;
+}
 /* black */ 
 .black { 
   color: #d7d7d7; 
@@ -351,6 +360,15 @@ a {
 .w70 {
   width: 70%;
 }
+.w65 {
+  width: 65%;
+}
+.w60 {
+  width: 60%;
+}
+.w55 {
+  width: 55%;
+}
 .w50 {
   width: 50%;
 }
@@ -384,4 +402,8 @@ a {
 
 .mh300 {
   min-height: 300px;
+}
+
+.mh400 {
+  min-height: 400px;
 }
