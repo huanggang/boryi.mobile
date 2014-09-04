@@ -99,6 +99,17 @@ $(document).ready(function(){
     return 2;
   }
 
+  /// get json 'name' property according to 'id' property
+  function map_id_name(jsons, id){
+    for (var i = 0; i < jsons.length; i++){
+      var j = jsons[i];
+      if (j.id == id) {
+        return j.nm;
+      }
+    }
+    return '';
+  };
+
   /// get the option values as string concatenated by comma 
   /// 
   /// type: class name of the feature
@@ -156,17 +167,78 @@ $(document).ready(function(){
         url: targetUrl,
         dataType: "jsonp", 
         jsonpCallback: "jcb", 
+        cache: true,
+        timeout: 5000, 
     }).done(function(d) {
         if (d.t == 0){
           alert('没有找到符合条件的结果，请修改查询条件重试');          
         } else {
           // display results in the 2nd tab
-          
+          showJobs(d);          
         }
-    }).fail(function( err ) {
-        alert('sorry' + err);
+    }).fail(function(xhr, status, msg) {
+        alert('sorry' + status + '-' + msg);
     });
   };
+
+  /// display searching results 
+  function showJobs(json){
+    $('#tab-list').trigger('click');
+
+    var count = json['t'];
+    var q = json['q'];
+    var companies = json['c'];
+    var jobs = json['j'];
+
+    var li = $('<li />').addClass('list-item');
+    var fc = $('<div />').addClass('fc');
+    var fbc = fc.addClass('fb');
+    var fr = $('<div />').addClass('fr');
+    var fl = $('<div />').addClass('fl');
+    var cmp = $('<div />').addClass('fl fb w75');
+
+    var title_div = $('<div />').addClass('list-title fb');
+
+    for (var i = 0; i <= jobs.length - 1; i++) {
+      var job = jobs[i];
+
+      var title = title_div.clone().append(job['ttl']).wrap('<div />');
+
+      var list = li.clone();
+      list.append(title);
+      list.append(fc.clone()
+            .append(cmp.clone().append(
+                map_id_name(companies, job['cid']))
+            )
+            .append(fr.clone().append(job['rfr']))
+      );
+
+      list.append(fbc.clone()
+            .append(fl.clone().append(showSalary(job['slr'])))
+            .append(fr.clone().append('消息来源:' + sources[job['src'][0]['sid']]))
+      ).append(fc.clone());
+      
+      $('ul.list').append(list);
+    }
+  }
+
+  function showSalary(salary){
+    var result = '';
+    salary = salary || [];
+    if (salary.length == 2){
+      if (salary[0] == null && salary[1] > 0){
+        result = salary[1] + '以下';
+      } else if (salary[0] > 0 && salary[1] == null){
+        result = salary[0] + '以上';
+      } else if (salary[0] > 0 && salary[1] > 0){
+        result = salary[0] + '~' + salary[1];
+      } 
+    }
+    if (result.length > 1){
+      result += '元';
+    }
+    return result;
+  }
 
   /// custom how error label displayed
   var errPlace = function(error, element) {
@@ -217,12 +289,12 @@ $(document).ready(function(){
       }, 
       messages: { 
         keyword: { 
-          	maxlength: "关键字不能超过40个字符", 
+            maxlength: "关键字不能超过40个字符", 
         }, 
         salary: { 
-        	number: '请输入数字',
-        	min: "月薪不能小于500元", 
-        	max: "月薪不能大于999999元", 
+          number: '请输入数字',
+          min: "月薪不能小于500元", 
+          max: "月薪不能大于999999元", 
         }, 
         experience: {
     		number: '请输入数字',
@@ -240,23 +312,19 @@ $(document).ready(function(){
         	max: "身高不能超过250cm", 
         },
         'cmp-size-low': { 
-        	number: '请输入数字',
-	        min: "公司规模不能少于10人", 
+          number: '请输入数字',
+          min: "公司规模不能少于10人", 
         },
         'cmp-size-high': { 
-        	number: '请输入数字',
-	        min: "公司规模不能少于10人", 
+          number: '请输入数字',
+          min: "公司规模不能少于10人", 
         },
         'keyword-job': {
-			     keywordtype: '职位名公司名至少选择一个',
+           keywordtype: '职位名公司名至少选择一个',
         },
         'keyword-cmp': {
-			     keywordtype: '职位名公司名至少选择一个',
+           keywordtype: '职位名公司名至少选择一个',
         },
       },
     });
 });
-
-
-
-
