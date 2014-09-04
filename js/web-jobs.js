@@ -31,7 +31,7 @@ $(document).ready(function(){
 	    // Allow user to set any option except for dataType, cache, and url
 	    options = $.extend( options || {}, {
 	      dataType: "script",
-	      cache: false,
+	      cache: true,
 	      url: url,
 	      async: false,
 	    });
@@ -45,7 +45,7 @@ $(document).ready(function(){
 	var provinceid = $("#province option:selected").val();
 	if (provinceid){
 	    if (cityCache.hasOwnProperty(provinceid)){
-	      setSelectOptions(cityCache[provinceid], 'city');
+	      setSelections(cityCache[provinceid], 'city');
 	    } else {
 	      setCities(provinceid);
 	    }
@@ -75,67 +75,101 @@ $(document).ready(function(){
     });
   }
 
+  	// rule to make sure that at least one checkbox is checked
+	$.validator.addMethod("keywordtype", function(value, elem, param) {
+	    if($(".work-group:checkbox:checked").length > 0){
+	       return true;
+	   }else {
+	       return false;
+	   }
+	},"You must select at least one!");
+
+
     var errPlace = function(error, element) {
-        element.parent()
-        	.append('<div class="search-label fl">&nbsp;</div>')
-        	.append(error); // default function
+        element.parent().append(error);
     }
 
 	$("#search-form").validate({
       errorPlacement: errPlace,
       submitHandler: function(form) {
-/*
-        $.post(
-          Drupal.settings.basePath + 'api/security', 
-          {
-            name: $('#realName').val(),
-            ssn: $('#idNo').val(),
-            type: 1,
-          },
-          function(d) {
-            var setIdBtn = $('#subSetIdBt');
-            if (d.result==1) {
-              
-            } else {
-            }
-          }, 
-          "json"
-        )
-        .fail(function( jqxhr, textStatus, error ) {
-          var err = textStatus + ", " + error;
-          alert( "加载基本信息出现问题，请重新刷新页面" );
-          $('#subSetIdBt').prop('enabled', true);
-        });*/
       },
       rules: { 
         keyword: { 
-          	minlength: 2, 
+          	maxlength: 40, 
         }, 
         salary: { 
         	number: true,
         	min: 500, 
         	max: 999999, 
         }, 
+        experience: {
+        	number: true,
+        	min:0,
+        	max:60,
+        },
+        age: {
+        	number: true,
+        	min:16,
+        	max:80,
+        },
+        height: {
+        	number: true,
+        	min:70,
+        	max:250,
+        },
         'cmp-size-low': { 
         	number: true,
-        	minlength: 2, 
         	min: 10, 
-        } 
+        }, 
+        'cmp-size-high': { 
+        	number: true,
+        	min: 10, 
+        }, 
+        'keyword-job': {
+			keywordtype: true,
+	    },
+        'keyword-cmp': {
+			keywordtype: true,
+	    },
       }, 
       messages: { 
         keyword: { 
-          	minlength: "no less than 2", 
+          	maxlength: "关键字不能超过40个字符", 
         }, 
         salary: { 
-        	number: 'must be a number',
-        	min: "No less than 500", 
-        	max: "No more than 999999", 
+        	number: '请输入数字',
+        	min: "月薪不能小于500元", 
+        	max: "月薪不能大于999999元", 
         }, 
+        experience: {
+    		number: '请输入数字',
+        	min: "工作经验不能小于0年", 
+        	max: "工作经验不能大于60年", 
+        },
+        age: {
+    		number: '请输入数字',
+        	min: "年龄不能小于16", 
+        	max: "年龄不能大于80", 
+        },
+        height: {
+    		number: '请输入数字',
+        	min: "身高不能低于70cm", 
+        	max: "身高不能超过250cm", 
+        },
         'cmp-size-low': { 
-        	number: 'must be a number',
-	        minlength: "请输入完整的真实姓名", 
-	        min: "No less than 10", 
-        } 
+        	number: '请输入数字',
+	        min: "公司规模不能少于10人", 
+        },
+        'cmp-size-high': { 
+        	number: '请输入数字',
+	        min: "公司规模不能少于10人", 
+        },
+        'keyword-job': {
+			keywordtype: '职位名公司名至少选择一个',
+	    },
+        'keyword-cmp': {
+			keywordtype: '职位名公司名至少选择一个',
+	    },
       },
     });
 
