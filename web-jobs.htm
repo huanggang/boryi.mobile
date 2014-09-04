@@ -19,6 +19,7 @@
   <script src="js/jquery.validate.min.js" type="text/javascript"></script>
   <script src="js/tab.js" type="text/javascript"></script>
   <script src="js/provinces.js" type="text/javascript"></script>
+  <script src="js/sources.js" type="text/javascript"></script>
   <script src="js/web-jobs.js" type="text/javascript"></script>
 </head>
 <body>
@@ -30,13 +31,13 @@
   </header>
   <div class="ui-tab ui-tab-transparent">
     <ul class="ui-tab-items">
-      <li class="ui-tab-item ui-tab-item-current" data-name="search">
+      <li class="ui-tab-item ui-tab-item-current" data-name="search" id='tab-search'>
         <a class="ui-tab-item-link">搜索</a>
       </li>
-      <li class="ui-tab-item" data-name="list">
+      <li class="ui-tab-item" data-name="list" id='tab-list'>
         <a class="ui-tab-item-link">结果</a>
       </li>
-      <li class="ui-tab-item" data-name="detail">
+      <li class="ui-tab-item" data-name="detail" id='tab-detail'>
         <a class="ui-tab-item-link">详情</a>
       </li>
     </ul>
@@ -163,62 +164,6 @@
   <div class="ui-tab-content fc mh300" data-name="list">
     <div class="no-detail hd">请先搜索网络招聘信息。</div>
     <ul class="list">
-      <li class="list-item">
-        <div>
-          <div class="list-title fb">招聘交易员 高端职业 高收入</div>
-        </div>
-        <div class="fc">
-          <div class="fl fb w75">泽普润泰(北京)股权投资基金管理有限公司</div>
-          <div class="fr">2014-08-28</div>
-        </div>
-        <div class="fc fb">
-          <div class="fl">88000~99999元</div>
-          <div class="fr">消息来源：中国服装人才</div>
-        </div>
-        <div class="fc"></div>
-      </li>
-      <li class="list-item">
-        <div>
-          <div class="list-title fb">投融资总监 / 财务与投资中心总经理助理（集团本部岗位）</div>
-        </div>
-        <div class="fc">
-          <div class="fl fb w75">北京思源兴业房地产经纪有限公司</div>
-          <div class="fr">2014-08-28</div>
-        </div>
-        <div class="fc fb">
-          <div class="fl">20000~39999元</div>
-          <div class="fr">消息来源：前程无忧</div>
-        </div>
-        <div class="fc"></div>
-      </li>
-      <li class="list-item">
-        <div>
-          <div class="list-title fb">理财经理（直销）</div>
-        </div>
-        <div class="fc">
-          <div class="fl fb w75">深圳市小牛资本管理集团有限公司</div>
-          <div class="fr">2014-08-28</div>
-        </div>
-        <div class="fc fb">
-          <div class="fl">1000~9999元</div>
-          <div class="fr">消息来源：中华英才</div>
-        </div>
-        <div class="fc"></div>
-      </li>
-      <li class="list-item">
-        <div>
-          <div class="list-title fb">招聘交易员 高端职业 工资5500到</div>
-        </div>
-        <div class="fc">
-          <div class="fl fb w75">巨源金融集团</div>
-          <div class="fr">2014-08-28</div>
-        </div>
-        <div class="fc fb">
-          <div class="fl">5000~6999元</div>
-          <div class="fr">消息来源：猎聘网</div>
-        </div>
-        <div class="fc"></div>
-      </li>
     </ul>
     <div id="more">显示更多结果...</div>
   </div>
