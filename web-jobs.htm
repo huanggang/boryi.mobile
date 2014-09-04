@@ -66,8 +66,8 @@
         <div class="search-label fl">刷新日：</div>
         <select id="refresh">
           <option value="1">近一天</option>
-          <option value="2">近三天</option>
-          <option value="3">近一周</option>
+          <option value="3">近三天</option>
+          <option value="7">近一周</option>
         </select>
         <div class="fc"></div>
       </div>
@@ -107,7 +107,13 @@
       </div>
       <div>
         <div class="search-label fl">其他要求：</div>
-        <div class="fl w70"><input type="checkbox" id="housing"><label for="housing" class="mgr10">住宿</label><input type="checkbox" id="meals"><label for="meals" class="mgr10">工作餐</label><input type="checkbox" id="travel"><label for="travel" class="mgr10">无出差</label><input type="checkbox" id="overtime"><label for="overtime" class="mgr10">无加班</label><input type="checkbox" id="nightshift"><label for="nightshift">无夜班</label></div>
+        <div class="fl w70 features">
+          <input class='benefits' type="checkbox" id="housing" value="4"><label for="housing" class="mgr10">住宿</label>
+          <input class='benefits' type="checkbox" id="meals" value="5"><label for="meals" class="mgr10">工作餐</label>
+          <input class='requirements' type="checkbox" id="travel" value="1"><label for="travel" class="mgr10">无出差</label>
+          <input class='requirements' type="checkbox" id="overtime" value="2"><label for="overtime" class="mgr10">无加班</label>
+          <input class='requirements' type="checkbox" id="nightshift" value="3"><label for="nightshift">无夜班</label>
+        </div>
         <div class="fc"></div>
       </div>
       <div>
@@ -131,9 +137,9 @@
       <div>
         <div class="search-label fl">您的性别：</div>
         <select id="gender">
-          <option value="0"></option>
+          <option value="-1"></option>
           <option value="1">男</option>
-          <option value="2">女</option>
+          <option value="0">女</option>
         </select>
         <div class="fc"></div>
       </div>
