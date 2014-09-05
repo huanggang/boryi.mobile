@@ -1,5 +1,4 @@
 ﻿$(document).ready(function(){
-	var js_path = "http://localhost/bm/js/";
 
 	$.cachedScript = function( url, options ) {
     // Allow user to set any option except for dataType, cache, and url
@@ -43,6 +42,10 @@
     }
 
     if (async == undefined) { async = true; } 
+    
+    var docUrl = document.URL;
+    var js_path = docUrl.substring(0, docUrl.lastIndexOf('/')) + '/js/';
+    
     var url = js_path + '/city/cities_' + provinceid + '.js'; 
     $.cachedScript(url, {async:async}).done(function(data, textStatus) { 
       var cities = eval('cities_' + provinceid);
@@ -103,13 +106,13 @@
     }
   }
   var page = []; // the page option
+  page.c = {};   // initialize the company cache
+  page.j = {};   // initialize the job cache
 
   var base = 'http://www.boryi.com:8080/SearchJobs/jobs?';
 
   var searchJob = function(form){ 
-    // _jqjsp({"t":4,"c":[{"id":8411537,"ty":4,"nd":[1003027004000,1007001002000,1007002000000,1007003000000],"lc":1371000000000000,"sz":[101,300],"nm":"Ã¥Â»ÂºÃ¥Â³Â°Ã¥Â»ÂºÃ¨Â®Â¾Ã©â€ºâ€ Ã¥â€ºÂ¢Ã¨â€šÂ¡Ã¤Â»Â½Ã¦Å“â€°Ã©â„¢ÂÃ¥â€¦Â¬Ã¥ÂÂ¸Ã¥Â¨ÂÃ¦ÂµÂ·Ã¥Ë†â€ Ã¥â€¦Â¬Ã¥ÂÂ¸Ã¦â€¹â€ºÃ¨Â?},{"id":24380,"ty":6,"nd":[1009002000000,1016000000000,1018000000000,1018001001000,1018001002000,1018003000000],"lc":1430100000000000,"sz":[500,500],"nm":"Ã©â€¢Â¿Ã¦Â²â„¢Ã¥Â¸â€šÃ¨Å â„¢Ã¨â€œâ€°Ã¥Å’ÂºÃ¨ÂÂ´Ã¨ÂÂ¶Ã¦Â â€˜Ã¥Â½Â¢Ã¨Â±Â¡Ã¦â€˜â€žÃ¥Â½Â±Ã¥Âºâ€?},{"id":11421,"ty":3,"nd":[1010000000000,1010003000000,1015000000000],"lc":1430111000000000,"sz":[1000,5000],"nm":"Ã¤Â¸Â­Ã¥â€ºÂ½Ã¥Â¹Â³Ã¥Â®â€°Ã¤ÂºÂºÃ¥Â¯Â¿Ã¤Â¿ÂÃ©â„¢Â©Ã¨â€šÂ¡Ã¤Â»Â½Ã¦Å“â€°Ã©â„¢ÂÃ¥â€¦Â¬Ã¥ÂÂ¸Ã¦Â¹â€“Ã¥Ââ€”Ã¥Ë†â€ Ã¥â€¦Â¬Ã¥Â?},{"id":69176,"ty":6,"nd":[1005000000000,1010002000000,1011000000000,1012002003004,1015000000000],"lc":1430102000000000,"sz":[10000,null],"nm":"Ã©â€¢Â¿Ã¦Â²â„¢Ã¤Â¸â€“Ã¨Ââ€Ã¥â€¦Â´Ã¤Â¸Å¡Ã¦Ë†Â¿Ã¥Å“Â°Ã¤ÂºÂ§Ã©Â¡Â¾Ã©â€”Â®Ã¦Å“â€°Ã©â„¢ÂÃ¥â€¦Â¬Ã¥Â?}],"q":106056,"j":[{"xpr":0,"lct":[1430100000000000],"slr":[4000,6000],"jid":87433810,"edu":1,"wrk":[2,3],"src":[{"sid":24,"url":"http:\/\/baoding.myjob.com\/job\/6b28ae843d19ec53b4a109a6j.html"}],"ttl":"400? '400px': 'auto' );line-height:40px;\" target=\"_blank\" title=\"Ã¦â‚¬Â¥Ã¨ÂËœÃ§Â½â€˜Ã¤Â¸Å Ã£â‚¬ÂÃ¦Â·ËœÃ£â‚¬â€˜Ã£â‚¬ÂÃ¥Â®ÂÃ£â‚¬â€˜Ã¥Â¤Â©Ã§Å’Â«Ã¦Â·ËœÃ¥Â®ÂÃ¥â€¢â€ Ã¥Å¸Å½Ã¥Ë†Â·Ã¥Ââ€¢Ã¥Â·Â¥Ã¤Â½Å“\/Ã¥Â·Â¥Ã¨Âµâ€žÃ¤Â¸â‚¬Ã¥Ââ€¢Ã¤Â¸â‚¬Ã§Â»â€œÃ¥Â­Â¦Ã§â€Å¸Ã¤Â¸Å Ã§ÂÂ­Ã¤ÂºÂºÃ¥Â£Â«Ã¦â€”Â Ã¤Â¸Å¡Ã¤ÂºÂºÃ¥Â£Â«Ã¦Â´Â¥Ã¥ÂÂ¯Ã¦Å Â¥Ã¥ÂÂÃ¦â€¹â€ºÃ¦Å¡â€˜Ã¥Ââ€¡Ã¥Â·Â¥\" href=\"\/job\/fb1fae84ead302540f6886d7j.html\">Ã¦â‚¬Â¥Ã¨ÂËœÃ§Â½â€˜Ã¤Â¸Å Ã£â‚¬ÂÃ¦Â·ËœÃ£â‚¬â€˜Ã£â‚¬ÂÃ¥Â®ÂÃ£â‚¬â€˜Ã¥Â¤Â©Ã§Å’Â«Ã¦Â·ËœÃ¥Â®ÂÃ¥â€¢â€ Ã¥Å¸Å½Ã¥Ë†Â·Ã¥Ââ€¢Ã¥Â·Â¥Ã¤Â½Å“\/Ã¥Â·Â¥Ã¨Âµâ€žÃ¤Â¸â‚¬Ã¥Ââ€¢Ã¤Â¸â‚¬Ã§Â»â€œÃ¥Â­Â¦Ã§â€Å¸Ã¤Â¸Å Ã§ÂÂ­Ã¤ÂºÂºÃ¥Â£Â«Ã¦â€”Â Ã¤Â¸Å¡Ã¤ÂºÂºÃ¥Â£Â«Ã¦Â´Â¥Ã¥ÂÂ¯Ã¦Å Â¥Ã¥ÂÂÃ¦â€¹â€ºÃ¦Å¡â€˜Ã¥Ââ€¡Ã¥Â?,"cid":8411537,"brf":"Ã¨â€¹Â¥Ã¦Å“â€°Ã¦â€žÂÃ¦Â­Â¤Ã¥Â·Â¥Ã¤Â½Å“Ã¨Â¯Â·Ã¨Ââ€Ã§Â³Â»Ã¨â€¦Â?Ã¨Â®Â¯Ã¥ÂÂ·Ã£â‚?76 321 907Ã£â‚¬â€˜Ã¥â€™Â¨Ã¨Â?Ã©Å“â‚¬Ã¨Â¦ÂÃ§Å¡â€žÃ¦ÂÂ¡Ã¤Â»Â¶Ã¯Â¼Å¡Ã¯Â¼Ë†Ã¦Â³Â¨Ã¦â€žÂÃ¯Â¼Å¡Ã¥Å Â Ã§â€ºÅ¸Ã¦Å“Â¬Ã¥â€ºÂ¢Ã©ËœÅ¸Ã¦Ë†â€˜Ã¤Â»Â¬Ã§Â»ÂÃ¤Â¸ÂÃ¦â€Â¶Ã¥Ââ€“Ã¨Â´Â¹Ã§â€Â¨Ã¯Â?Ã¦â€°Â¿Ã¨Â¯ÂºÃ¯Â¼Å¡Ã¤Â¸ÂÃ¦â€Â¶Ã¥Ââ€“Ã¤Â»Â»Ã¤Â½â€¢Ã¨Â´Â¹Ã§â€Â¨Ã¯Â¼Å’Ã¤Â¸ÂÃ©Å“â‚¬Ã¨Â¦ÂÃ¨Â½Â¯Ã¤Â»Â¶Ã¥Â°Â±Ã¥ÂÂ¯Ã¤Â»Â¥Ã¦â€œÂÃ¤Â½Å“Ã¯Â?Ã¯Â¼Ë†Ã¦â€Â¯Ã¤Â»ËœÃ¥Â®Â?Ã§Â½â€˜Ã©â€œÂ¶Ã§Â­â€°Ã¥ÂÂ³Ã¦â€”Â¶Ã§Â»â€œÃ§Â®â€”Ã¯Â¼ÂÃ¯Â?Ã£â‚¬Å Ã¦Å“Â¬Ã¥â€¦Â¬Ã¥ÂÂ¸Ã¦â€°â‚¬Ã¦Å“?...","bnf":[2],"rfr":"2014-09-01"},{"xpr":0,"lct":[1430103000000000],"slr":[3000,3500],"jid":85525012,"wrk":[1,2],"src":[{"sid":5,"url":"http:\/\/www.hnrcsc.com\/jobs\/posFiles\/showPosDetail.asp?tp=1&posid=528843"}],"ttl":"Ã¦Â­Å’Ã§Å½â€ºÃ©â€â‚¬Ã¥â€Â®Ã©Â¡Â¾Ã©â€?,"cid":24380,"brf":"Ã¦Â­Å’Ã§Å½â€ºÃ¦â€˜â€žÃ¥Â½Â±Ã©â€”Â¨Ã¥Âºâ€”Ã¥Â¤Â§Ã¥Å¾â€¹Ã©ÂÂ¢Ã¨Â¯â€¢Ã§ÂÂ«Ã§Æ’Â­Ã¦â€¹â€ºÃ¥â€¹Å¸Ã¤Â¸Â­~ Ã¥Â¤Å¡Ã¥Â²â€”Ã¤Â½ÂÃ¦â€¹â€ºÃ¨ÂËœÃ¯Â¼Ë†Ã©â€”Â¨Ã¥Â¸â€šÃ¯Â¼Å’Ã¦â€˜â€žÃ¥Â½Â±Ã¥Å Â©Ã§Ââ€ Ã¯Â¼Å’Ã¥Å’â€“Ã¥Â¦â€ Ã¥Å Â©Ã§Ââ€ Ã¯Â¼Å’Ã¦â€˜â€žÃ¥Â½Â±Ã¥Â¸Ë†Ã¯Â¼Å’Ã¥Å’â€“Ã¥Â¦â€ Ã¥Â¸Ë†Ã¯Â¼Å’Ã©â‚¬â€°Ã§â€°â€¡Ã¥Â¸Ë†Ã§Â­â€°Ã¯Â¼â€°Ã¯Â¼Å’Ã¥Â±Å Ã¦â€”Â¶Ã¥â€¦Â¬Ã¥ÂÂ¸Ã¥Ââ€žÃ©Æ’Â¨Ã©â€”Â¨Ã¤Â¸Â»Ã§Â®Â¡Ã©Æ’Â½Ã¤Â¼Å¡Ã¦â€¹â€¦Ã¤Â»Â»Ã©ÂÂ¢Ã¨Â¯â€¢Ã¥Â®ËœÃ¯Â¼Ë†Ã¥ÂÂ¯Ã¦Å½Â¥Ã¦â€Â¶Ã¥â€¦Â¼Ã¨ÂÅ’Ã¥â€™Å’Ã¥Âºâ€Ã¥Â±Å Ã¦Â¯â€¢Ã¤Â¸Å¡Ã§â€Å¸Ã¯Â?Ã¦Â¬Â¢Ã¨Â¿Å½Ã¦Å“â€°Ã¨Â¯â€ Ã¤Â¹â€¹Ã¥Â£Â«Ã¥â€°ÂÃ¦ÂÂ?Ã¨Â¯Â¦Ã¦Æ’â€¦Ã§â€ÂµÃ¨Â¯ÂÃ¥â€™Â¨Ã¨Â¯Â?Ã¥ÂÂ¯Ã¦â€¹â€?...","bnf":[1,2,5],"rfr":"2014-09-03"},{"lct":[1430111000000000],"slr":[1000,null],"lng":[1001],"jid":26618386,"wrk":[2],"src":[{"sid":1,"url":"http:\/\/search.51job.com\/job\/51548381,c.html"}],"ttl":"Ã¥â€¦Â¼Ã¨ÂÅ’Ã§â€ÂµÃ©â€â‚¬","cid":11421,"brf":"Ã¨ÂÅ’Ã¤Â½ÂÃ¦Â â€¡Ã§Â­Â? Ã§â€ÂµÃ¨Â¯ÂÃ©â€â‚¬Ã¥â€?Ã¨ÂÅ’Ã¤Â½ÂÃ¨ÂÅ’Ã¨Æ’Â½: Ã§â€ÂµÃ¨Â¯ÂÃ©â€â‚¬Ã¥â€?Ã¨ÂÅ’Ã¤Â½ÂÃ¦ÂÂÃ¨Â¿Â°: Ã¨ÂÅ’Ã¤Â½ÂÃ¨ÂÅ’Ã¨Æ’Â½: Ã©â€â‚¬Ã¥â€Â®Ã¤Â»Â£Ã¨Â¡Â¨Ã£â‚¬ÂÃ§â€ÂµÃ¨Â¯ÂÃ©â€â‚¬Ã¥â€Â®TSR Ã¨ÂÅ’Ã¤Â½ÂÃ¦ÂÂÃ¨Â¿Â°: *Ã¤Â¸ÂÃ§â€Â¨Ã©Â£Å½Ã¥ÂÂ¹Ã¦â€”Â¥Ã¦â„¢â€™Ã¯Â¼Å’Ã¤ÂºÂ«Ã¦Å“â€°Ã¨Ë†â€™Ã©â‚¬â€šÃ§Å¡â€žÃ¥Å Å¾Ã¥â€¦Â¬Ã§Å½Â¯Ã¥Â¢Æ?*Ã§â„¢Â½Ã©Â¢â€ Ã§Å¡â€žÃ¥Â·Â¥Ã¤Â½Å“Ã§Å½Â¯Ã¥Â¢Æ’Ã¯Â¼Å’Ã©â€¡â€˜Ã©Â¢â€ Ã§Å¡â€žÃ¦â€Â¶Ã¥â€¦Â¥Ã¯Â¼â€?*Ã¦â€¹Â¥Ã¦Å“â€°Ã¥â€ºÂºÃ¥Â®Å¡Ã§Å¡â€žÃ¥Â·Â¥Ã¤Â½Å“Ã¦â€”Â¶Ã©â€”Â´Ã¯Â¼Å?...","bnf":[1,2],"rfr":"2014-09-02"},{"lct":[1430105000000000],"jid":21120317,"wrk":[1,2],"src":[{"sid":5,"url":"http:\/\/www.hnrcsc.com\/jobs\/posFiles\/showPosDetail.asp?tp=1&posid=245527"}],"ttl":"Ã©â€â‚¬Ã¥â€Â®Ã¥Å Â©Ã§Â?,"cid":69176,"brf":"1Ã£â‚¬ÂÃ¥Â¤â€“Ã¥Å“ÂºÃ¨Â¯Å¡Ã¦â€žÂÃ¥Â®Â¢Ã¦Ë†Â·Ã¦â€¹â€œÃ¥Â?2Ã£â‚¬ÂÃ¤Â¸ÂºÃ¥Â®Â¢Ã¦Ë†Â·Ã¤Â¸Å Ã©â€”Â¨Ã§Å“â€¹Ã¦Ë†Â¿Ã¦ÂÂÃ¤Â¾â€ºÃ¦Â¸â€¦Ã¦â„¢Â°Ã¦Å’â€¡Ã¥Â¼â€?3Ã£â‚¬ÂÃ¥â€¦Â¶Ã¤Â»â€“Ã©Â¡Â¹Ã§â€ºÂ®Ã¥Â®Â£Ã¤Â¼Â Ã¥Â·Â¥Ã¤Â?,"bnf":[1,2],"rfr":"2014-09-03"}]})
     var targetUrl = base;
-
     targetUrl += 's1='  + getWorkPlace();                       // 工作地点
     targetUrl += '&s2=' + getSelected('refresh');               // 刷新日期
 
@@ -136,7 +139,7 @@
 
     var cmptype = getSelected('cmp-type');
     if (cmptype.length > 0){
-      targetUrl += '&s10=' + cmptype;                            // 公司性质
+      targetUrl += '&s10=' + cmptype;                           // 公司性质
     }
 
     var gender = getSelected('gender');
@@ -182,15 +185,20 @@
           // clear the list first
           $('ul.list').empty();
           // set global trackers
-          page.currentp = 1;  // current tracker mark
-          page.currentq = 0;  // current query id mark
-          page.total = 0;     // total result mark
+          page.currentp = 1;  // initialize the current page tracker mark
+          page.currentq = 0;  // initialize the current query id mark
+          page.total = 0;     // initialize the total result mark
+          page.c = {};        // initialize the company cache
+          page.j = {};        // initialize the job cache
           
-          // display results in the list tab
+          // enable the list and detail tab
+          $('#tab-list, #tab-detail').click(tabHandler);
+
+          // display results in the list tab 
           showJobs(d);          
         }
     }).fail(function(xhr, status, msg) {
-        alert('网络问题，请重试');
+        alert('网络不太给力，请重试');
     });
   };
 
@@ -208,17 +216,29 @@
       page.total = json['t'] || 0;
     } 
 
-    alert('total is' + page.total + '; now page:' + page.currentp);
-
     if ((page.total - 1) / 20 <= page.currentp++){
       $('#more').hide();
     } else {
       $('#more').show();
     }
-    
 
     var companies = json['c'];
     var jobs = json['j'];
+
+    for (var i = 0; i <= companies.length - 1; i++) {
+      var company = companies[i];
+
+      var cid = company.id.toString();
+      // u cannot directly use company.id as the key of cached data,
+      // we must conver it to a string first, like this
+
+      // check if this company has alreay been cached
+      var cachedCmp = $(page.c).data(cid);
+      if (cachedCmp === undefined){
+        // new company cached
+        $(page.c).data(cid, company);
+      }
+    }
 
     var li = $('<li />').addClass('list-item');
     var fc = $('<div />').addClass('fc');
@@ -231,6 +251,13 @@
 
     for (var i = 0; i <= jobs.length - 1; i++) {
       var job = jobs[i];
+      var jid = job['cid'] + '-' + job['jid'];
+      // check if this job has alreay been cached
+      var cachedJob = $(page.j).data(jid);
+      if (cachedJob === undefined){
+        // new company cached
+        $(page.j).data(jid, job);
+      }
 
       var title = title_div.clone().append(job['ttl']).wrap('<div />');
 
@@ -248,8 +275,30 @@
             .append(fr.clone().append('消息来源:' + sources[job['src'][0]['sid']]))
       ).append(fc.clone());
       
-      $('ul.list').append(list);
+      $('ul.list').append(list.attr({'v':jid}));
     }
+
+    $('.list .list-item').click(function(){
+      $(this).addClass('viewed');
+
+      $('#tab-detail').trigger('click');
+      var v = $(this).addClass('viewed').attr('v').split('-');
+
+      showJobDetails(v[0], v[1]);
+    })
+  }
+
+  /// display job details
+  ///
+  /// cid: company id
+  /// jid: job id
+  function showJobDetails(cid, jid){
+    var company = $(page.c).data(cid);
+    var job = $(page.j).data(cid + '-' + jid);
+
+    console.log(company);
+    console.log(job);
+    alert('company-job:' + cid + '-' + jid);
   }
 
   // load another 20 results if there exists 
@@ -263,17 +312,14 @@
         cache: true,
         timeout: 10000, 
     }).done(function(d) {
-        if (d.t == 0){
-          alert('没有找到符合条件的结果，请修改查询条件重试');          
-        } else {
-          // display results in the 2nd tab
-          showJobs(d);          
-        }
+        // display results in the 2nd tab
+        showJobs(d);
     }).fail(function(xhr, status, msg) {
-        alert('网络问题，请重试');
+        alert('网络不太给力，请重试');
     });
   });
 
+  // display the salary string according to the json data
   function showSalary(salary){
     var result = '';
     salary = salary || [];
@@ -297,6 +343,7 @@
       element.parent().append(error);
   }
 
+  // the form validator
 	$("#search-form").validate({
       errorPlacement: errPlace,
       submitHandler: searchJob,

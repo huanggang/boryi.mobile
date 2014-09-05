@@ -422,3 +422,7 @@ form label.error {
   font-weight: normal;
   margin-left: 70px;
 }
+
+.viewed{
+  background-color: #AAD4FF;
+}
