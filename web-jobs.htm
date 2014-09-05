@@ -20,6 +20,7 @@
   <script src="js/tab.js" type="text/javascript"></script>
   <script src="js/provinces.js" type="text/javascript"></script>
   <script src="js/sources.js" type="text/javascript"></script>
+  <script src="js/mobilecommon.js" type="text/javascript"></script>
   <script src="js/web-jobs.js" type="text/javascript"></script>
 </head>
 <body>
@@ -67,7 +68,7 @@
         <div class="search-label fl">刷新日：</div>
         <select id="refresh">
           <option value="1">近一天</option>
-          <option value="3">近三天</option>
+          <option value="3" selected="selected">近三天</option>
           <option value="7">近一周</option>
         </select>
         <div class="fc"></div>
@@ -162,10 +163,9 @@
     </form>
   </div>
   <div class="ui-tab-content fc mh300" data-name="list">
-    <div class="no-detail hd">请先搜索网络招聘信息。</div>
     <ul class="list">
     </ul>
-    <div id="more">显示更多结果...</div>
+    <div id="more" class="hd">显示更多结果...</div>
   </div>
   <div class="ui-tab-content fc mh300" data-name="detail">
     <div class="no-detail hd">请先在网络招聘搜索结果中点击某条职位信息。</div>
