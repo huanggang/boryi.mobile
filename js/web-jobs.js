@@ -296,9 +296,24 @@
     var company = $(page.c).data(cid);
     var job = $(page.j).data(cid + '-' + jid);
 
+    $('#company').html(company.nm);
+    $('#title').html(job.ttl);
+
+//    $('#postdate').html(job.ttl);
+    $('#refreshdate').html(job.rfr);
+    $('#source').html(sources[job.src[0]['sid']]);
+
+    $('#apply-source').click(function(){
+        location.href = job.src[0]['url'];
+    }); 
+
+
+    
+
+
     console.log(company);
     console.log(job);
-    alert('company-job:' + cid + '-' + jid);
+    //alert('company-job:' + cid + '-' + jid);
   }
 
   // load another 20 results if there exists 
