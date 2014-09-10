@@ -12,7 +12,7 @@
 	};
 
 	var cityCache = {}; 
-	// cache the city lists so it won't send another request 
+	// cache the city lists so it won't send repeted request 
 
   setSelections(provinces, 'province', 10000);
 	
@@ -22,16 +22,20 @@
 	    if (cityCache.hasOwnProperty(provinceid)){
 	      setSelections(cityCache[provinceid], 'city');
 	    } else {
-	      setCities(provinceid);
+	      setCities(provinceid, setCityOptions);
 	    }
 	  }
 	});
 
+  var setCityOptions = function (cities){
+    setSelections(cities, 'city');
+  }
+
   /// assing options to the 'city' select input
   ///
   ///  provinceid - the id of the province
-  ///  value      - the default city value
-  function setCities(provinceid, value, async) { 
+  ///  callback   - the method which needs city json as input  
+  function setCities(provinceid, callback, async) { 
     if (provinceid == null){
       return;
     }
@@ -46,11 +50,12 @@
     var docUrl = document.URL;
     var js_path = docUrl.substring(0, docUrl.lastIndexOf('/')) + '/js/';
     
-    var url = js_path + '/city/cities_' + provinceid + '.js'; 
+    var url = js_path + 'city/cities_' + provinceid + '.js'; 
     $.cachedScript(url, {async:async}).done(function(data, textStatus) { 
       var cities = eval('cities_' + provinceid);
       cityCache[provinceid] = cities;
-      setSelections(cities, 'city');
+      callback(cities);
+      //setSelections(cities, 'city');
     });
   }
 
@@ -109,10 +114,10 @@
   page.c = {};   // initialize the company cache
   page.j = {};   // initialize the job cache
 
-  var base = 'http://www.boryi.com:8080/SearchJobs/jobs?';
+  var base = 'http://www.boryi.com:8080/SearchJobs/';
 
   var searchJob = function(form){ 
-    var targetUrl = base;
+    var targetUrl = base + 'jobs?';
     targetUrl += 's1='  + getWorkPlace();                       // 工作地点
     targetUrl += '&s2=' + getSelected('refresh');               // 刷新日期
 
@@ -175,7 +180,7 @@
     $.ajax({
         url: targetUrl,
         dataType: "jsonp", 
-        jsonpCallback: "jcb", 
+        jsonpCallback: "_jobs", 
         cache: true,
         timeout: 5000, 
     }).done(function(d) {
@@ -265,13 +270,13 @@
       list.append(title);
       list.append(fc.clone()
             .append(cmp.clone().append(
-                map_id_name(companies, job['cid']))
+                map_id_attr(companies, job['cid'], 'nm'))
             )
             .append(fr.clone().append(job['rfr']))
       );
 
       list.append(fbc.clone()
-            .append(fl.clone().append(showSalary(job['slr'])))
+            .append(fl.clone().append(showRange(job['slr'], '元以上', '元以下', '元', '~')))
             .append(fr.clone().append('消息来源:' + sources[job['src'][0]['sid']]))
       ).append(fc.clone());
       
@@ -293,70 +298,204 @@
   /// cid: company id
   /// jid: job id
   function showJobDetails(cid, jid){
-    var company = $(page.c).data(cid);
-    var job = $(page.j).data(cid + '-' + jid);
+    var company = $(page.c).data(cid); 
+    var job = $(page.j).data(cid + '-' + jid); 
 
-    $('#company').html(company.nm);
-    $('#title').html(job.ttl);
+    $('#company').html(company.nm); 
+    $('#title').html(job.ttl); 
+//    $('#postdate').html(job.ttl); 
 
-//    $('#postdate').html(job.ttl);
-    $('#refreshdate').html(job.rfr);
-    $('#source').html(sources[job.src[0]['sid']]);
+    $('#refreshdate').html(job.rfr); 
+    $('#source').html(sources[job.src[0]['sid']]); 
 
-    $('#apply-source').click(function(){
-        location.href = job.src[0]['url'];
+    $('#apply-source').click(function(){ 
+        location.href = job.src[0]['url']; 
     }); 
+    
+    $('#salary-str').html(showRange(job.slr, '元以上', '元以下', '元', '~'));
 
+    var edu = job.edu;
+    var xpr = job.xpr;
+    var gnd = job.gnd;
+    var age = job.age;
+    var hgh = job.hgh;
+    var lng = job.lng;
+    
+    var bnf = job.bnf;
+    var ftr = job.ftr;
+
+    var rqs = '';
+    if (edu){
+      rqs += educations[edu - 1] + '以上 &middot; ';
+    }
+    if (xpr){
+      rqs += xpr + '年以上工作经验 &middot; ';
+    }
+    if (gnd){
+      rqs += genders[gnd - 1] + '&middot; ';
+    }
+    if (age){
+      var age_str = '';
+      age_str += '男：' + showRange(age.slice(0, 2), '岁以上', '岁以下', '岁', '-');
+      age_str += ', 女：' + showRange(age.slice(2), '岁以上', '岁以下', '岁', '-');
+      rqs += age_str + '&middot; ';
+    }
+    
+    if (hgh){
+      rqs += hgh + '&middot; ';
+    }
+    if (lng){
+      rqs += lng + '&middot; ';
+    }
+    if (bnf){
+      rqs += bnf + '&middot; ';
+    }
+    if (ftr){
+      rqs += ftr + '&middot; ';
+    }
+    $('#requirement-list').html(rqs);
 
     
 
 
-    console.log(company);
+
+
+    console.log('...this is job...');
     console.log(job);
-    //alert('company-job:' + cid + '-' + jid);
+
+
+    
+    if (company.ty){
+      var cmpType = companyTypes[(company.ty - 1)];
+      $('#cmp-type-str').html(cmpType);  
+    }
+
+    var size = company.sz;
+    var size_str = '';
+    if (size){
+      $('#cmp-size-str').html(showRange(size, '人以上', '人以下', '人', '-'));
+    }
+
+    var loc = company['lc'].toString();
+    var cn = loc.substr(0, 1);
+    var province = loc.substr(1, 2);
+    var city = loc.substr(1, 4);
+
+    // set the company's location 
+    if (!cn){
+      $('#cmp-location').html('国外');
+    } else {
+      // in CN
+      var provinceid = province * 100;
+      var prov_str = map_id_attr(provinces, provinceid);
+      
+      var city_str = '';
+      var setCmpLocation = function(cities){
+        city_str = map_id_attr(cities, city);
+        if (city_str){
+          city_str = '-' + city_str;
+        }
+        $('#cmp-location').html(prov_str + city_str);
+      }
+
+      if (cityCache.hasOwnProperty(provinceid)){
+        setCmpLocation(cityCache[provinceid]);
+      } else {
+        setCities(provinceid, setCmpLocation);
+      }
+
+
+
+
+
+      //$('#cmp-location').html(province);
+    }
+
+
+    var jobUrl = base + 'job?c=' + cid + '&j=' + jid;
+
+    $.ajax({
+        url: jobUrl,
+        dataType: "jsonp", 
+        jsonpCallback: "_job", 
+        cache: true,
+        timeout: 10000,
+    }).done(function(j) {
+        console.log('...job...');
+        console.log(j);
+        $('#postdate').html(j['ffd']); 
+
+        if(j['dsc']){
+          $('#description').html(j['dsc']);
+          $('#description-block').show();
+        } else {
+          $('#description-block').hide();
+        }
+
+        if(j['rqr']){
+          $('#requirement').html(j['rqr']);  
+          $('#requirement-block').show();
+        } else {
+          $('#requirement-block').hide();
+        }
+
+        if(j['eml']){
+          var email = j['eml']; 
+          $('#email').html(email).attr('href', 'mailto:' + email);   
+          $('#email-block').show();
+        } else {
+          $('#email-block').hide();
+        }
+        
+        if (j['cnt']){
+          $('#contact').html(j['cnt']); 
+          $('#contact-block').show();   
+        } else {
+          $('#contact-block').hide();
+        }
+        
+        if (j['phn']){
+          var phones = j['phn'].split(',');
+          var phones_str = '';
+          for (var i = phones.length - 1; i >= 0; i--) { 
+            phones_str += '<a id="phone' + i + '" href="tel:' + $.trim(phones[i].replace(/\s+-\(\)/g, '')) + '" >' + phones[i] + '[<span class="call">拨打</span>]<br />';
+          };
+          $('#phone').html(phones_str);  
+          $('#phone-block').show();
+        }
+
+        if (j['mbl']){
+          var mobiles = j['mbl'].split(',');
+          var mobiles_str = '';
+          for (var i = mobiles.length - 1; i >= 0; i--) {
+            mobiles_str += '<a id="mobile' + i + '" href="tel:' + $.trim(mobiles[i].replace(/\s+-\(\)/g, '')) + '" >' + mobiles[i] + '[<span class="call">拨打</span>]<br />';
+          };
+          $('#mobile').html(mobiles_str);  
+          $('#mobile-block').show();
+        }
+    }).fail(function(xhr, status, msg) { 
+        alert('网络不太给力，拿不到工作信息，请重试' + msg + status); 
+    }); 
+
   }
 
   // load another 20 results if there exists 
   $('#more').click(function(){
-    var targetUrl = base + 'q=' + page.currentq + '&p=' + page.currentp;
+    var targetUrl = base + 'jobs?q=' + page.currentq + '&p=' + page.currentp;
 
     $.ajax({
         url: targetUrl,
         dataType: "jsonp", 
         jsonpCallback: "jcb", 
         cache: true,
-        timeout: 10000, 
+        timeout: 10000,
     }).done(function(d) {
         // display results in the 2nd tab
-        showJobs(d);
-    }).fail(function(xhr, status, msg) {
-        alert('网络不太给力，请重试');
-    });
+        showJobs(d); 
+    }).fail(function(xhr, status, msg) { 
+        alert('网络不太给力，请重试'); 
+    }); 
   });
-
-  // display the salary string according to the json data
-  function showSalary(salary){
-    var result = '';
-    salary = salary || [];
-    if (salary.length == 2){
-      if (salary[0] == null && salary[1] > 0){
-        result = salary[1] + '以下';
-      } else if (salary[0] > 0 && salary[1] == null){
-        result = salary[0] + '以上';
-      } else if (salary[0] > 0 && salary[1] > 0){
-        result = salary[0] + '~' + salary[1];
-      } 
-    }
-    if (result.length > 1){
-      result += '元';
-    }
-    return result;
-  }
-
-  /// custom how error label displayed
-  var errPlace = function(error, element) {
-      element.parent().append(error);
-  }
 
   // the form validator
 	$("#search-form").validate({

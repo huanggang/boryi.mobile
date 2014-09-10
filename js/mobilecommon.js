@@ -24,12 +24,16 @@ function setSelections(json, target, value){
   }
 }
 
-/// get json 'name' property according to 'id' property
-function map_id_name(jsons, id){
+/// get any json property according to 'id' property
+/// if not given, attr would be set to 'name'
+function map_id_attr(jsons, id, attr){
+ 	if (typeof attr == "undefined"){
+   		attr = 'name';
+ 	}
 	for (var i = 0; i < jsons.length; i++){
 		var j = jsons[i];
 		if (j.id == id) {
-			return j.nm;
+			return j[attr];
 		}
 	}
 	return '';
@@ -38,4 +42,28 @@ function map_id_name(jsons, id){
 /// get the value of the selected option
 function getSelected(select){
 	return $("#" + select + " option:selected").val();
+}
+
+/// Default method which customs how error label displayed
+/// for form validation
+var errPlace = function(error, element) {
+  element.parent().append(error);
+}
+
+
+/// Display the range of a json , such as company size range
+/// and salary range, etc.
+function showRange(range, lowstr, highstr, unit, range_concat){
+	var result = '';
+	range = range || [];
+	if (range.length == 2){
+	  if (range[0] == null && range[1] > 0){
+	    return range[1] + highstr;
+	  } else if (range[0] > 0 && range[1] == null){
+	    return range[0] + lowstr;
+	  } else if (range[0] > 0 && range[1] > 0){
+	    return range[0] + range_concat + range[1] + unit;
+	  } 
+	}
+	return result;
 }
