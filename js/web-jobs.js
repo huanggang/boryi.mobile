@@ -277,7 +277,7 @@
 
       list.append(fbc.clone()
             .append(fl.clone().append(showRange(job['slr'], '元以上', '元以下', '元', '~')))
-            .append(fr.clone().append('消息来源:' + sources[job['src'][0]['sid']]))
+            .append(fr.clone().append('消息来源:' + sources[job['src'][0]['sid'] - 1]))
       ).append(fc.clone());
       
       $('ul.list').append(list.attr({'v':jid}));
@@ -303,10 +303,8 @@
 
     $('#company').html(company.nm); 
     $('#title').html(job.ttl); 
-//    $('#postdate').html(job.ttl); 
-
     $('#refreshdate').html(job.rfr); 
-    $('#source').html(sources[job.src[0]['sid']]); 
+    $('#source').html(sources[job.src[0]['sid'] - 1]); 
 
     $('#apply-source').click(function(){ 
         location.href = job.src[0]['url']; 
@@ -325,45 +323,104 @@
     var ftr = job.ftr;
 
     var rqs = '';
+    var bns = '';
+    
     if (edu){
-      rqs += educations[edu - 1] + '以上 &middot; ';
+      rqs += educations[edu - 1] + ' &middot; ';
     }
     if (xpr){
       rqs += xpr + '年以上工作经验 &middot; ';
     }
     if (gnd){
-      rqs += genders[gnd - 1] + '&middot; ';
+      rqs += genders[gnd] + '&middot; ';
     }
     if (age){
       var age_str = '';
-      age_str += '男：' + showRange(age.slice(0, 2), '岁以上', '岁以下', '岁', '-');
-      age_str += ', 女：' + showRange(age.slice(2), '岁以上', '岁以下', '岁', '-');
+      var male_age = showRange(age.slice(0, 2), '岁以上', '岁以下', '岁', '-');
+      var femail_age = showRange(age.slice(2), '岁以上', '岁以下', '岁', '-');
+      if (male_age){
+        age_str += '男：' + male_age;  
+      }
+      if (femail_age){
+        if (male_age){
+          age_str += ', ';
+        }
+        age_str += '女：' + femail_age;  
+      }
+      
       rqs += age_str + '&middot; ';
     }
-    
+
     if (hgh){
-      rqs += hgh + '&middot; ';
+      var hgh_str = '';
+      hgh_str += '男：' + showRange(hgh.slice(0, 2), 'CM以上', 'CM以下', 'CM', '-');
+      hgh_str += ', 女：' + showRange(hgh.slice(2), 'CM以上', 'CM以下', 'CM', '-');
+      rqs += hgh_str + '&middot; ';
     }
+
+
     if (lng){
-      rqs += lng + '&middot; ';
+      var lng_str = '';
+      for (var i = 0; i < lng.length; i++) {
+        var lng_id = lng[i];
+        var lng_name = '';
+
+        if (lng_id % 1000 == 0){
+          lng_name = map_id_attr(languages, lng_id, 'n');
+        } else {
+          var index = parseInt(lng_id / 1000) - 1;
+          console.log('语言');
+          console.log(index);
+          console.log(languages[index]);
+          lng_name = map_id_attr(languages[parseInt(lng_id / 1000) - 1].s, lng_id, 'n');
+        }
+        lng_str += lng_name + ', ';  
+      }
+      if (lng_str){
+        // remove the last ',' and ' '
+        lng_str = lng_str.substring(0, lng_str.length - 2);
+      }
+      rqs += lng_str + '&middot; ';
     }
+
     if (bnf){
-      rqs += bnf + '&middot; ';
+      var bnf_str = '';
+      for (var i = 0; i < bnf.length; i++) {
+        bnf_str += benefits[bnf[i] - 1] + ', ';
+      }
+      if (bnf_str){
+        // remove the last ',' and ' '
+        bnf_str = bnf_str.substring(0, bnf_str.length - 2);
+      }
+      bns += bnf_str + '&middot; ';
     }
+
     if (ftr){
-      rqs += ftr + '&middot; ';
+      var ftr_str = '';
+      for (var i = 0; i < ftr.length; i++) {
+        ftr_str += features[ftr[i] - 1] + ', ';
+      }
+      if (ftr_str){
+        // remove the last ',' and ' '
+        ftr_str = ftr_str.substring(0, ftr_str.length - 2);
+      }
+      bns += ftr + '&middot; ';
     }
+
+    if (rqs.length){
+      // remove the last extra '&middot; '
+      rqs = rqs.substring(0, rqs.length - 9);
+    }
+    if (bns.length){
+      // remove the last extra '&middot; '
+      bns = bns.substring(0, bns.length - 9);
+    }
+
     $('#requirement-list').html(rqs);
-
-    
-
-
-
+    $('#benefit-list').html(bns);
 
     console.log('...this is job...');
     console.log(job);
-
-
     
     if (company.ty){
       var cmpType = companyTypes[(company.ty - 1)];
@@ -421,8 +478,6 @@
         cache: true,
         timeout: 10000,
     }).done(function(j) {
-        console.log('...job...');
-        console.log(j);
         $('#postdate').html(j['ffd']); 
 
         if(j['dsc']){
@@ -470,8 +525,8 @@
           for (var i = mobiles.length - 1; i >= 0; i--) {
             mobiles_str += '<a id="mobile' + i + '" href="tel:' + $.trim(mobiles[i].replace(/\s+-\(\)/g, '')) + '" >' + mobiles[i] + '[<span class="call">拨打</span>]<br />';
           };
-          $('#mobile').html(mobiles_str);  
-          $('#mobile-block').show();
+          $('#cell').html(mobiles_str);  
+          $('#cell-block').show();
         }
     }).fail(function(xhr, status, msg) { 
         alert('网络不太给力，拿不到工作信息，请重试' + msg + status); 
