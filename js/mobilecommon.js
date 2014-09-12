@@ -55,15 +55,29 @@ var errPlace = function(error, element) {
 /// and salary range, etc.
 function showRange(range, lowstr, highstr, unit, range_concat){
 	var result = '';
-	range = range || [];
-	if (range.length == 2){
-	  if (range[0] == null && range[1] > 0){
-	    return range[1] + highstr;
-	  } else if (range[0] > 0 && range[1] == null){
-	    return range[0] + lowstr;
-	  } else if (range[0] > 0 && range[1] > 0){
-	    return range[0] + range_concat + range[1] + unit;
+	var r = range || [];
+	if (r.length == 2){
+	  if (r[0] == null && r[1] > 0){
+	    return r[1] + highstr;
+	  } else if (r[0] > 0 && r[1] == null){
+	    return r[0] + lowstr;
+	  } else if (r[0] > 0 && r[1] > 0){
+	    return r[0] + range_concat + r[1] + unit;
 	  } 
 	}
 	return result;
+}
+
+/// when come back to the job list from a job's detail page, we should 
+/// make the tab scroll to the latest checked job, since there might 
+/// be a very, very long job list
+function view(id){
+	if (id){
+		var top = $('#' + id).offset().top;
+		if (top){
+			$('html, body').animate({
+		    	scrollTop: top
+			}, 500);
+		}	
+	}
 }
