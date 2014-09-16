@@ -22,7 +22,14 @@ $(document).ready(function(){
             }
         }
     }
-
+    $('#reset-btn').click(function(){
+        setSelections(provinces, 'province', 10000);
+        $('#city').hide().empty();
+        $('#job-type').val("0");
+        $('#cmp-type').val("0");
+        $('#keyword').val("");
+    });
+    
     var page = []; // the page option
     var resultClicked = false;
     var lastViewedJid;
@@ -170,7 +177,7 @@ $(document).ready(function(){
     function b(s){if(s==1){return"国企"}else{if(s==2){return"外企"}else{if(s==3){return"民企"}else{if(s==4){return"其他"}}}}return""}
 
     function showJobDetails(listid){
-        $('.detail-top .src-btn').wrap("<a target='_blank' href='" + page.j[listid.substring(2)].u + "'></a>");
+        $('.detail-top a').attr("href",page.j[listid.substring(2)].u);
         $('.ui-tab-content iframe').attr({src: page.j[listid.substring(2)].u});
     }
 
