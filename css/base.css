@@ -434,3 +434,6 @@ form label.error {
   display:block;
   padding-left: 3px; 
 }
+#cell a{
+  color: #7a7e88;
+}

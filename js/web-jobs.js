@@ -1,5 +1,4 @@
 ﻿$(document).ready(function(){
-
 	$.cachedScript = function( url, options ) {
     // Allow user to set any option except for dataType, cache, and url
     options = $.extend( options || {}, {
@@ -59,12 +58,6 @@
     });
   }
 
-  // rule to make sure that at least one checkbox is checked
-	$.validator.addMethod("keywordtype", function(value, elem, param) {
-	    return $(".work-group:checkbox:checked").length > 0;
-	},"You must select at least one!");
-
-
   /// get the keyword type, 0 for job, 1 for company, 2 for both
   function getKeywordType(){
     var count = $(".work-group:checkbox:checked").length;
@@ -110,10 +103,12 @@
       }
     }
   }
+
   var page = []; // the page option
   page.c = {};   // initialize the company cache
   page.j = {};   // initialize the job cache
 
+  var lastViewedJid = '';
   var base = 'http://www.boryi.com:8080/SearchJobs/';
 
   var searchJob = function(form){ 
@@ -182,7 +177,7 @@
         dataType: "jsonp", 
         jsonpCallback: "_jobs", 
         cache: true,
-        timeout: 5000, 
+        timeout: 15000, 
     }).done(function(d) {
         if (d.t == 0){
           alert('没有找到符合条件的结果，请修改查询条件重试');          
@@ -197,7 +192,19 @@
           page.j = {};        // initialize the job cache
           
           // enable the list and detail tab
-          $('#tab-list, #tab-detail').click(tabHandler);
+          $('#tab-list, #tab-detail').bind('click', tabHandler);
+
+          $('#tab-list').bind('click', function(){
+            // if return to check list again from detail page,
+            // jump to the latest viewed job list item
+            if (lastViewedJid){
+              view(lastViewedJid);  
+            }
+          });
+
+          $('#tab-detail').bind('click', function(){
+            window.scrollTo(0, 0);
+          });
 
           // display results in the list tab 
           showJobs(d);          
@@ -276,18 +283,22 @@
       );
 
       list.append(fbc.clone()
-            .append(fl.clone().append(showRange(job['slr'], '元以上', '元以下', '元', '~')))
+            .append(fl.clone().append(showRange(job['slr'], '元以上', '元以下', '元', ' ~ ')))
             .append(fr.clone().append('消息来源:' + sources[job['src'][0]['sid'] - 1]))
       ).append(fc.clone());
       
-      $('ul.list').append(list.attr({'v':jid}));
+      $('ul.list').append(list.attr({'id':jid}));
     }
 
     $('.list .list-item').click(function(){
       $(this).addClass('viewed');
 
+      $('#cmp-location').empty();
+      $('#job-location').empty();
+      
       $('#tab-detail').trigger('click');
-      var v = $(this).addClass('viewed').attr('v').split('-');
+      var v = $(this).addClass('viewed').attr('id').split('-');
+      lastViewedJid = this.id;
 
       showJobDetails(v[0], v[1]);
     })
@@ -307,10 +318,11 @@
     $('#source').html(sources[job.src[0]['sid'] - 1]); 
 
     $('#apply-source').click(function(){ 
-        location.href = job.src[0]['url']; 
+        //location.href = job.src[0]['url']; 
+        window.open(job.src[0]['url'], '_blank');
     }); 
     
-    $('#salary-str').html(showRange(job.slr, '元以上', '元以下', '元', '~'));
+    $('#salary-str').html(showRange(job.slr, '元以上', '元以下', '元', ' ~ '));
 
     var edu = job.edu;
     var xpr = job.xpr;
@@ -336,8 +348,8 @@
     }
     if (age){
       var age_str = '';
-      var male_age = showRange(age.slice(0, 2), '岁以上', '岁以下', '岁', '-');
-      var femail_age = showRange(age.slice(2), '岁以上', '岁以下', '岁', '-');
+      var male_age = showRange(age.slice(0, 2), '岁以上', '岁以下', '岁', ' - ');
+      var femail_age = showRange(age.slice(2), '岁以上', '岁以下', '岁', ' - ');
       if (male_age){
         age_str += '男：' + male_age;  
       }
@@ -353,11 +365,10 @@
 
     if (hgh){
       var hgh_str = '';
-      hgh_str += '男：' + showRange(hgh.slice(0, 2), 'CM以上', 'CM以下', 'CM', '-');
-      hgh_str += ', 女：' + showRange(hgh.slice(2), 'CM以上', 'CM以下', 'CM', '-');
+      hgh_str += '男：' + showRange(hgh.slice(0, 2), 'CM以上', 'CM以下', 'CM', ' - ');
+      hgh_str += ', 女：' + showRange(hgh.slice(2), 'CM以上', 'CM以下', 'CM', ' - ');
       rqs += hgh_str + '&middot; ';
     }
-
 
     if (lng){
       var lng_str = '';
@@ -369,9 +380,6 @@
           lng_name = map_id_attr(languages, lng_id, 'n');
         } else {
           var index = parseInt(lng_id / 1000) - 1;
-          console.log('语言');
-          console.log(index);
-          console.log(languages[index]);
           lng_name = map_id_attr(languages[parseInt(lng_id / 1000) - 1].s, lng_id, 'n');
         }
         lng_str += lng_name + ', ';  
@@ -396,15 +404,15 @@
     }
 
     if (ftr){
-      var ftr_str = '';
-      for (var i = 0; i < ftr.length; i++) {
-        ftr_str += features[ftr[i] - 1] + ', ';
+      var ftr_str = ''; 
+      for (var i = 0; i < ftr.length; i++) { 
+        ftr_str += '无' + features[ftr[i] - 1] + ', '; 
       }
       if (ftr_str){
         // remove the last ',' and ' '
         ftr_str = ftr_str.substring(0, ftr_str.length - 2);
       }
-      bns += ftr + '&middot; ';
+      bns += ftr_str + '&middot; ';
     }
 
     if (rqs.length){
@@ -419,7 +427,7 @@
     $('#requirement-list').html(rqs);
     $('#benefit-list').html(bns);
 
-    console.log('...this is job...');
+    console.log('...job...');
     console.log(job);
     
     if (company.ty){
@@ -430,44 +438,65 @@
     var size = company.sz;
     var size_str = '';
     if (size){
-      $('#cmp-size-str').html(showRange(size, '人以上', '人以下', '人', '-'));
+      $('#cmp-size-str').html(showRange(size, '人以上', '人以下', '人', ' - '));
     }
 
-    var loc = company['lc'].toString();
-    var cn = loc.substr(0, 1);
-    var province = loc.substr(1, 2);
-    var city = loc.substr(1, 4);
+    setLocation(company['lc'].toString(), 'cmp-location');
 
-    // set the company's location 
-    if (!cn){
-      $('#cmp-location').html('国外');
-    } else {
-      // in CN
-      var provinceid = province * 100;
-      var prov_str = map_id_attr(provinces, provinceid);
-      
-      var city_str = '';
-      var setCmpLocation = function(cities){
-        city_str = map_id_attr(cities, city);
-        if (city_str){
-          city_str = '-' + city_str;
-        }
-        $('#cmp-location').html(prov_str + city_str);
-      }
-
-      if (cityCache.hasOwnProperty(provinceid)){
-        setCmpLocation(cityCache[provinceid]);
+    var locs = job['lct'];
+    for (var i = 0; i < locs.length; i++) { 
+      if (i == 0){
+        setLocation(locs[i].toString(), 'job-location');  
       } else {
-        setCities(provinceid, setCmpLocation);
+        setLocation(locs[i].toString(), 'job-location', true);  
       }
-
-
-
-
-
-      //$('#cmp-location').html(province);
     }
 
+    /// conver the location code to corresponding location
+    ///
+    /// loc     - the location code
+    /// target  - id of the DOM object containing the location information
+    /// ismulti - if the target has more than one location to display, this 
+    ///           is use to indicating whether to put a '/' mark ahead of location
+    function setLocation(loc, target, ismulti){ 
+      var cn = loc.substr(0, 1); 
+      var province = loc.substr(1, 2); 
+      var city = loc.substr(1, 4); 
+      // set the company's location 
+      if (!cn){
+        $('#' + target).append('<span>国外</span>');
+      } else {
+        // in CN
+        if (loc == '1000000000000000'){
+          $('#' + target).append('全国');
+          return;
+        }
+
+        var provinceid = province * 100;
+        var prov_str = map_id_attr(provinces, provinceid);
+        
+        var city_str = '';
+
+        var setCmpLocation = function(cities){ 
+          city_str = map_id_attr(cities, city); 
+          if (city_str){
+            city_str = '-' + city_str;
+          }
+          var t = $('#' + target);
+          t.append('<span>');
+          if (ismulti){
+            t.append('/');  
+          }
+          t.append(prov_str + city_str + '</span>');
+        }
+
+        if (cityCache.hasOwnProperty(provinceid)){
+          setCmpLocation(cityCache[provinceid]);
+        } else {
+          setCities(provinceid, setCmpLocation);
+        }
+      }  
+    }
 
     var jobUrl = base + 'job?c=' + cid + '&j=' + jid;
 
@@ -476,7 +505,7 @@
         dataType: "jsonp", 
         jsonpCallback: "_job", 
         cache: true,
-        timeout: 10000,
+        timeout: 15000,
     }).done(function(j) {
         $('#postdate').html(j['ffd']); 
 
@@ -513,7 +542,9 @@
           var phones = j['phn'].split(',');
           var phones_str = '';
           for (var i = phones.length - 1; i >= 0; i--) { 
-            phones_str += '<a id="phone' + i + '" href="tel:' + $.trim(phones[i].replace(/\s+-\(\)/g, '')) + '" >' + phones[i] + '[<span class="call">拨打</span>]<br />';
+            phones_str += '<a id="phone' + i + '" href="tel:' 
+                        + $.trim(phones[i].replace(/\s+-\(\)/g, '')) + '" >' 
+                        + phones[i] + '[<span class="call">拨打</span>]<br />';
           };
           $('#phone').html(phones_str);  
           $('#phone-block').show();
@@ -523,19 +554,22 @@
           var mobiles = j['mbl'].split(',');
           var mobiles_str = '';
           for (var i = mobiles.length - 1; i >= 0; i--) {
-            mobiles_str += '<a id="mobile' + i + '" href="tel:' + $.trim(mobiles[i].replace(/\s+-\(\)/g, '')) + '" >' + mobiles[i] + '[<span class="call">拨打</span>]<br />';
+            mobiles_str += '<a id="mobile' + i + '" href="tel:' 
+                        + $.trim(mobiles[i].replace(/\s+-\(\)/g, '')) + '" >' 
+                        + mobiles[i] + '[<span class="call">拨打</span>]<br />';
           };
           $('#cell').html(mobiles_str);  
           $('#cell-block').show();
         }
     }).fail(function(xhr, status, msg) { 
-        alert('网络不太给力，拿不到工作信息，请重试' + msg + status); 
+        alert('网络不太给力，拿不到工作信息，请重试'); 
     }); 
-
   }
 
   // load another 20 results if there exists 
   $('#more').click(function(){
+    // don't want it to scroll here 
+    lastViewedJid = '';
     var targetUrl = base + 'jobs?q=' + page.currentq + '&p=' + page.currentp;
 
     $.ajax({
@@ -543,7 +577,7 @@
         dataType: "jsonp", 
         jsonpCallback: "jcb", 
         cache: true,
-        timeout: 10000,
+        timeout: 15000,
     }).done(function(d) {
         // display results in the 2nd tab
         showJobs(d); 
@@ -552,8 +586,13 @@
     }); 
   });
 
+  // rule to make sure that at least one checkbox is checked
+  $.validator.addMethod("keywordtype", function(value, elem, param) {
+      return $(".work-group:checkbox:checked").length > 0;
+  }, "You must select at least one!");
+
   // the form validator
-	$("#search-form").validate({
+	var validator = $("#search").validate({
       errorPlacement: errPlace,
       submitHandler: searchJob,
       rules: { 
@@ -635,4 +674,9 @@
         },
       },
     });
+
+    $("#reset-btn").on("click", function(event){
+       validator.resetForm();
+       $('#city').hide();
+    })
 });

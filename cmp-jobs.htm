@@ -18,6 +18,7 @@
   <script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
   <script src="js/tab.js" type="text/javascript"></script>
   <script src="js/provinces.js" type="text/javascript"></script>
+  <script src="js/sources.js" type="text/javascript"></script>
   <script src="js/mobilecommon.js" type="text/javascript"></script>
   <script src="js/cmp-jobs.js" type="text/javascript"></script>
 </head>
@@ -30,13 +31,13 @@
   </header>
   <div class="ui-tab ui-tab-transparent">
     <ul class="ui-tab-items">
-      <li class="ui-tab-item ui-tab-item-current" data-name="search">
+      <li id="tab-search" class="ui-tab-item ui-tab-item-current" data-name="search">
         <a class="ui-tab-item-link">搜索</a>
       </li>
-      <li class="ui-tab-item" data-name="list">
+      <li id="tab-list" class="ui-tab-item" data-name="list">
         <a class="ui-tab-item-link">结果</a>
       </li>
-      <li class="ui-tab-item" data-name="detail">
+      <li id="tab-detail" class="ui-tab-item" data-name="detail">
         <a class="ui-tab-item-link">详情</a>
       </li>
     </ul>
@@ -87,62 +88,6 @@
   <div class="ui-tab-content fc mh300" data-name="list">
     <div class="no-detail hd">请先搜索名企招聘信息。</div>
     <ul class="list">
-      <li class="list-item">
-        <div>
-          <div class="list-title fb">omg 06 区域渠道经理 杭州</div>
-        </div>
-        <div class="fc">
-          <div class="fb">腾讯控股有限公司</div>
-        </div>
-        <div class="fc fb">
-          <div class="fl">本科以上</div>
-          <div class="fr">2014-08-28</div>
-          <div class="fr mgr10"></div>
-        </div>
-        <div class="fc"></div>
-      </li>
-      <li class="list-item">
-        <div>
-          <div class="list-title fb">一汽轿车股份有限公司求职申请表</div>
-        </div>
-        <div class="fc">
-          <div class="fb">一汽轿车股份有限公司</div>
-        </div>
-        <div class="fc fb">
-          <div class="fl">高中/中专以上</div>
-          <div class="fr">2014-08-28</div>
-          <div class="fr mgr10">民企</div>
-        </div>
-        <div class="fc"></div>
-      </li>
-      <li class="list-item">
-        <div>
-          <div class="list-title fb">催化剂公司博士后科研工作站招收简章</div>
-        </div>
-        <div class="fc">
-          <div class="fb">中国石油化工股份有限公司</div>
-        </div>
-        <div class="fc fb">
-          <div class="fl">大专以上</div>
-          <div class="fr">2014-08-28</div>
-          <div class="fr mgr10">民企·社招</div>
-        </div>
-        <div class="fc"></div>
-      </li>
-      <li class="list-item">
-        <div>
-          <div class="list-title fb">工程建设公司博士后科研工作站招收简章</div>
-        </div>
-        <div class="fc">
-          <div class="fb">中国石油化工股份有限公司</div>
-        </div>
-        <div class="fc fb">
-          <div class="fl">博士以上</div>
-          <div class="fr">2014-08-28</div>
-          <div class="fr mgr10">民企·社招</div>
-        </div>
-        <div class="fc"></div>
-      </li>
     </ul>
     <div id="more">显示更多结果...</div>
   </div>

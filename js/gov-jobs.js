@@ -1,6 +1,7 @@
-var currentPage = 0;
+﻿var currentPage = 0;
 var totalPage = 0;
 var cityCache = {};
+var lastViewedJid;
 // cache the city lists so it won't send another request
 var js_path = "js/";
 $(document).ready(function() {
@@ -57,9 +58,15 @@ $(document).ready(function() {
 	$('#more').click(loadData);
 
 	$('#search-btn').click(function() {
+		$('.ui-tab-item').click(tabHandler);
 		currentPage = 0;
 		loadData();
-		$('.ui-tab-item')[1].click();
+		lastViewedJid = null;
+		$('.ui-tab-item').first().next().click(function() {
+			if (lastViewedJid) {
+				view(lastViewedJid);
+			}
+		}).click();
 	});
 });
 
@@ -226,9 +233,9 @@ function showJobs(json) {
 	}
 
 	for (var i = 0; i < jobs.length; i++) {
-		var li = $('<li class="list-item"></li>');
-		var div = $('<div class="list-title fb" onclick="showJobDetail(this)"></div>').text(jobs[i]['t']);
-		div.data('u', jobs[i]['u']);
+		var li = $('<li class="list-item" onclick="showJobDetail(this)" id="job' + ((currentPage - 1) * 20 + i) + '"></li>');
+		var div = $('<div class="list-title fb"></div>').text(jobs[i]['t']);
+		li.data('u', jobs[i]['u']);
 		li.append($('<div></div>').append(div));
 		div = $('<div class="fc fb"></div>');
 		div.append('<div class="fl fb w55">' + getLocation(jobs[i]['l']) + '</div>');
@@ -255,17 +262,18 @@ function getJobTypeName(code) {
 }
 
 function showJobDetail(ele) {
-	var url = $(ele).data('u');
+	var url = $(ele).addClass('viewed').data('u');
+	lastViewedJid = $(ele).attr('id');
 	$('.src-btn').data('u', url);
 	$('.ui-tab-item')[2].click();
 	$('iframe').attr("src", url);
 }
 
 function goToSrcSite(ele) {
-	if ($(ele).data('u')){
+	if ($(ele).data('u')) {
 		window.open($(ele).data('u'));
-	}else{
-	
+	} else {
+
 	}
 }
 

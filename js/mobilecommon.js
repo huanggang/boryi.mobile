@@ -50,34 +50,73 @@ var errPlace = function(error, element) {
     element.parent().append(error);
 }
 
-
 /// Display the range of a json , such as company size range
 /// and salary range, etc.
 function showRange(range, lowstr, highstr, unit, range_concat){
-    var result = '';
-    range = range || [];
-    if (range.length == 2){
-        if (range[0] == null && range[1] > 0){
-            return range[1] + highstr;
-        } else if (range[0] > 0 && range[1] == null){
-            return range[0] + lowstr;
-        } else if (range[0] > 0 && range[1] > 0){
-            return range[0] + range_concat + range[1] + unit;
-        } 
-    }
-    return result;
+        var result = '';
+        var r = range || [];
+        if (r.length == 2){
+          if (r[0] == null && r[1] > 0){
+            return r[1] + highstr;
+          } else if (r[0] > 0 && r[1] == null){
+            return r[0] + lowstr;
+          } else if (r[0] > 0 && r[1] > 0){
+            return r[0] + range_concat + r[1] + unit;
+          } 
+        }
+        return result;
 }
 
-//load the cities by provinceid
-function loadCitiesByProvinceId(provinceid,async){
-    var url = '/js/city/cities_' + provinceid + '.js';
-    var cities;
-    $.ajax({
-        dataType: "script",
-        cache: true,
-        url: url,
-        async: async,}).done(function(){
-            cities = eval('cities_' + provinceid);
-        });
-    return cities;
+/// when come back to the job list from a job's detail page, we should 
+/// make the tab scroll to the latest checked job, since there might 
+/// be a very, very long job list
+function view(id){
+        if (id){
+                var top = $('#' + id).offset().top;
+                if (top){
+                        $('html, body').animate({
+                        scrollTop: top
+                        }, 500);
+                }       
+        }
+}
+
+function SetCitiesByProvinceId(provinceid,target,async){
+    
+    if (provinceid == null){
+        return;
+    }
+    if (provinceid == 10000){
+        // no cities if all country has been selected
+        setSelections([], target);
+        return;
+    }
+    async = async || true;
+
+    GetSetCityFunction()(provinceid,target,async);
+
+}
+
+function GetSetCityFunction(){
+    var cityCache = {};
+    return function (provinceid,target,async){
+        
+        if(cityCache.hasOwnProperty(provinceid)){
+            setSelections(cityCache[provinceid], target);
+        }
+        else{
+            var url = 'js/city/cities_' + provinceid + '.js';
+            console.log(url);
+            var cities;
+            $.ajax({
+                dataType: "script",
+                cache: true,
+                url: url,
+                async: async,}).done(function(){
+                    cities = eval('cities_' + provinceid);
+                    cityCache[provinceid] = cities;
+                    setSelections(cities,target);
+                });
+        }
+    }
 }

@@ -1,39 +1,11 @@
 $(document).ready(function(){
     //fill the province first,setSelections defined in mobilecommon.js
     setSelections(provinces, 'province', 10000);
-
-    var cityCache = {}; 
     
     $('#province').change(function(event) {
-	var provinceid = $("#province option:selected").val();
-	if (provinceid){
-	    if (cityCache.hasOwnProperty(provinceid)){
-	        setSelections(cityCache[provinceid], 'city');
-	    } else {
-	        setCities(provinceid, setCityOptions);
-	    }
-	}
+        var provinceid = $("#province option:selected").val();
+        SetCitiesByProvinceId(provinceid,'city');
     });
-
-    var setCityOptions = function (cities){
-        setSelections(cities, 'city');
-    }
-
-    ///  provinceid - the id of the province
-    ///  callback   - the method which needs city json as input  
-    function setCities(provinceid, callback, async) { 
-        if (provinceid == null){
-            return;
-        }
-        if (provinceid == 10000){
-  	    // no cities if all country has been selected
-  	    setSelections([], 'city');
-            return;
-        }
-        
-        cityCache[provinceid] = loadCitiesByProvinceId(provinceid);
-        callback(cityCache[provinceid]);
-    }
 
     /// get the workplace according to the country, province and city
     function getWorkPlace(){
@@ -52,23 +24,21 @@ $(document).ready(function(){
     }
 
     var page = []; // the page option
-    page.c = {};   // initialize the company cache
-    page.j = {};   // initialize the job cache
 
-    var base = 'http://www.boryi.com:8080/SearchJobs/';
+    var base = 'http://www.boryi.com:8080/SearchJobs2/';
 
-    var searchJob = function(form){ 
+    $("#search-btn").click(function(){ 
         var targetUrl = base + 'jobs?';
-        targetUrl += 's1='  + getWorkPlace();                       // 工作地点
+        targetUrl += 's1='  + getWorkPlace(); // 工作地点
         
         var cmptype = getSelected('cmp-type');
         if(cmptype>0){
-            targetUrl += '&s2=' + cmptype;               // 公司性质
+            targetUrl += '&s2=' + cmptype; // 公司性质
         }
 
         var keyword = $.trim($("#keyword").val());
         if (keyword.length > 0){
-            targetUrl += '&s3=' + keyword;                            // 关键字
+            targetUrl += '&s3=' + keyword; // 关键字
         }
         else
         {
@@ -77,7 +47,7 @@ $(document).ready(function(){
         
         var jobtype = getSelected('job-type');
         if (jobtype.length > 0){
-            targetUrl += '&s4=' + jobtype;                            // 工作类型
+            targetUrl += '&s4=' + jobtype; // 工作类型
         }
 
         $.ajax({
@@ -96,8 +66,7 @@ $(document).ready(function(){
                 page.currentp = 1;  // initialize the current page tracker mark
                 page.currentq = 0;  // initialize the current query id mark
                 page.total = 0;     // initialize the total result mark
-                page.c = {};        // initialize the company cache
-                page.j = {};        // initialize the job cache
+                page.j = [];     // initialize the job cache
                 
                 // enable the list and detail tab
                 $('#tab-list, #tab-detail').click(tabHandler);
@@ -108,7 +77,7 @@ $(document).ready(function(){
         }).fail(function(xhr, status, msg) {
             alert('网络不太给力，请重试');
         });
-    };
+    });
 
     /// display searching results 
     function showJobs(json){
@@ -130,71 +99,72 @@ $(document).ready(function(){
             $('#more').show();
         }
 
-        var companies = json['c'];
-        var jobs = json['j'];
 
-        for (var i = 0; i <= companies.length - 1; i++) {
-            var company = companies[i];
-
-            var cid = company.id.toString();
-            // u cannot directly use company.id as the key of cached data,
-            // we must conver it to a string first, like this
-
-            // check if this company has alreay been cached
-            var cachedCmp = $(page.c).data(cid);
-            if (cachedCmp === undefined){
-                // new company cached
-                $(page.c).data(cid, company);
-            }
-        }
+        // //cache the returned companies
+        // companies.forEach(function(ele,index){
+        //     var cid = ele.c;
+        //     if(!page.c.hasOwnProperty(cid)){
+        //         page.c[cid]=ele;
+        //     }
+        // });
 
         var li = $('<li />').addClass('list-item');
-        var fc = $('<div />').addClass('fc');
-        var fbc = fc.addClass('fb');
-        var fr = $('<div />').addClass('fr');
-        var fl = $('<div />').addClass('fl');
-        var cmp = $('<div />').addClass('fl fb w75');
+        var titleDiv = $('<div />').addClass('list-title fb');
+        var compDiv = $('<div />').addClass('fc').addClass('fb');
+        var miscDiv = $('<div />').addClass('fc').addClass('fb');
+        var bottomDiv = $('<div />').addClass('fc');
+        var div = $('<div />');
+        
+        json['c'].forEach(function(ele){
+            ele.t = b(ele.t);
+        });
 
-        var title_div = $('<div />').addClass('list-title fb');
+        var companies = json['c'];
+        var jobs = json['j'];
+        json['j'].forEach(function(ele,index){
+            json['c'].forEach(function(cele){
+                if(cele.c == ele.c){
+                    ele.cominfo = cele;
+                }
+            });
+            ele.e = educations[ele.e-1];
+            ele.r = k(ele.r);
+        });
 
-        for (var i = 0; i <= jobs.length - 1; i++) {
-            var job = jobs[i];
-            var jid = job['cid'] + '-' + job['jid'];
-            // check if this job has alreay been cached
-            var cachedJob = $(page.j).data(jid);
-            if (cachedJob === undefined){
-                // new company cached
-                $(page.j).data(jid, job);
-            }
-
-            var title = title_div.clone().append(job['ttl']).wrap('<div />');
+        json['j'].forEach(function(job,index){
+            // e:学历
+            // p:日期
+            // r:招聘类型
+            // t:标题
+            // cominfo.n:公司名
+            // cominfo.t:公司性质
 
             var list = li.clone();
-            list.append(title);
-            list.append(fc.clone()
-                        .append(cmp.clone().append(
-                            map_id_attr(companies, job['cid'], 'nm'))
-                               )
-                        .append(fr.clone().append(job['rfr']))
-                       );
+            list.append(titleDiv.clone().append(job.t));
+            list.append(compDiv.clone().append(job.cominfo.n));
+            list.append(miscDiv.clone()
+                        .append(div.clone().addClass("fl").append(job.e))
+                        .append(div.clone().addClass("fr").append(job.p))
+                        .append((job.cominfo.n || job.r) && div.clone().addClass("fr mgr10")
+                                .append((job.cominfo.t && job.r)? job.cominfo.t + "·" + job.r:job.cominfo.t||job.r))
+                       ).append(bottomDiv.clone());
+            $('ul.list').append(list.attr({'id':page.j.length + index}));
+        });
 
-            list.append(fbc.clone()
-                        .append(fl.clone().append(showRange(job['slr'], '元以上', '元以下', '元', '~')))
-                        .append(fr.clone().append('消息来源:' + sources[job['src'][0]['sid'] - 1]))
-                       ).append(fc.clone());
-            
-            $('ul.list').append(list.attr({'v':jid}));
-        }
+        Array.prototype.push.apply(page.j,json['j']);
 
-        $('.list .list-item').click(function(){
-            $(this).addClass('viewed');
+        // $('.list .list-item').click(function(){
+        //     $(this).addClass('viewed');
 
-            $('#tab-detail').trigger('click');
-            var v = $(this).addClass('viewed').attr('v').split('-');
+        //     $('#tab-detail').trigger('click');
+        //     var v = $(this).addClass('viewed').attr('v').split('-');
 
-            showJobDetails(v[0], v[1]);
-        })
+        //     showJobDetails(v[0], v[1]);
+        // })
     }
+    
+    function k(s){if(s==1){return"实习"}else{if(s==2){return"校招"}else{if(s==3){return"社招"}}}return""}
+    function b(s){if(s==1){return"国企"}else{if(s==2){return"外企"}else{if(s==3){return"民企"}else{if(s==4){return"其他"}}}}return""}
 
     /// display job details
     ///
@@ -453,89 +423,5 @@ $(document).ready(function(){
         }).fail(function(xhr, status, msg) { 
             alert('网络不太给力，请重试'); 
         }); 
-    });
-
-    // the form validator
-    $("#search-form").validate({
-        errorPlacement: errPlace,
-        submitHandler: searchJob,
-        rules: { 
-            keyword: { 
-          	maxlength: 40, 
-            }, 
-            salary: { 
-        	number: true,
-        	min: 500, 
-        	max: 999999, 
-            }, 
-            experience: {
-        	number: true,
-        	min:0,
-        	max:60,
-            },
-            age: {
-        	number: true,
-        	min:16,
-        	max:80,
-            },
-            height: {
-        	number: true,
-        	min:70,
-        	max:250,
-            },
-            'cmp-size-low': { 
-        	number: true,
-        	min: 10, 
-            }, 
-            'cmp-size-high': { 
-        	number: true,
-        	min: 10, 
-            }, 
-            'keyword-job': {
-		keywordtype: true,
-	    },
-            'keyword-cmp': {
-		keywordtype: true,
-	    },
-        }, 
-        messages: { 
-            keyword: { 
-                maxlength: "关键字不能超过40个字符", 
-            }, 
-            salary: { 
-                number: '请输入数字',
-                min: "月薪不能小于500元", 
-                max: "月薪不能大于999999元", 
-            }, 
-            experience: {
-                number: '请输入数字',
-                min: "工作经验不能小于0年", 
-                max: "工作经验不能大于60年", 
-            },
-            age: {
-                number: '请输入数字',
-                min: "年龄不能小于16", 
-                max: "年龄不能大于80", 
-            },
-            height: {
-                number: '请输入数字',
-                min: "身高不能低于70cm", 
-                max: "身高不能超过250cm", 
-            },
-            'cmp-size-low': { 
-                number: '请输入数字',
-                min: "公司规模不能少于10人", 
-            },
-            'cmp-size-high': { 
-                number: '请输入数字',
-                min: "公司规模不能少于10人", 
-            },
-            'keyword-job': {
-                keywordtype: '职位名公司名至少选择一个',
-            },
-            'keyword-cmp': {
-                keywordtype: '职位名公司名至少选择一个',
-            },
-        },
     });
 });
