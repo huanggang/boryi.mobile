@@ -1,7 +1,7 @@
 $(document).ready(function(){
     //fill the province first,setSelections defined in mobilecommon.js
     setSelections(provinces, 'province', 10000);
-    
+    $('#city').hide();
     $('#province').change(function(event) {
         var provinceid = $("#province option:selected").val();
         setCitiesByProvinceId(provinceid,'city');
@@ -25,6 +25,7 @@ $(document).ready(function(){
 
     var page = []; // the page option
     var resultClicked = false;
+    var lastViewedJid;
     var base = 'http://www.boryi.com:8080/SearchJobs2/';
 
     $("#search-btn").click(function(){ 
@@ -67,11 +68,17 @@ $(document).ready(function(){
                 page.currentq = 0;  // initialize the current query id mark
                 page.total = 0;     // initialize the total result mark
                 page.j = [];     // initialize the job cache
-                
+                lastViewedJid = null;
                 // enable the list and detail tab
-                $('#tab-list, #tab-detail').click(tabHandler);
+                $('#tab-list, #tab-detail').bind("click",tabHandler);
+                $('#tab-list').bind("click",function(){
+                    if (lastViewedJid){
+                        view(lastViewedJid);  
+                    }
+                });
 
                 // display results in the list tab 
+                $('#tab-list').trigger('click');
                 showJobs(d);          
             }
         }).fail(function(xhr, status, msg) {
@@ -81,7 +88,6 @@ $(document).ready(function(){
 
     /// display searching results 
     function showJobs(json){
-        $('#tab-list').trigger('click');
         
         if (page.currentq == 0){
             // to get the query id if there exists
@@ -121,10 +127,10 @@ $(document).ready(function(){
             list.append(miscDiv.clone()
                         .append(div.clone().addClass("fl").append(job.e))
                         .append(div.clone().addClass("fr").append(job.p))
-                        .append((job.cominfo.n || job.r) && div.clone().addClass("fr mgr10")
+                        .append((job.cominfo.t || job.r) && div.clone().addClass("fr mgr10")
                                 .append((job.cominfo.t && job.r)? job.cominfo.t + "·" + job.r:job.cominfo.t||job.r))
                        ).append(bottomDiv.clone());
-            $('ul.list').append(list.attr({'id':page.j.length + index}));
+            $('ul.list').append(list.attr({id:"li" + (page.j.length + index)}));
         });
 
         Array.prototype.push.apply(page.j,json['j']);
@@ -137,6 +143,7 @@ $(document).ready(function(){
             }
             $('#tab-detail').trigger('click');
             var id = $(this).addClass('viewed').attr('id');
+            lastViewedJid = id;
             showJobDetails(id);
         })
     }
@@ -163,8 +170,8 @@ $(document).ready(function(){
     function b(s){if(s==1){return"国企"}else{if(s==2){return"外企"}else{if(s==3){return"民企"}else{if(s==4){return"其他"}}}}return""}
 
     function showJobDetails(listid){
-        $('.detail-top .src-btn').wrap("<a target='_blank' href='" + page.j[listid].u + "'></a>");
-        $('.ui-tab-content iframe').attr({src: page.j[listid].u});
+        $('.detail-top .src-btn').wrap("<a target='_blank' href='" + page.j[listid.substring(2)].u + "'></a>");
+        $('.ui-tab-content iframe').attr({src: page.j[listid.substring(2)].u});
     }
 
     // load another 20 results if there exists 
