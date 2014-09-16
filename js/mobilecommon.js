@@ -76,12 +76,12 @@ function view(id){
                 if (top){
                         $('html, body').animate({
                         scrollTop: top
-                        }, 500);
+                        }, 0);
                 }       
         }
 }
 
-function SetCitiesByProvinceId(provinceid,target,async){
+function setCitiesByProvinceId(provinceid,target,async){
     
     if (provinceid == null){
         return;
@@ -93,11 +93,11 @@ function SetCitiesByProvinceId(provinceid,target,async){
     }
     async = async || true;
 
-    GetSetCityFunction()(provinceid,target,async);
+    getSetCityFunction()(provinceid,target,async);
 
 }
 
-function GetSetCityFunction(){
+function getSetCityFunction(){
     var cityCache = {};
     return function (provinceid,target,async){
         
