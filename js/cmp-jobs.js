@@ -83,6 +83,9 @@ $(document).ready(function(){
                         view(lastViewedJid);  
                     }
                 });
+                $('#tab-detail').bind('click', function(){
+                    window.scrollTo(0, 0);
+                });
 
                 // display results in the list tab 
                 $('#tab-list').trigger('click');
