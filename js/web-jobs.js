@@ -349,15 +349,15 @@
     if (age){
       var age_str = '';
       var male_age = showRange(age.slice(0, 2), '岁以上', '岁以下', '岁', ' - ');
-      var femail_age = showRange(age.slice(2), '岁以上', '岁以下', '岁', ' - ');
+      var female_age = showRange(age.slice(2), '岁以上', '岁以下', '岁', ' - ');
       if (male_age){
         age_str += '男：' + male_age;  
       }
-      if (femail_age){
+      if (female_age){
         if (male_age){
           age_str += ', ';
         }
-        age_str += '女：' + femail_age;  
+        age_str += '女：' + female_age;  
       }
       
       rqs += age_str + '&middot; ';
