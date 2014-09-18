@@ -437,3 +437,6 @@ form label.error {
 #cell a{
   color: #7a7e88;
 }
+.disabled{
+  color:#b2b2b2;
+}

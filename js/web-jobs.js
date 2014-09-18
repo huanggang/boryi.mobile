@@ -110,6 +110,7 @@
 
   var lastViewedJid = '';
   var base = 'http://www.boryi.com:8080/SearchJobs/';
+  var jobUrlForTotal = "";
 
   var searchJob = function(form){ 
     var targetUrl = base + 'jobs?';
@@ -171,6 +172,8 @@
     if (experience.length > 0){
       targetUrl += '&f6=' + experience;                         // 工作经验
     }
+
+    jobUrlForTotal = targetUrl;
 
     $.ajax({
         url: targetUrl,
@@ -236,6 +239,46 @@
 
     var companies = json['c'];
     var jobs = json['j'];
+
+    if (jobs.length == 20 && page.total == 0)
+    {
+      // probably has more than 20 items, try to collect the total
+      $('#more').html('更多结果正在查询中...').addClass('disabled').show().unbind('click');
+      
+      if (jobUrlForTotal.length > 0){
+
+        console.log(jobUrlForTotal);
+
+        var queryTotal;
+        var totalQuerier = setInterval(function (){
+          var targetUrl = jobUrlForTotal.replace("/jobs?", "/total?");
+
+          $.ajax({
+              url: targetUrl,
+              dataType: "jsonp", 
+              jsonpCallback: "_ttl", 
+              cache: true,
+              timeout: 15000, 
+          }).done(function(d) {
+            if (d.t > 0){
+              var t = d['t'];
+              page.total = t;
+              console.log('querying...');
+
+              $('#more').html('显示更多结果...').removeClass('disabled').show().bind('click', getMoreJobs);
+              clearInterval(totalQuerier); 
+              console.log('t has been got - ' + t);
+            } else {
+              console.log('not got t, keep going...');
+            }
+          }).fail(function(xhr, status, msg) {
+              // shouldn't alert() anything, or it will interrup the iteration
+              // alert('网络不太给力，请重试');
+          });  
+        }, 5000);
+      }
+
+    }
 
     for (var i = 0; i <= companies.length - 1; i++) {
       var company = companies[i];
@@ -567,7 +610,9 @@
   }
 
   // load another 20 results if there exists 
-  $('#more').click(function(){
+  $('#more').click(getMoreJobs);
+
+  var getMoreJobs = function(){
     // don't want it to scroll here 
     lastViewedJid = '';
     var targetUrl = base + 'jobs?q=' + page.currentq + '&p=' + page.currentp;
@@ -584,12 +629,12 @@
     }).fail(function(xhr, status, msg) { 
         alert('网络不太给力，请重试'); 
     }); 
-  });
+  }
 
   // rule to make sure that at least one checkbox is checked
   $.validator.addMethod("keywordtype", function(value, elem, param) {
       return $(".work-group:checkbox:checked").length > 0;
-  }, "You must select at least one!");
+  }, "");
 
   // the form validator
 	var validator = $("#search").validate({
@@ -636,7 +681,7 @@
       }, 
       messages: { 
         keyword: { 
-            maxlength: "关键字不能超过40个字符", 
+          maxlength: "关键字不能超过40个字符", 
         }, 
         salary: { 
           number: '请输入数字',
@@ -644,17 +689,17 @@
           max: "月薪不能大于999999元", 
         }, 
         experience: {
-        number: '请输入数字',
+          number: '请输入数字',
           min: "工作经验不能小于0年", 
           max: "工作经验不能大于60年", 
         },
         age: {
-        number: '请输入数字',
+          number: '请输入数字',
           min: "年龄不能小于16", 
           max: "年龄不能大于80", 
         },
         height: {
-        number: '请输入数字',
+          number: '请输入数字',
           min: "身高不能低于70cm", 
           max: "身高不能超过250cm", 
         },
@@ -667,16 +712,16 @@
           min: "公司规模不能少于10人", 
         },
         'keyword-job': {
-           keywordtype: '职位名公司名至少选择一个',
+          keywordtype: '职位名公司名至少选择一个',
         },
         'keyword-cmp': {
-           keywordtype: '职位名公司名至少选择一个',
+          keywordtype: '职位名公司名至少选择一个',
         },
       },
     });
 
     $("#reset-btn").on("click", function(event){
-       validator.resetForm();
-       $('#city').hide();
+      validator.resetForm();
+      $('#city').hide();
     })
 });
