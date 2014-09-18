@@ -23,11 +23,11 @@ $(document).ready(function(){
         }
     }
     $('#reset-btn').click(function(){
-        setSelections(provinces, 'province', 10000);
+        //        setSelections(provinces, 'province', 10000);
         $('#city').hide().empty();
-        $('#job-type').val("0");
-        $('#cmp-type').val("0");
-        $('#keyword').val("");
+        // $('#job-type').val("0");
+        // $('#cmp-type').val("0");
+        // $('#keyword').val("");
     });
     
     var page = []; // the page option
@@ -35,7 +35,7 @@ $(document).ready(function(){
     var lastViewedJid;
     var base = 'http://www.boryi.com:8080/SearchJobs2/';
 
-    $("#search-btn").click(function(){ 
+    function searchJob(){ 
         var targetUrl = base + 'jobs?';
         targetUrl += 's1='  + getWorkPlace(); // 工作地点
         
@@ -47,10 +47,6 @@ $(document).ready(function(){
         var keyword = $.trim($("#keyword").val());
         if (keyword.length > 0){
             targetUrl += '&s3=' + keyword; // 关键字
-        }
-        else
-        {
-            return; //don't send request if the keyword was not inputed.
         }
         
         var jobtype = getSelected('job-type');
@@ -94,7 +90,7 @@ $(document).ready(function(){
         }).fail(function(xhr, status, msg) {
             alert('网络不太给力，请重试');
         });
-    });
+    }
 
     /// display searching results 
     function showJobs(json){
@@ -176,8 +172,32 @@ $(document).ready(function(){
         });
     }
     
-    function k(s){if(s==1){return"实习"}else{if(s==2){return"校招"}else{if(s==3){return"社招"}}}return""}
-    function b(s){if(s==1){return"国企"}else{if(s==2){return"外企"}else{if(s==3){return"民企"}else{if(s==4){return"其他"}}}}return""}
+    function k(s){
+        switch(s){
+        case 1:
+            return"实习";
+        case 2:
+            return"校招";
+        case 3:
+            return"社招";
+        default:
+            return "";
+        }
+    }
+    function b(s){
+        switch(s){
+        case 1:
+            return"国企";
+        case 2:
+            return"外企";
+        case 3:
+            return"民企";
+        case 4:
+            return"其他";
+        default:
+            return "";
+        }
+    }
 
     function showJobDetails(listid){
         $('.detail-top a').attr("href",page.j[listid.substring(2)].u);
@@ -200,5 +220,20 @@ $(document).ready(function(){
         }).fail(function(xhr, status, msg) { 
             alert('网络不太给力，请重试'); 
         }); 
+    });
+
+    $("#search").validate({
+        errorPlacement: errPlace,
+        submitHandler: searchJob,
+        rules: { 
+            keyword: { 
+                maxlength: 40, 
+            }, 
+        }, 
+        messages: { 
+            keyword: { 
+                maxlength: "关键字不能超过40个字符",
+            }, 
+        },
     });
 });

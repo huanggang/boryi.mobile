@@ -16,6 +16,7 @@
   <link href="css/tab.css" rel="stylesheet" type="text/css"/>
   <link href="css/base.css" rel="stylesheet" type="text/css"/>
   <script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
+  <script src="js/jquery.validate.min.js" type="text/javascript"></script>
   <script src="js/tab.js" type="text/javascript"></script>
   <script src="js/provinces.js" type="text/javascript"></script>
   <script src="js/sources.js" type="text/javascript"></script>
@@ -43,47 +44,49 @@
     </ul>
   </div>
   <div class="ui-tab-content ui-tab-content-current fc" data-name="search">
-    <div class="detail lh20">
-      <div>
-        <div class="search-label fl">工作地：</div>
-        <select id="province">
-        </select>
-        <select id="city" class="w30 hd mxw120">
-        </select>
-        <div class="fc"></div>
+    <form id="search" >
+      <div class="detail lh20">
+        <div>
+          <div class="search-label fl">工作地：</div>
+          <select id="province">
+          </select>
+          <select id="city" class="w30 hd mxw120">
+          </select>
+          <div class="fc"></div>
+        </div>
+        <div>
+          <div class="search-label fl">招聘性质：</div>
+          <select id="job-type">
+            <option value="0">不限</option>
+            <option value="1">实习</option>
+            <option value="2">校招</option>
+            <option value="3">社招</option>
+          </select>
+          <div class="fc"></div>
+        </div>
+        <div>
+          <div class="search-label fl">关键词：</div>
+          <input type="text" name="keyword" class="w70" id="keyword"/>
+          <div class="fc"></div>
+          <div class="fc"></div>
+        </div>
+        <div>
+          <div class="search-label fl">公司性质：</div>
+          <select id="cmp-type">
+            <option value="0">不限</option>
+            <option value="1">国企</option>
+            <option value="2">外企</option>
+            <option value="3">民企</option>
+            <option value="4">其他</option>
+          </select>
+          <div class="fc"></div>
+        </div>
+        <div class="mgt10 txtc">
+          <input type="reset" name="reset-btn" value="重置" class="mgr20" id="reset-btn" />
+          <input type="submit" name="search-btn" value="搜索" id="search-btn" />
+        </div>
       </div>
-      <div>
-        <div class="search-label fl">招聘性质：</div>
-        <select id="job-type">
-          <option value="0">不限</option>
-          <option value="1">实习</option>
-          <option value="2">校招</option>
-          <option value="3">社招</option>
-        </select>
-        <div class="fc"></div>
-      </div>
-      <div>
-        <div class="search-label fl">关键词：</div>
-        <input type="text" name="keyword" class="w70" id="keyword">
-        <div class="fc"></div>
-        <div class="fc"></div>
-      </div>
-      <div>
-        <div class="search-label fl">公司性质：</div>
-        <select id="cmp-type">
-          <option value="0">不限</option>
-          <option value="1">国企</option>
-          <option value="2">外企</option>
-          <option value="3">民企</option>
-          <option value="4">其他</option>
-        </select>
-        <div class="fc"></div>
-      </div>
-      <div class="mgt10 txtc">
-        <input type="button" name="reset-btn" value="重置" class="mgr20" id="reset-btn">
-        <input type="button" name="search-btn" value="搜索" id="search-btn">
-      </div>
-    </div>
+    </form>
   </div>
   <div class="ui-tab-content fc mh300" data-name="list">
     <div class="no-detail hd">请先搜索名企招聘信息。</div>
