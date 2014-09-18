@@ -108,6 +108,8 @@
   page.c = {};   // initialize the company cache
   page.j = {};   // initialize the job cache
 
+  var tout = 15000; // the default timeout value
+
   var lastViewedJid = '';
   var base = 'http://www.boryi.com:8080/SearchJobs/';
   var jobUrlForTotal = "";
@@ -180,7 +182,7 @@
         dataType: "jsonp", 
         jsonpCallback: "_jobs", 
         cache: true,
-        timeout: 15000, 
+        timeout: tout, 
     }).done(function(d) {
         if (d.t == 0){
           alert('没有找到符合条件的结果，请修改查询条件重试');          
@@ -246,38 +248,42 @@
       $('#more').html('更多结果正在查询中...').addClass('disabled').show().unbind('click');
       
       if (jobUrlForTotal.length > 0){
+        var maxRetry = 3;
+        var targetUrl = jobUrlForTotal.replace("/jobs?", "/total?");
 
-        console.log(jobUrlForTotal);
 
-        var queryTotal;
-        var totalQuerier = setInterval(function (){
-          var targetUrl = jobUrlForTotal.replace("/jobs?", "/total?");
+        var getTotalNum = function(){
+
+          console.log('start to query t...');
 
           $.ajax({
               url: targetUrl,
               dataType: "jsonp", 
-              jsonpCallback: "_ttl", 
+              jsonpCallback: "_ttl" + Date.now(), 
               cache: true,
-              timeout: 15000, 
+              timeout: tout, 
           }).done(function(d) {
             if (d.t > 0){
               var t = d['t'];
               page.total = t;
-              console.log('querying...');
 
-              $('#more').html('显示更多结果...').removeClass('disabled').show().bind('click', getMoreJobs);
-              clearInterval(totalQuerier); 
-              console.log('t has been got - ' + t);
-            } else {
-              console.log('not got t, keep going...');
+              $('#more').html('显示更多结果...').removeClass('disabled')
+                .show().bind('click', getMoreJobs);
             }
           }).fail(function(xhr, status, msg) {
               // shouldn't alert() anything, or it will interrup the iteration
-              // alert('网络不太给力，请重试');
+              console.log('failed to get t, retrying...' + maxRetry);
+              if (maxRetry-- > 0){
+                setTimeout(getTotalNum, 5000);
+              } else {
+                $('#more').html('显示更多结果...').removeClass('disabled')
+                .show().bind('click', getMoreJobs);;
+              }
           });  
-        }, 5000);
-      }
+        }
+        getTotalNum();
 
+      }
     }
 
     for (var i = 0; i <= companies.length - 1; i++) {
@@ -548,7 +554,7 @@
         dataType: "jsonp", 
         jsonpCallback: "_job", 
         cache: true,
-        timeout: 15000,
+        timeout: tout,
     }).done(function(j) {
         $('#postdate').html(j['ffd']); 
 
@@ -622,7 +628,7 @@
         dataType: "jsonp", 
         jsonpCallback: "jcb", 
         cache: true,
-        timeout: 15000,
+        timeout: tout,
     }).done(function(d) {
         // display results in the 2nd tab
         showJobs(d); 
