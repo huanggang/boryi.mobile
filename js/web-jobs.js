@@ -235,12 +235,11 @@
     } 
     if ((page.total - 1) / 20 < page.currentp++){
       $('#more').hide();
-
-      if (page.currentp == 21){
-        tooMuchResult.show();
-      }
     } else {
       $('#more').show();
+    }
+    if (page.currentp == 21){
+      tooMuchResult.show();
     }
 
 
