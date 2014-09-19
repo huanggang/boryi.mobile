@@ -22,15 +22,17 @@ $(document).ready(function() {
 		});
 		return $.ajax(options);
 	};
-
+	var setCityOptions = function(cities) {
+		setSelections(cities, 'city', null, true);
+	}
 	// cache the city lists so it won't send another request
 	$('#province').change(function(event) {
 		var provinceid = $("#province option:selected").val();
 		if (provinceid) {
 			if (cityCache.hasOwnProperty(provinceid)) {
-				setSelections(cityCache[provinceid], 'city');
+				setSelections(cityCache[provinceid], 'city', null, true);
 			} else {
-				setCitiesByProvinceId(provinceid, 'city');
+				setCities(provinceid, setCityOptions);
 			}
 		}
 	});
@@ -53,12 +55,43 @@ $(document).ready(function() {
 	});
 });
 
+/// assing options to the 'city' select input
+///
+///  provinceid - the id of the province
+///  callback   - the method which needs city json as input
+function setCities(provinceid, callback, async) {
+	if (provinceid == null) {
+		return;
+	}
+	if (provinceid == 10000) {
+		// no cities if all country has been selected
+		setSelections([], 'city');
+		return;
+	}
+
+	if (async == undefined) {
+		async = true;
+	}
+
+	var docUrl = document.URL;
+	var js_path = docUrl.substring(0, docUrl.lastIndexOf('/')) + '/js/';
+
+	var url = js_path + 'city/cities_' + provinceid + '.js';
+	$.cachedScript(url, {
+		async : async
+	}).done(function(data, textStatus) {
+		var cities = eval('cities_' + provinceid);
+		cityCache[provinceid] = cities;
+		callback(cities);
+	});
+}
+
 function loadData() {
 	if (loading) {
 		return;
 	}
 	loading = true;
-	$('#more').html('数据加载中...');
+	$('#more').html('数据加载中...').show();
 	var d;
 	if (currentPage == 0) {
 		$('.list').empty();
@@ -204,7 +237,7 @@ function checkTotal(json) {
 
 	if (jobs.length == 20 && !json['t']) {
 		// probably has more than 20 items, try to collect the total
-		$('#more').html('更多结果正在查询中...');
+		$('#more').html('更多结果正在查询中...').show();
 
 		var maxRetry = 3;
 		var targetUrl = 'http://www.boryi.com:8080/SearchJobs1/total?s1=' + getWorkPlace() + '&s2=' + $('#cmp-type').val();
@@ -221,7 +254,7 @@ function checkTotal(json) {
 				loading = false;
 				if (d.t > 0) {
 					totalPage = Math.floor((d['t'] + 19) / 20);
-					$('#more').html('显示更多结果...');
+					$('#more').html('显示更多结果...').show();
 				}
 			}).fail(function(xhr, status, msg) {
 				loading = false;
@@ -230,7 +263,7 @@ function checkTotal(json) {
 				if (maxRetry-- > 0) {
 					setTimeout(getTotalNum, 5000);
 				} else {
-					$('#more').html('显示更多结果...');
+					$('#more').html('显示更多结果...').show();
 				}
 			});
 		}
