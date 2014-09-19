@@ -6,6 +6,27 @@ $(document).ready(function(){
         var provinceid = $("#province option:selected").val();
         setCitiesByProvinceId(provinceid,'city');
     });
+    // load another 20 results if there exists 
+    $('#more').click(getMoreJobs);
+
+    $("#search").validate({
+        errorPlacement: errPlace,
+        submitHandler: searchJob,
+        rules: { 
+            keyword: { 
+                maxlength: 40, 
+            }, 
+        }, 
+        messages: { 
+            keyword: { 
+                maxlength: "关键字不能超过40个字符",
+            }, 
+        },
+    });
+
+    $('#reset-btn').click(function(){
+        $('#city').hide().empty();
+    });
 
     /// get the workplace according to the country, province and city
     function getWorkPlace(){
@@ -22,14 +43,6 @@ $(document).ready(function(){
             }
         }
     }
-    $('#reset-btn').click(function(){
-        //        setSelections(provinces, 'province', 10000);
-        $('#city').hide().empty();
-        // $('#job-type').val("0");
-        // $('#cmp-type').val("0");
-        // $('#keyword').val("");
-    });
-    
     var page = {}; // the page option
     var resultClicked = false;
     var lastViewedJid;
@@ -77,14 +90,11 @@ $(document).ready(function(){
                 page.j = [];     // initialize the job cache
                 lastViewedJid = null;
                 // enable the list and detail tab
-                $('#tab-list, #tab-detail').bind("click",tabHandler);
+                $('#tab-list').bind("click",tabHandler);
                 $('#tab-list').bind("click",function(){
                     if (lastViewedJid){
                         view(lastViewedJid);  
                     }
-                });
-                $('#tab-detail').bind('click', function(){
-                    window.scrollTo(0, 0);
                 });
 
                 // display results in the list tab 
@@ -131,6 +141,11 @@ $(document).ready(function(){
                 $('#details-result').removeClass("hd");
                 $('.no-detail').addClass("hd");
             }
+            $('#tab-detail').bind("click",tabHandler);
+            $('#tab-detail').bind('click', function(){
+                window.scrollTo(0, 0);
+            });
+            
             $('#tab-detail').trigger('click');
             var id = $(this).addClass('viewed').attr('id');
             lastViewedJid = id;
@@ -140,14 +155,15 @@ $(document).ready(function(){
         if (page.total == 0 && page.j.length == 20)
         {
             // probably has more than 20 items, try to collect the total
-            getTotalNumByRetry(firstPageUrl,3,5);
+            getTotalNumByRetry(firstPageUrl,3,5000);
         }
     }
-    
+
+    //url is the url for first page.
     function getTotalNumByRetry(url,maxRetry,lag){
-        
-        $('#more').html('更多结果正在查询中...').addClass('disabled').show().unbind('click');
-        
+        this.queryingDiv || (queryingDiv = $('#more').clone(false).html('更多结果正在查询中...').show());
+        queryingDiv.appendTo($('#more').parent());
+
         if (url.length > 0){
             var targetUrl = url.replace("/jobs?", "/total?");
             function getTotalNum(){
@@ -164,9 +180,8 @@ $(document).ready(function(){
                     if (d.t > 0){
                         var t = d.t
                         page.total = t;
-
-                        $('#more').html('显示更多结果...').removeClass('disabled')
-                            .show().bind('click', getMoreJobs);
+                        $('#more').show();
+                        queryingDiv.remove();
                     }
                 }).fail(function(xhr, status, msg) {
                     // shouldn't alert() anything, or it will interrup the iteration
@@ -174,8 +189,8 @@ $(document).ready(function(){
                     if (maxRetry-- > 0){
                         setTimeout(getTotalNum, lag);
                     } else {
-                        $('#more').html('显示更多结果...').removeClass('disabled')
-                            .show().bind('click', getMoreJobs);
+                        $('#more').show();
+                        queryingDiv.remove();
                     }
                 });  
             }
@@ -240,8 +255,6 @@ $(document).ready(function(){
         $('.ui-tab-content iframe').attr({src: page.j[listid.substring(2)].u});
     }
 
-    // load another 20 results if there exists 
-    $('#more').click(getMoreJobs);
 
     function getMoreJobs(){
         var targetUrl = base + 'jobs?q=' + page.currentq + '&p=' + page.currentp;
@@ -260,18 +273,4 @@ $(document).ready(function(){
         }); 
     }
 
-    $("#search").validate({
-        errorPlacement: errPlace,
-        submitHandler: searchJob,
-        rules: { 
-            keyword: { 
-                maxlength: 40, 
-            }, 
-        }, 
-        messages: { 
-            keyword: { 
-                maxlength: "关键字不能超过40个字符",
-            }, 
-        },
-    });
 });
