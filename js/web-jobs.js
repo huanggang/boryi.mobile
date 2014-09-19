@@ -176,6 +176,7 @@
     }
 
     jobUrlForTotal = targetUrl;
+    tooMuchResult.hide();
 
     $.ajax({
         url: targetUrl,
@@ -232,12 +233,15 @@
       // to get the total if there exists
       page.total = json['t'] || 0;
     } 
-
     if ((page.total - 1) / 20 < page.currentp++){
       $('#more').hide();
     } else {
       $('#more').show();
     }
+    if (page.currentp == 21){
+      tooMuchResult.show();
+    }
+
 
     var companies = json['c'];
     var jobs = json['j'];
@@ -281,8 +285,8 @@
               }
           });  
         }
-        getTotalNum();
 
+        setTimeout(getTotalNum, 5000);
       }
     }
 
