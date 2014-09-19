@@ -34,7 +34,7 @@ $(document).ready(function(){
     var resultClicked = false;
     var lastViewedJid;
     var base = 'http://www.boryi.com:8080/SearchJobs2/';
-
+    var firstPageUrl = "";
 
     function searchJob(){ 
         var targetUrl = base + 'jobs?';
@@ -55,6 +55,8 @@ $(document).ready(function(){
             targetUrl += '&s4=' + jobtype; // 工作类型
         }
 
+        firstPageUrl = targetUrl;
+        
         $.ajax({
             url: targetUrl,
             dataType: "jsonp", 
@@ -110,14 +112,15 @@ $(document).ready(function(){
         
         if ((page.total - 1) / 20 < page.currentp++){
             $('#more').hide();
-        } else if(page.currentp == 21){
+        }
+        else if(page.currentp == 21){
             tooMuchResult.show();
             $('#more').hide();
         }
         else {
             $('#more').show();
         }
-      
+        
         parseJobData(json);
         fillJobData(json['j']);
         Array.prototype.push.apply(page.j,json['j']);
@@ -133,6 +136,51 @@ $(document).ready(function(){
             lastViewedJid = id;
             showJobDetails(id);
         })
+
+        if (page.total == 0 && page.j.length == 20)
+        {
+            // probably has more than 20 items, try to collect the total
+            getTotalNumByRetry(firstPageUrl,3,5);
+        }
+    }
+    
+    function getTotalNumByRetry(url,maxRetry,lag){
+        
+        $('#more').html('更多结果正在查询中...').addClass('disabled').show().unbind('click');
+        
+        if (url.length > 0){
+            var targetUrl = url.replace("/jobs?", "/total?");
+            function getTotalNum(){
+
+                console.log('start to query t...');
+
+                $.ajax({
+                    url: targetUrl,
+                    dataType: "jsonp", 
+                    jsonpCallback: "_ttl" + Date.now(), 
+                    cache: true,
+                    timeout: 5000,
+                }).done(function(d) {
+                    if (d.t > 0){
+                        var t = d.t
+                        page.total = t;
+
+                        $('#more').html('显示更多结果...').removeClass('disabled')
+                            .show().bind('click', getMoreJobs);
+                    }
+                }).fail(function(xhr, status, msg) {
+                    // shouldn't alert() anything, or it will interrup the iteration
+                    console.log('failed to get t, retrying...' + maxRetry);
+                    if (maxRetry-- > 0){
+                        setTimeout(getTotalNum, lag);
+                    } else {
+                        $('#more').html('显示更多结果...').removeClass('disabled')
+                            .show().bind('click', getMoreJobs);
+                    }
+                });  
+            }
+            setTimeout(getTotalNum,lag);
+        }
     }
 
     function fillJobData(jobdata){
@@ -193,7 +241,9 @@ $(document).ready(function(){
     }
 
     // load another 20 results if there exists 
-    $('#more').click(function(){
+    $('#more').click(getMoreJobs);
+
+    function getMoreJobs(){
         var targetUrl = base + 'jobs?q=' + page.currentq + '&p=' + page.currentp;
 
         $.ajax({
@@ -208,7 +258,7 @@ $(document).ready(function(){
         }).fail(function(xhr, status, msg) { 
             alert('网络不太给力，请重试'); 
         }); 
-    });
+    }
 
     $("#search").validate({
         errorPlacement: errPlace,
