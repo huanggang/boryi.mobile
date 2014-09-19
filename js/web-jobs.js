@@ -233,7 +233,7 @@
       page.total = json['t'] || 0;
     } 
 
-    if ((page.total - 1) / 20 <= page.currentp++){
+    if ((page.total - 1) / 20 < page.currentp++){
       $('#more').hide();
     } else {
       $('#more').show();
@@ -277,7 +277,7 @@
                 setTimeout(getTotalNum, 5000);
               } else {
                 $('#more').html('显示更多结果...').removeClass('disabled')
-                .show().bind('click', getMoreJobs);;
+                  .show().bind('click', getMoreJobs);;
               }
           });  
         }
@@ -615,9 +615,6 @@
     }); 
   }
 
-  // load another 20 results if there exists 
-  $('#more').click(getMoreJobs);
-
   var getMoreJobs = function(){
     // don't want it to scroll here 
     lastViewedJid = '';
@@ -636,6 +633,9 @@
         alert('网络不太给力，请重试'); 
     }); 
   }
+
+  // load another 20 results if there exists 
+  $('#more').bind('click', getMoreJobs);
 
   // rule to make sure that at least one checkbox is checked
   $.validator.addMethod("keywordtype", function(value, elem, param) {
