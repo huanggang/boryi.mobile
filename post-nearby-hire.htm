@@ -15,27 +15,33 @@
   <title>伯益搜工作&dash;&dash;发布周边包工</title>
   <link href="css/base.css" rel="stylesheet" type="text/css"/>
   <script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
+  <script src="js/jquery.validate.min.js" type="text/javascript"></script>
+  <script src="js/errorcodes.js" type="text/javascript"></script>
   <script src="js/post-nearby-hire.js" type="text/javascript"></script>
 </head>
 <body class="lh20">
+  <form id="setForm">
+  <input type="hidden" name="openid" id="openid">
+  <input type="hidden" name="key" id="key">
   <div class="detail-top">
     <div><label>工种名：</label><input type="text" name="titles" class="w75" id="titles"></div>
-    <div><label>截止日：</label><input type="date" name="end" class="w75" id="end"></div>
-    <div><label>工作地：</label><input type="date" name="location" class="w75" id="location"></div>
-    <div><label>包工期：</label><input type="number" min="1" max="1000" name="duration" class="w75" id="duration"></div>
+    <div><label>截止日：</label><input type="text" name="end" class="w75" id="end"></div>
+    <div><label>工作地：</label><input type="text" name="location" class="w75" id="location"></div>
+    <div><label>包工期：</label><input type="text" name="duration" class="w70" id="duration">天</div>
   </div>
   <div class="detail-label">包工描述</div>
   <div class="detail">
-    <textarea rows="5" class="w95" id="requirement"></textarea>
+    <textarea rows="5" class="w95" id="content"></textarea>
   </div>
   <div class="detail-label">联系方式</div>
   <div class="detail">
-    <div><label>包工：</label><input type="text" name="contact" class="w80" id="contact"></div>
+    <div><label>雇主：</label><input type="text" name="contact" class="w80" id="contact"></div>
     <div><label>电话：</label><input type="text" name="phone" class="w80" id="phone"></div>
-    <div><label>邮箱：</label><input type="email" name="email" class="w80" id="email"></div>
+    <div><label>邮箱：</label><input type="text" name="email" class="w80" id="email"></div>
     <div><label>地址：</label><input type="text" name="address" class="w80" id="address"></div>
   </div>
-  <div class="mgt10 txtc"><input type="button" name="submit" value="发布" id="submit"></div>
+  <div class="mgt10 txtc"><input type="submit" name="submit" value="发布" id="postHire"></div>
+  </form>
   <footer class="mgt10">
     <div>
       &copy;2014&nbsp;伯益&nbsp;&nbsp;湘ICP备13011766
