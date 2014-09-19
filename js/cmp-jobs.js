@@ -30,10 +30,11 @@ $(document).ready(function(){
         // $('#keyword').val("");
     });
     
-    var page = []; // the page option
+    var page = {}; // the page option
     var resultClicked = false;
     var lastViewedJid;
     var base = 'http://www.boryi.com:8080/SearchJobs2/';
+
 
     function searchJob(){ 
         var targetUrl = base + 'jobs?';
@@ -67,6 +68,7 @@ $(document).ready(function(){
                 // clear the list first
                 $('ul.list').empty();
                 // set global trackers
+                page = {};
                 page.currentp = 1;  // initialize the current page tracker mark
                 page.currentq = 0;  // initialize the current query id mark
                 page.total = 0;     // initialize the total result mark
@@ -85,6 +87,7 @@ $(document).ready(function(){
 
                 // display results in the list tab 
                 $('#tab-list').trigger('click');
+                tooMuchResult.hide();
                 showJobs(d);          
             }
         }).fail(function(xhr, status, msg) {
@@ -104,23 +107,42 @@ $(document).ready(function(){
             // to get the total if there exists
             page.total = json['t'] || 0;
         } 
-
-        if ((page.total - 1) / 20 <= page.currentp++){
+        
+        if ((page.total - 1) / 20 < page.currentp++){
             $('#more').hide();
-        } else {
+        } else if(page.currentp == 21){
+            tooMuchResult.show();
+            $('#more').hide();
+        }
+        else {
             $('#more').show();
         }
+      
+        parseJobData(json);
+        fillJobData(json['j']);
+        Array.prototype.push.apply(page.j,json['j']);
+        
+        $('.list .list-item').click(function(){
+            if(!resultClicked){
+                resultClicked=true;
+                $('#details-result').removeClass("hd");
+                $('.no-detail').addClass("hd");
+            }
+            $('#tab-detail').trigger('click');
+            var id = $(this).addClass('viewed').attr('id');
+            lastViewedJid = id;
+            showJobDetails(id);
+        })
+    }
 
+    function fillJobData(jobdata){
         var li = $('<li />').addClass('list-item');
         var titleDiv = $('<div />').addClass('list-title fb');
         var compDiv = $('<div />').addClass('fc').addClass('fb');
         var miscDiv = $('<div />').addClass('fc').addClass('fb');
         var bottomDiv = $('<div />').addClass('fc');
         var div = $('<div />');
-        
-        parseJobData(json);
-
-        json['j'].forEach(function(job,index){
+        jobdata.forEach(function(job,index){
             // e:学历
             // p:日期
             // r:招聘类型
@@ -138,20 +160,6 @@ $(document).ready(function(){
                        ).append(bottomDiv.clone());
             $('ul.list').append(list.attr({id:"li" + (page.j.length + index)}));
         });
-
-        Array.prototype.push.apply(page.j,json['j']);
-
-        $('.list .list-item').click(function(){
-            if(!resultClicked){
-                resultClicked=true;
-                $('#details-result').removeClass("hd");
-                $('.no-detail').addClass("hd");
-            }
-            $('#tab-detail').trigger('click');
-            var id = $(this).addClass('viewed').attr('id');
-            lastViewedJid = id;
-            showJobDetails(id);
-        })
     }
     
     //convert the number code to string data.
@@ -173,30 +181,10 @@ $(document).ready(function(){
     }
     
     function k(s){
-        switch(s){
-        case 1:
-            return"实习";
-        case 2:
-            return"校招";
-        case 3:
-            return"社招";
-        default:
-            return "";
-        }
+        return ["","实习","校招","社招"][s] || "";
     }
     function b(s){
-        switch(s){
-        case 1:
-            return"国企";
-        case 2:
-            return"外企";
-        case 3:
-            return"民企";
-        case 4:
-            return"其他";
-        default:
-            return "";
-        }
+        return ["","国企","外企","民企","其他"][s] || "";
     }
 
     function showJobDetails(listid){

@@ -120,3 +120,19 @@ function getSetCityFunction(){
         }
     }
 }
+
+var tooMuchResult = {
+    divele:null,
+    diveleAdded:false,
+    show:function (){
+        this.divele || (this.divele=$("<div style='text-align:center;padding:8px 0px'>结果超过400条</div>"));
+        $('#more').parent().append(this.divele);
+        this.diveleAdded = true;
+    },
+    hide:function (){
+        if(this.diveleAdded){
+            this.diveleAdded = false;
+            this.divele.remove();    
+        }
+    }
+};
