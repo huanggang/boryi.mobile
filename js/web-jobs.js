@@ -493,11 +493,24 @@
     setLocation(company['lc'].toString(), 'cmp-location');
 
     var locs = job['lct'];
+
+    var job_cities = [];
     for (var i = 0; i < locs.length; i++) { 
-      if (i == 0){
-        setLocation(locs[i].toString(), 'job-location');  
+      var loc_str = locs[i].toString();
+      var city = loc_str.substr(0, 5); 
+
+      // check if the city has been added, we need to ignore 
+      // districts of the same city 
+      if ($.inArray(city, job_cities) !== -1){
+        continue;
       } else {
-        setLocation(locs[i].toString(), 'job-location', true);  
+        job_cities.push(city);  
+      }
+
+      if (i == 0){
+        setLocation(loc_str, 'job-location');
+      } else {
+        setLocation(loc_str, 'job-location', true);  
       }
     }
 
