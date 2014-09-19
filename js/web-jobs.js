@@ -19,7 +19,7 @@
 	var provinceid = $("#province option:selected").val();
 	if (provinceid){
 	    if (cityCache.hasOwnProperty(provinceid)){
-	      setSelections(cityCache[provinceid], 'city');
+	      setSelections(cityCache[provinceid], 'city', null, true);
 	    } else {
 	      setCities(provinceid, setCityOptions);
 	    }
@@ -27,7 +27,7 @@
 	});
 
   var setCityOptions = function (cities){
-    setSelections(cities, 'city');
+    setSelections(cities, 'city', null, true);
   }
 
   /// assing options to the 'city' select input
@@ -54,7 +54,6 @@
       var cities = eval('cities_' + provinceid);
       cityCache[provinceid] = cities;
       callback(cities);
-      //setSelections(cities, 'city');
     });
   }
 
@@ -91,7 +90,7 @@
   /// get the workplace according to the country, province and city
   function getWorkPlace(){
     var city = $("#city option:selected").val();
-    if (city == undefined) { city=''; }
+    if (city == undefined || city == -1) { city=''; }
     if (city.length > 0){
       return '1' + city + '00000000000';
     } else {
@@ -115,6 +114,8 @@
   var jobUrlForTotal = "";
 
   var searchJob = function(form){ 
+    $("body").mask("努力查询中...");
+
     var targetUrl = base + 'jobs?';
     targetUrl += 's1='  + getWorkPlace();                       // 工作地点
     targetUrl += '&s2=' + getSelected('refresh');               // 刷新日期
@@ -177,6 +178,9 @@
 
     jobUrlForTotal = targetUrl;
     tooMuchResult.hide();
+    lastViewedJid = '';
+
+    $('#tab-detail').unbind('click');
 
     $.ajax({
         url: targetUrl,
@@ -198,8 +202,7 @@
           page.j = {};        // initialize the job cache
           
           // enable the list and detail tab
-          $('#tab-list, #tab-detail').bind('click', tabHandler);
-
+          $('#tab-list').bind('click', tabHandler);
           $('#tab-list').bind('click', function(){
             // if return to check list again from detail page,
             // jump to the latest viewed job list item
@@ -208,14 +211,13 @@
             }
           });
 
-          $('#tab-detail').bind('click', function(){
-            window.scrollTo(0, 0);
-          });
-
           // display results in the list tab 
-          showJobs(d);          
+          showJobs(d);
+
+          $('body').unmask();          
         }
     }).fail(function(xhr, status, msg) {
+        $('body').unmask();
         alert('网络不太给力，请重试');
     });
   };
@@ -344,6 +346,13 @@
     }
 
     $('.list .list-item').click(function(){
+
+      $('#tab-detail').bind('click', tabHandler);
+      $('#tab-detail').bind('click', function(){
+        window.scrollTo(0, 0);
+      });
+
+
       $(this).addClass('viewed');
 
       $('#cmp-location').empty();
@@ -633,6 +642,7 @@
   }
 
   var getMoreJobs = function(){
+    $("body").mask("努力查询中...");
     // don't want it to scroll here 
     lastViewedJid = '';
     var targetUrl = base + 'jobs?q=' + page.currentq + '&p=' + page.currentp;
@@ -644,9 +654,11 @@
         cache: true,
         timeout: tout,
     }).done(function(d) {
+        $("body").unmask();
         // display results in the 2nd tab
         showJobs(d); 
     }).fail(function(xhr, status, msg) { 
+        $("body").unmask();
         alert('网络不太给力，请重试'); 
     }); 
   }
