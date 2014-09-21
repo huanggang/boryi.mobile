@@ -11,6 +11,7 @@ hashMap.Set("105", "服务器错误");
 hashMap.Set("106", "参数相互冲突");
 hashMap.Set("107", "写数据库失败");
 hashMap.Set("108", "读数据库失败");
+hashMap.Set("109", "数据库连接失败");
 
 hashMap.Set("201", "登录密钥错误");
 hashMap.Set("202", "用户地理位置不详");
