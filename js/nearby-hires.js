@@ -151,14 +151,14 @@ $(document).ready(function(){
       $(".list-item").click(function(event){
         var hire = new Object();
         hire.i = $(this).attr("data-i");
-        hire.lat = $(this.attr("data-lat"));
-        hire.lng = $(this.attr("data-lng"));
-        hire.d = $(this.attr("data-d"));
-        hire.s = $(this.attr("data-s"));
-        hire.t = $(this.attr("data-t"));
-        hire.l = $(this.attr("data-l"));
-        hire.dr = $(this.attr("data-dr"));
-        hire.c = $(this.attr("data-c")); // contact
+        hire.lat = $(this).attr("data-lat");
+        hire.lng = $(this).attr("data-lng");
+        hire.d = $(this).attr("data-d");
+        hire.s = $(this).attr("data-s");
+        hire.t = $(this).attr("data-t");
+        hire.l = $(this).attr("data-l");
+        hire.dr = $(this).attr("data-dr");
+        hire.c = $(this).attr("data-c"); // contact
 
         get_hire(hire);
       });
@@ -219,7 +219,7 @@ $(document).ready(function(){
 
     $("#title").text(hire.t);
     $("#postdate").text(hire.s.slice(0,10));
-    $("#viewed").text(hire.vws);
+    $("#viewed").text(hire.vws == null ? "0" : String(hire.vws));
     $("#location").text(hire.l);
     $("#duration").text(hire.dr);
     $("#description").html(hire.cnt);

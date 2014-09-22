@@ -130,7 +130,7 @@ $(document).ready(function(){
       var div_company = div_row.clone().addClass("fl fb w80");
       var div_distance = div_row.clone().addClass("fr");
       var div_salary = div_row.clone().addClass("fl");
-      var div_requirement = div_row.clone().addClass("fl fb w45");
+      var div_requirement = div_row.clone().addClass("fl fb");
       var div_date = div_distance.clone();
       for (var i = 0; i < rjobs.length; i++){
         var rjob = rjobs[i];
@@ -189,14 +189,14 @@ $(document).ready(function(){
         if (salary.length > 0){
           div_row_3 = div_row_3.append(div_salary.clone().append(salary));
         }
-        else if (requirement.length > 0){
+        div_row_3 = div_row_3.append(div_date.clone().append(rjob.s.slice(0,10)));
+        row = row.append(div_row_3).append(div_row_fc.clone());
+        if (requirement.length > 0){
           requirement = requirement.substr(8);
         }
         if (requirement.length > 0){
-          div_row_3 = div_row_3.append(div_requirement.clone().append(requirement));
+          row = row.append(div_row_fb.clone().append(div_requirement.clone().append(requirement)));
         }
-        div_row_3 = div_row_3.append(div_date.clone().append(rjob.s.slice(0,10)));
-        row = row.append(div_row_3).append(div_row_fc.clone());
 
         $(".list").append(row);
       }
@@ -208,21 +208,21 @@ $(document).ready(function(){
       $(".list-item").click(function(event){
         var job = new Object();
         job.i = $(this).attr("data-i");
-        job.lat = $(this.attr("data-lat"));
-        job.lng = $(this.attr("data-lng"));
-        job.d = $(this.attr("data-d"));
-        job.s = $(this.attr("data-s"));
-        job.t = $(this.attr("data-t"));
-        job.sx = $(this.attr("data-sx"));
-        job.al = $(this.attr("data-al"));
-        job.ah = $(this.attr("data-ah"));
-        job.hl = $(this.attr("data-hl"));
-        job.hh = $(this.attr("data-hh"));
-        job.edu = $(this.attr("data-edu"));
-        job.exp = $(this.attr("data-exp"));
-        job.sl = $(this.attr("data-sl"));
-        job.sh = $(this.attr("data-sh"));
-        job.c = $(this.attr("data-c"));
+        job.lat = $(this).attr("data-lat");
+        job.lng = $(this).attr("data-lng");
+        job.d = $(this).attr("data-d");
+        job.s = $(this).attr("data-s");
+        job.t = $(this).attr("data-t");
+        job.sx = $(this).attr("data-sx");
+        job.al = $(this).attr("data-al");
+        job.ah = $(this).attr("data-ah");
+        job.hl = $(this).attr("data-hl");
+        job.hh = $(this).attr("data-hh");
+        job.edu = $(this).attr("data-edu");
+        job.exp = $(this).attr("data-exp");
+        job.sl = $(this).attr("data-sl");
+        job.sh = $(this).attr("data-sh");
+        job.c = $(this).attr("data-c");
 
         get_job(job);
       });
@@ -375,7 +375,7 @@ $(document).ready(function(){
     $("#company").text(job.c);
     $("#title").text(job.t);
     $("#postdate").text(job.s.slice(0,10));
-    $("#viewed").text(job.vws);
+    $("#viewed").text(job.vws == null ? "0" : String(job.vws));
 
     if (requirement.length > 0){
       $("#requirement-list").show().html(requirement);
