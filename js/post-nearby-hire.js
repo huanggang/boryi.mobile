@@ -1,8 +1,9 @@
 // http://m.boryi.com/post-nearby-job.htm#oi=9032g19pvbh19g&k=02349
 $(document).ready(function(){
 
+  var baseurl = document.URL;
+  var home = baseurl.substring(0, baseurl.lastIndexOf('/')) + "/";
   init();
-  var home = "http://m.boryi.com/";
 
   function init() {
     var dtoday = new Date();
@@ -29,7 +30,12 @@ $(document).ready(function(){
       }
     }
     if (state < 2){
-      window.location.href = home;
+      if (confirm("请先关注伯益网微信公众号：boryi_com，并通过伯益网微信公众号访问此页面。")){
+        window.location.href = home;
+      }
+      else{
+        window.location.href = home + "not_found.htm"
+      }
     }
   }
 
@@ -187,7 +193,7 @@ $(document).ready(function(){
       var contact = get_string($("#contact").val());
 
       var baseurl = document.URL;
-      var url = baseurl.substring(0, baseurl.lastIndexOf('/')) + '/php/post_nearby_hire.php';
+      var url = home + 'php/post_nearby_hire.php';
       var params = new Object();
       params.oi = openid;
       params.k = key;
@@ -224,7 +230,7 @@ $(document).ready(function(){
     }
     try{
       value = Number(value);
-      if (value == NaN){
+      if (isNaN(value)){
         return null;
       }
       return value;

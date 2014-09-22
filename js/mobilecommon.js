@@ -3,7 +3,7 @@
 ///  json   - the json string
 ///  target - id of the select input 
 ///  value  - the default value
-function setSelections(json, target, value){
+function setSelections(json, target, value, hasDefault){
     var len = json.length;
     var target = $('#' + target);
     if (len == 0){
@@ -11,7 +11,10 @@ function setSelections(json, target, value){
     } else {
         target.show();
     }
-    target.empty();//.append('<option value="-1">-</option>');
+    target.empty();
+    if (hasDefault){
+        target.append('<option value="-1">-</option>');    
+    }
     var option = $('<option/>');
     for(var j = 0; j < len; j++) {
         var op = option.clone();
@@ -71,13 +74,13 @@ function showRange(range, lowstr, highstr, unit, range_concat){
 /// make the tab scroll to the latest checked job, since there might 
 /// be a very, very long job list
 function view(id){
-        if (id){
-                var top = $('#' + id).offset().top;
-                if (top){
-                        $('html, body').animate({
-                        scrollTop: top
-                        }, 0);
-                }       
+    if (id){
+        var t = $('#' + id).offset();
+            if (t.hasOwnProperty('top')){
+                $('html, body').animate({
+                    scrollTop: t.top
+                }, 0);
+            }       
         }
 }
 

@@ -17,6 +17,7 @@
   <link href="css/base.css" rel="stylesheet" type="text/css"/>
   <script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
   <script src="js/tab.js" type="text/javascript"></script>
+  <script src="js/errorcodes.js" type="text/javascript"></script>
   <script src="js/nearby-jobs.js" type="text/javascript"></script>
 </head>
 <body>
@@ -26,12 +27,15 @@
     <span>附近招工</span>
     <div class="fc"></div>
   </header>
+  <input type="hidden" name="openid" id="openid">
+  <input type="hidden" name="key" id="key">
+  <input type="hidden" name="complaint-job-id" id="complaint-job-id">
   <div class="ui-tab ui-tab-transparent">
     <ul class="ui-tab-items">
-      <li class="ui-tab-item ui-tab-item-current" data-name="list">
+      <li class="ui-tab-item ui-tab-item-current" data-name="list" id="tab-list">
         <a class="ui-tab-item-link">附近招工</a>
       </li>
-      <li class="ui-tab-item" data-name="detail">
+      <li class="ui-tab-item" data-name="detail" id="tab-detail">
         <a class="ui-tab-item-link">职位详情</a>
       </li>
     </ul>
@@ -99,10 +103,9 @@
         <div class="fc"></div>
       </li>
     </ul>
-    <div id="more">显示更多结果...</div>
+    <div class="hd" id="more">显示更多结果...</div>
   </div>
   <div class="ui-tab-content fc mh300" data-name="detail">
-    <div class="no-detail hd">请先在附近招工列表中点击某条职位信息。</div>
     <div class="detail-win lh15">
       <div class="detail-top">
         <div id="company">北京民生康健科技有限公司</div>
@@ -116,12 +119,12 @@
         <div class="complaint-win lh15 mgt10 hd">
           <div class="detail-label lh20">举报类型</div>
           <div class="detail">
-            <input type="radio" name="complaint-type" id="complaint-type-1"><label for="complaint-type-1">中介或职介</label><br/>
-            <input type="radio" name="complaint-type" id="complaint-type-2"><label for="complaint-type-2">假冒单位招聘</label><br/>
-            <input type="radio" name="complaint-type" id="complaint-type-3"><label for="complaint-type-3">虚假联系方式</label><br/>
-            <input type="radio" name="complaint-type" id="complaint-type-4"><label for="complaint-type-4">虚假职位信息</label><br/>
-            <input type="radio" name="complaint-type" id="complaint-type-5"><label for="complaint-type-5">1公里内重复发布</label><br/>
-            <input type="radio" name="complaint-type" id="complaint-type-6"><label for="complaint-type-6">违法信息</label><br/>
+            <input type="radio" name="complaint-type" class="complaint-type" id="complaint-type-1" value="1"><label for="complaint-type-1">中介或职介</label><br/>
+            <input type="radio" name="complaint-type" class="complaint-type" id="complaint-type-2" value="2"><label for="complaint-type-2">假冒单位招聘</label><br/>
+            <input type="radio" name="complaint-type" class="complaint-type" id="complaint-type-3" value="3"><label for="complaint-type-3">虚假联系方式</label><br/>
+            <input type="radio" name="complaint-type" class="complaint-type" id="complaint-type-4" value="4"><label for="complaint-type-4">虚假职位信息</label><br/>
+            <input type="radio" name="complaint-type" class="complaint-type" id="complaint-type-5" value="5"><label for="complaint-type-5">1公里内重复发布</label><br/>
+            <input type="radio" name="complaint-type" class="complaint-type" id="complaint-type-6" value="6"><label for="complaint-type-6">违法信息</label><br/>
           </div>
           <div class="detail-label lh20">举报内容</div>
           <div class="detail">

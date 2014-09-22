@@ -2,6 +2,10 @@
 var totalPage = 0;
 var cityCache = {};
 var lastViewedJid;
+var tout = 15000;
+var loading = false;
+var detailTabClickable = false;
+// the default timeout value
 // cache the city lists so it won't send another request
 var js_path = "js/";
 $(document).ready(function() {
@@ -18,39 +22,17 @@ $(document).ready(function() {
 		});
 		return $.ajax(options);
 	};
-
+	var setCityOptions = function(cities) {
+		setSelections(cities, 'city', null, true);
+	}
 	// cache the city lists so it won't send another request
 	$('#province').change(function(event) {
 		var provinceid = $("#province option:selected").val();
 		if (provinceid) {
 			if (cityCache.hasOwnProperty(provinceid)) {
-				setSelections(cityCache[provinceid], 'city');
+				setSelections(cityCache[provinceid], 'city', null, true);
 			} else {
-				setCities(provinceid);
-			}
-		}
-	});
-
-	setSelections(provinces, 'province', 10000);
-
-	$.cachedScript = function(url, options) {
-		// Allow user to set any option except for dataType, cache, and url
-		options = $.extend(options || {}, {
-			dataType : "script",
-			cache : true,
-			url : url,
-			async : false,
-		});
-		return $.ajax(options);
-	};
-
-	$('#province').change(function(event) {
-		var provinceid = $("#province option:selected").val();
-		if (provinceid) {
-			if (cityCache.hasOwnProperty(provinceid)) {
-				setSelections(cityCache[provinceid], 'city');
-			} else {
-				setCities(provinceid);
+				setCities(provinceid, setCityOptions);
 			}
 		}
 	});
@@ -58,8 +40,11 @@ $(document).ready(function() {
 	$('#more').click(loadData);
 
 	$('#search-btn').click(function() {
-		$('.ui-tab-item').click(tabHandler);
+		$('.ui-tab-item:gt(0)').unbind('click');
+		$('.ui-tab-item:lt(2)').click(tabHandler);
 		currentPage = 0;
+		totalPage = 0;
+		loading = false;
 		loadData();
 		lastViewedJid = null;
 		$('.ui-tab-item').first().next().click(function() {
@@ -73,8 +58,8 @@ $(document).ready(function() {
 /// assing options to the 'city' select input
 ///
 ///  provinceid - the id of the province
-///  value      - the default city value
-function setCities(provinceid, value, async) {
+///  callback   - the method which needs city json as input
+function setCities(provinceid, callback, async) {
 	if (provinceid == null) {
 		return;
 	}
@@ -87,99 +72,26 @@ function setCities(provinceid, value, async) {
 	if (async == undefined) {
 		async = true;
 	}
+
+	var docUrl = document.URL;
+	var js_path = docUrl.substring(0, docUrl.lastIndexOf('/')) + '/js/';
+
 	var url = js_path + 'city/cities_' + provinceid + '.js';
 	$.cachedScript(url, {
 		async : async
 	}).done(function(data, textStatus) {
 		var cities = eval('cities_' + provinceid);
 		cityCache[provinceid] = cities;
-		setSelections(cities, 'city');
+		callback(cities);
 	});
-}
-
-/// assing options to a select input
-///
-///  json   - the json string
-///  target - id of the select input
-///  value  - the default value
-function setSelections(json, target, value) {
-	var len = json.length;
-	if (len == 0) {
-		$('#' + target).hide();
-	} else {
-		$('#' + target).show();
-	}
-	$('#' + target).empty();
-	//.append('<option value="-1">-</option>');
-	for (var j = 0; j < len; j++) {
-		var op = $('<option/>');
-		op.attr('value', json[j].id);
-		// fixed typo
-		if (value != undefined && value == json[j].id) {
-			op.attr('selected', 'selected');
-		}
-		op.append(json[j].name);
-		$('#' + target).append(op);
-	}
-}
-
-/// assing options to the 'city' select input
-///
-///  provinceid - the id of the province
-///  value      - the default city value
-function setCities(provinceid, value, async) {
-	if (provinceid == null) {
-		return;
-	}
-	if (provinceid == 10000) {
-		// no cities if all country has been selected
-		setSelections([], 'city');
-		return;
-	}
-
-	if (async == undefined) {
-		async = true;
-	}
-	var url = js_path + '/city/cities_' + provinceid + '.js';
-	$.cachedScript(url, {
-		async : async
-	}).done(function(data, textStatus) {
-		var cities = eval('cities_' + provinceid);
-		cityCache[provinceid] = cities;
-		setSelections(cities, 'city');
-	});
-}
-
-///assing options to a select input
-///json   - the json string
-///target - id of the select input
-///value  - the default value
-function setSelections(json, target, value) {
-	var len = json.length;
-	if (len == 0) {
-		$('#' + target).hide();
-	} else {
-		$('#' + target).show();
-	}
-	$('#' + target).empty();
-	//.append('<option value="-1">-</option>');
-
-	for (var j = 0; j < len; j++) {
-		var op = $('<option/>');
-		op.attr('value', json[j].id);
-		// fixed typo
-
-		if (value != undefined && value == json[j].id) {
-			op.attr('selected', 'selected');
-		}
-		op.append(json[j].name);
-		$('#' + target).append(op);
-	}
 }
 
 function loadData() {
-	$('#more').hide();
-
+	if (loading) {
+		return;
+	}
+	loading = true;
+	$('#more').html('数据加载中...').show();
 	var d;
 	if (currentPage == 0) {
 		$('.list').empty();
@@ -199,38 +111,21 @@ function loadData() {
 		data : d,
 		dataType : 'jsonp',
 		success : function(json) {
+			loading = false;
 			showJobs(json);
+			checkTotal(json);
 		},
 		error : function() {
-			alert('error');
+			loading = false;
+			alert('网络错误,请重试');
 		}
 	});
 
 }
 
 function showJobs(json) {
-
 	var jobs = json['j'];
-	if (!jobs) {
-		$('#more').hide();
-		return;
-	}
 	var ul = $('.list');
-	if (currentPage == 0) {
-		if (json['t']) {
-			totalPage = Math.floor((json['t'] + 19) / 20);
-		} else {
-			totalPage = 20;
-		}
-
-		$('#search-btn').data('q', json['q']);
-	}
-
-	if (++currentPage < totalPage) {
-		$('#more').show();
-	} else {
-		$('#more').hide();
-	}
 
 	for (var i = 0; i < jobs.length; i++) {
 		var li = $('<li class="list-item" onclick="showJobDetail(this)" id="job' + ((currentPage - 1) * 20 + i) + '"></li>');
@@ -262,7 +157,11 @@ function getJobTypeName(code) {
 }
 
 function showJobDetail(ele) {
+	if (!lastViewedJid) {
+		$('.ui-tab-item:last').click(tabHandler);
+	}
 	var url = $(ele).addClass('viewed').data('u');
+
 	lastViewedJid = $(ele).attr('id');
 	$('.src-btn').data('u', url);
 	$('.ui-tab-item')[2].click();
@@ -288,7 +187,11 @@ function getLocation(code) {
 		if (province == city || cityCache[province] == undefined) {
 			return map_id_attr(provinces, province, 'name');
 		} else {
-			return map_id_attr(provinces, province, 'name') + '-' + map_id_attr(cityCache[province], city, 'name');
+			var city = map_id_attr(cityCache[province], city, 'name');
+			if (city && city.length > 0) {
+				city = '-' + city;
+			}
+			return map_id_attr(provinces, province, 'name') + city;
 		}
 	}
 }
@@ -296,7 +199,7 @@ function getLocation(code) {
 /// get the workplace according to the country, province and city
 function getWorkPlace() {
 	var city = $("#city option:selected").val();
-	if (city == undefined) {
+	if (city == undefined || '-1' == city) {
 		city = '';
 	}
 	if (city.length > 0) {
@@ -308,5 +211,62 @@ function getWorkPlace() {
 		} else {
 			return '1' + province + '00000000000';
 		}
+	}
+}
+
+function checkTotal(json) {
+
+	var jobs = json['j'];
+
+	if (currentPage == 0) {
+		if (json['t']) {
+			totalPage = Math.floor((json['t'] + 19) / 20);
+		}
+		$('#search-btn').data('q', json['q']);
+	}
+
+	if (++currentPage < totalPage && currentPage <= 20) {
+		$('#more').html('显示更多结果...').show();
+	} else {
+		$('#more').hide();
+	}
+
+	if (currentPage > 1) {
+		return;
+	}
+
+	if (jobs.length == 20 && !json['t']) {
+		// probably has more than 20 items, try to collect the total
+		$('#more').html('更多结果正在查询中...').show();
+
+		var maxRetry = 3;
+		var targetUrl = 'http://www.boryi.com:8080/SearchJobs1/total?s1=' + getWorkPlace() + '&s2=' + $('#cmp-type').val();
+		loading = true;
+		var getTotalNum = function() {
+			console.log('start to query t...');
+			$.ajax({
+				url : targetUrl,
+				dataType : "jsonp",
+				jsonpCallback : "_ttl" + Date.now(),
+				cache : true,
+				timeout : tout,
+			}).done(function(d) {
+				loading = false;
+				if (d.t > 0) {
+					totalPage = Math.floor((d['t'] + 19) / 20);
+					$('#more').html('显示更多结果...').show();
+				}
+			}).fail(function(xhr, status, msg) {
+				loading = false;
+				// shouldn't alert() anything, or it will interrup the iteration
+				console.log('failed to get t, retrying...' + maxRetry);
+				if (maxRetry-- > 0) {
+					setTimeout(getTotalNum, 5000);
+				} else {
+					$('#more').html('显示更多结果...').show();
+				}
+			});
+		}
+		getTotalNum();
 	}
 }
