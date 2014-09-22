@@ -144,24 +144,23 @@ var tooMuchResult = {
 
 var waitLoading = {
     loadingDiv:$("<div style='text-align:center;padding:8px 0px' class='fc'>搜索中</div>"),
-    addedTarget:[],
+    lastTarget:null,
     text:["·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","··&nbsp;&nbsp;&nbsp;","···&nbsp;&nbsp;","····&nbsp;","·····"],
-    i:0,
     timer:null,
     show:function(target){
-        //check whether target is a string,and convert it to a JQurey object if it is not.
+        //check whether target is a string,and convert it to a JQurey object if it is.
         if(typeof target == "string" || typeof target== "object" && target instanceof String){
             target = $("#" + target);
         }
-        this.i = 0;
-        var text = this.text;
-        var i = this.i;
-        if(!this.addedTarget.some(function(ele){ele===target;})){
-            this.addedTarget.push(target);
+        if(!this.lastTarget || this.lastTarget.attr('id') != target.attr('id')){
+            console.log("aaa");
+            this.lastTarget = target;
             this.loadingDiv.appendTo(target.parent());
         }
         this.loadingDiv.show();
         var tloadingDiv = this.loadingDiv;
+        var i = 0;
+        var text = this.text;
         this.timer = setInterval(function(){
             tloadingDiv.html("搜索中" + text[i++%(text.length)]);
         },500);
