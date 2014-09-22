@@ -93,7 +93,7 @@ function setCitiesByProvinceId(provinceid,target,async){
     }
     async = async || true;
 
-    getSetCityFunction()(provinceid,target,async);
+    setCityFunction(provinceid,target,async);
 
 }
 
@@ -120,6 +120,8 @@ function getSetCityFunction(){
         }
     }
 }
+
+var setCityFunction = getSetCityFunction();
 
 var tooMuchResult = {
     divele:null,

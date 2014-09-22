@@ -8,7 +8,7 @@ $(document).ready(function(){
     });
     // load another 20 results if there exists 
     $('#more').click(getMoreJobs);
-
+    $('#search-btn').removeAttr("disabled");
     $("#search").validate({
         errorPlacement: errPlace,
         submitHandler: searchJob,
@@ -23,7 +23,7 @@ $(document).ready(function(){
             }, 
         },
     });
-
+    $('.ui-tab-content iframe').attr("src","");
     $('#reset-btn').click(function(){
         $('#city').hide().empty();
     });
@@ -69,7 +69,10 @@ $(document).ready(function(){
         }
 
         firstPageUrl = targetUrl;
-        
+        $('#search-btn').attr("disabled",true);
+
+        waitLoading.show("search-btn");
+
         $.ajax({
             url: targetUrl,
             dataType: "jsonp", 
@@ -77,6 +80,9 @@ $(document).ready(function(){
             cache: true,
             timeout: 5000, 
         }).done(function(d) {
+            sleep(4);
+            $('#search-btn').removeAttr("disabled");
+            waitLoading.stop();
             if (d.t == 0){
                 alert('没有找到符合条件的结果，请修改查询条件重试');          
             } else {
@@ -95,7 +101,7 @@ $(document).ready(function(){
                     if (lastViewedJid){
                         view(lastViewedJid);  
                     }
-                });
+                 });
 
                 // display results in the list tab 
                 $('#tab-list').trigger('click');
@@ -103,8 +109,40 @@ $(document).ready(function(){
                 showJobs(d);          
             }
         }).fail(function(xhr, status, msg) {
+            waitLoading.stop();
+            $('#search-btn').removeAttr("disabled");
             alert('网络不太给力，请重试');
         });
+    }
+
+    var waitLoading = {
+        loadingDiv:$("<div style='text-align:center;padding:8px 0px' class='fc'>搜索中</div>"),
+        addedTarget:[],
+        text:["·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","··&nbsp;&nbsp;&nbsp;","···&nbsp;&nbsp;","····&nbsp;","·····"],
+        i:0,
+        timer:null,
+        show:function(target){
+            //check whether target is a string,and convert it to a JQurey object if it is not.
+            if(typeof target == "string" || typeof target== "object" && target instanceof String){
+                target = $("#" + target);
+            }
+            this.i = 0;
+            var text = this.text;
+            var i = this.i;
+            if(!this.addedTarget.some(function(ele){ele===target;})){
+                this.addedTarget.push(target);
+                this.loadingDiv.appendTo(target.parent());
+            }
+            this.loadingDiv.show();
+            var tloadingDiv = this.loadingDiv;
+            this.timer = setInterval(function(){
+                tloadingDiv.html("搜索中" + text[i++%(text.length)]);
+            },500);
+        },
+        stop:function(){
+            this.timer && clearInterval(this.timer);
+            this.loadingDiv.hide();
+        },
     }
 
     /// display searching results 
