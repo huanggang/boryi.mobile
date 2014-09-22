@@ -49,7 +49,12 @@ $(document).ready(function(){
     var base = 'http://www.boryi.com:8080/SearchJobs2/';
     var firstPageUrl = "";
 
-    function searchJob(){ 
+    function searchJob(){
+        //initialize
+        $('.ui-tab-content iframe').attr("src",""); // always clear the src when research.
+        $('#tab-detail').unbind("click",tabHandler);//unbind the details page again
+        
+        
         var targetUrl = base + 'jobs?';
         targetUrl += 's1='  + getWorkPlace(); // 工作地点
         
