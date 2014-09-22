@@ -114,7 +114,8 @@
   var jobUrlForTotal = "";
 
   var searchJob = function(form){ 
-    $("body").mask("努力查询中...");
+    waitLoading.show('search-btn');
+    $('#search-btn').attr({"disabled":"disabled"});
 
     var targetUrl = base + 'jobs?';
     targetUrl += 's1='  + getWorkPlace();                       // 工作地点
@@ -214,10 +215,12 @@
           // display results in the list tab 
           showJobs(d);
 
-          $('body').unmask();          
+          waitLoading.stop();
+          $('#search-btn').removeAttr('disabled');
         }
     }).fail(function(xhr, status, msg) {
-        $('body').unmask();
+        waitLoading.stop();
+        $('#search-btn').removeAttr('disabled');
         alert('网络不太给力，请重试');
     });
   };
@@ -601,9 +604,10 @@
         if(j['eml']){
           var emails = j['eml'].split(',');
 
+          $('#email').empty();
           $.each(emails, function(index, value){
               var e = $('<a>').attr('href', 'mailto:' + value)
-                            .attr('id', 'email:' + index).html(value);
+                            .attr('id', 'email:' + index).html(value + '<br />');
               $('#email').append(e);
           })
           
@@ -621,6 +625,7 @@
         
         if (j['phn']){
           var phones = j['phn'].split(',');
+          $('#phone').empty();
           $.each(phones, function(index, value){
               var e = $('<a>').attr('href', 'tel:' + value)
                             .attr('id', 'phone' + index)
@@ -633,6 +638,7 @@
 
         if (j['mbl']){
           var mobiles = j['mbl'].split(',');
+          $('#cell').empty();
           $.each(mobiles, function(index, value){
               var e = $('<a>').attr('href', 'tel:' + value)
                             .attr('id', 'mobile' + index)
@@ -647,7 +653,7 @@
   }
 
   var getMoreJobs = function(){
-    $("body").mask("努力查询中...");
+    waitLoading.show('more');
     // don't want it to scroll here 
     lastViewedJid = '';
     var targetUrl = base + 'jobs?q=' + page.currentq + '&p=' + page.currentp;
@@ -659,11 +665,11 @@
         cache: true,
         timeout: tout,
     }).done(function(d) {
-        $("body").unmask();
+        waitLoading.stop();
         // display results in the 2nd tab
         showJobs(d); 
     }).fail(function(xhr, status, msg) { 
-        $("body").unmask();
+        waitLoading.stop();
         alert('网络不太给力，请重试'); 
     }); 
   }
