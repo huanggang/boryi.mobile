@@ -4,7 +4,7 @@ var cityCache = {};
 var lastViewedJid;
 var tout = 15000;
 var loading = false;
-var detailTabClickable = false;
+
 // the default timeout value
 // cache the city lists so it won't send another request
 var js_path = "js/";
@@ -38,20 +38,17 @@ $(document).ready(function() {
 	});
 
 	$('#more').click(loadData);
+	$('.ui-tab-item:eq(0)').click(tabHandler);
 
 	$('#search-btn').click(function() {
 		$('.ui-tab-item:gt(0)').unbind('click');
-		$('.ui-tab-item:lt(2)').click(tabHandler);
+
 		currentPage = 0;
 		totalPage = 0;
 		loading = false;
-		loadData();
 		lastViewedJid = null;
-		$('.ui-tab-item').first().next().click(function() {
-			if (lastViewedJid) {
-				view(lastViewedJid);
-			}
-		}).click();
+		waitLoading.show('search-btn');
+		loadData();
 	});
 });
 
@@ -117,6 +114,7 @@ function loadData() {
 		},
 		error : function() {
 			loading = false;
+			waitLoading.stop();
 			alert('网络错误,请重试');
 		}
 	});
@@ -219,6 +217,12 @@ function checkTotal(json) {
 	var jobs = json['j'];
 
 	if (currentPage == 0) {
+		waitLoading.stop();
+		$('.ui-tab-item:eq(1)').click(tabHandler).click(function() {
+			if (lastViewedJid) {
+				view(lastViewedJid);
+			}
+		}).click();;
 		if (json['t']) {
 			totalPage = Math.floor((json['t'] + 19) / 20);
 		}
