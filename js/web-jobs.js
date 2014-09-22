@@ -578,6 +578,34 @@
 
     var jobUrl = base + 'job?c=' + cid + '&j=' + jid;
 
+    function showPropStr(item, parent, block){
+        if(item){
+          $('#' + parent).html(item);
+          $('#' + block).show();
+        } else {
+          $('#' + block).hide();
+        }
+    }
+
+    function showPropArr(arr, parent, block, href_prefix, id_prefix, val_appenix){
+      if (arr){
+        var items = arr.split(',');
+        $(parent).empty();
+        
+        val_appenix = val_appenix || '';
+
+        var str = '';
+        $.each(items, function(index, value){
+          console.log(href_prefix + ':' + value);
+            var e = $('<a>').attr('href', href_prefix + ':' + value)
+                          .attr('id', id_prefix + index).html(value + val_appenix + '<br />');
+            str += e.wrap('<div>').parent().html();
+        })
+
+        showPropStr(str, parent, block);
+      }
+    }
+
     $.ajax({
         url: jobUrl,
         dataType: "jsonp", 
@@ -587,66 +615,13 @@
     }).done(function(j) {
         $('#postdate').html(j['ffd']); 
 
-        if(j['dsc']){
-          $('#description').html(j['dsc']);
-          $('#description-block').show();
-        } else {
-          $('#description-block').hide();
-        }
+        showPropStr(j['dsc'], 'description', 'description-block');
+        showPropStr(j['rqr'], 'requirement', 'requirement-block');
+        showPropStr(j['cnt'], 'contact', 'contact-block');
 
-        if(j['rqr']){
-          $('#requirement').html(j['rqr']);  
-          $('#requirement-block').show();
-        } else {
-          $('#requirement-block').hide();
-        }
-
-        if(j['eml']){
-          var emails = j['eml'].split(',');
-
-          $('#email').empty();
-          $.each(emails, function(index, value){
-              var e = $('<a>').attr('href', 'mailto:' + value)
-                            .attr('id', 'email:' + index).html(value + '<br />');
-              $('#email').append(e);
-          })
-          
-          $('#email-block').show();
-        } else {
-          $('#email-block').hide();
-        }
-        
-        if (j['cnt']){
-          $('#contact').html(j['cnt']); 
-          $('#contact-block').show();   
-        } else {
-          $('#contact-block').hide();
-        }
-        
-        if (j['phn']){
-          var phones = j['phn'].split(',');
-          $('#phone').empty();
-          $.each(phones, function(index, value){
-              var e = $('<a>').attr('href', 'tel:' + value)
-                            .attr('id', 'phone' + index)
-                            .html(value + '[<span class="call">拨打</span>]<br />');
-              $('#phone').append(e);
-          })
-
-          $('#phone-block').show();
-        }
-
-        if (j['mbl']){
-          var mobiles = j['mbl'].split(',');
-          $('#cell').empty();
-          $.each(mobiles, function(index, value){
-              var e = $('<a>').attr('href', 'tel:' + value)
-                            .attr('id', 'mobile' + index)
-                            .html(value + '[<span class="call">拨打</span>]<br />');
-              $('#cell').append(e);
-          })
-          $('#cell-block').show();
-        }
+        showPropArr(j['eml'], 'email', 'email-block', "mailto", "email");
+        showPropArr(j['phn'], 'phone', 'phone-block', "tel", "phone", '[<span class="call">拨打</span>]');
+        showPropArr(j['mbl'], 'cell', 'cell-block', "tel", "mobile", '[<span class="call">拨打</span>]');
     }).fail(function(xhr, status, msg) { 
         alert('网络不太给力，拿不到工作信息，请重试'); 
     }); 
