@@ -599,8 +599,14 @@
         }
 
         if(j['eml']){
-          var email = j['eml']; 
-          $('#email').html(email).attr('href', 'mailto:' + email);   
+          var emails = j['eml'].split(',');
+
+          $.each(emails, function(index, value){
+              var e = $('<a>').attr('href', 'mailto:' + value)
+                            .attr('id', 'email:' + index).html(value);
+              $('#email').append(e);
+          })
+          
           $('#email-block').show();
         } else {
           $('#email-block').hide();
@@ -615,25 +621,24 @@
         
         if (j['phn']){
           var phones = j['phn'].split(',');
-          var phones_str = '';
-          for (var i = phones.length - 1; i >= 0; i--) { 
-            phones_str += '<a id="phone' + i + '" href="tel:' 
-                        + $.trim(phones[i].replace(/\s+-\(\)/g, '')) + '" >' 
-                        + phones[i] + '[<span class="call">拨打</span>]<br />';
-          };
-          $('#phone').html(phones_str);  
+          $.each(phones, function(index, value){
+              var e = $('<a>').attr('href', 'tel:' + value)
+                            .attr('id', 'phone' + index)
+                            .html(value + '[<span class="call">拨打</span>]<br />');
+              $('#phone').append(e);
+          })
+
           $('#phone-block').show();
         }
 
         if (j['mbl']){
           var mobiles = j['mbl'].split(',');
-          var mobiles_str = '';
-          for (var i = mobiles.length - 1; i >= 0; i--) {
-            mobiles_str += '<a id="mobile' + i + '" href="tel:' 
-                        + $.trim(mobiles[i].replace(/\s+-\(\)/g, '')) + '" >' 
-                        + mobiles[i] + '[<span class="call">拨打</span>]<br />';
-          };
-          $('#cell').html(mobiles_str);  
+          $.each(mobiles, function(index, value){
+              var e = $('<a>').attr('href', 'tel:' + value)
+                            .attr('id', 'mobile' + index)
+                            .html(value + '[<span class="call">拨打</span>]<br />');
+              $('#cell').append(e);
+          })
           $('#cell-block').show();
         }
     }).fail(function(xhr, status, msg) { 
