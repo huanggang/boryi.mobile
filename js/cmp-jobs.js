@@ -266,6 +266,7 @@ $(document).ready(function(){
     function getMoreJobs(){
         var targetUrl = base + 'jobs?q=' + page.currentq + '&p=' + page.currentp;
         waitLoading.show("more");
+        $("#more").hide();
         $.ajax({
             url: targetUrl,
             dataType: "jsonp", 
@@ -274,10 +275,12 @@ $(document).ready(function(){
             timeout: 10000,
         }).done(function(d) {
             waitLoading.stop();
+            $("#more").show();
             // display results in the 2nd tab
             showJobs(d); 
         }).fail(function(xhr, status, msg) {
             waitLoading.stop();
+            $("#more").show();
             alert('网络不太给力，请重试'); 
         }); 
     }
