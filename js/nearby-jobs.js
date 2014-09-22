@@ -1,6 +1,7 @@
 $(document).ready(function(){
 
-  $('.ui-tab-item').click(tabHandler);
+  $('#tab-list').click(tabHandler);
+  var tab_detail_disabled = true;
 
   var baseurl = document.URL;
   var home = baseurl.substring(0, baseurl.lastIndexOf('/')) + "/";
@@ -136,50 +137,66 @@ $(document).ready(function(){
         var row = li.clone().attr("data-i", rjob.i).attr("data-lat", rjob.lat).attr("data-lng", rjob.lng).attr("data-d", rjob.d).attr("data-s", rjob.s).attr("data-t", rjob.t).attr("data-sx", rjob.sx).attr("data-al", rjob.al).attr("data-ah", rjob.ah).attr("data-hl", rjob.hl).attr("data-hh", rjob.hh).attr("data-edu", rjob.edu).attr("data-exp", rjob.exp).attr("data-sl", rjob.sl).attr("data-sh", rjob.sh).attr("data-c", rjob.c);
         row = row
           .append(div_row.clone().append(div_job.clone().append(rjob.t)))
-          .append(div_row_fc.clone().append(div_company.clone().append(rjob.c)).append(div_distance.clone().append(String(Math.round(rjob.d * 100)*10) + "米")));
+          .append(div_row_fc.clone().append(div_company.clone().append(rjob.c)).append(div_distance.clone().append(String(Math.ceil(rjob.d * 100)*10) + "米")));
         var salary = "";
-        if (rjobs.sl != null && rjobs.sh != null && rjobs.sl > 0 && rjobs.sh > 0){
-          salary = String(rjobs.sl) + "~" + String(rjobs.sh) + "元";
+        if (rjob.sl != null && rjob.sh != null && rjob.sl > 0 && rjob.sh > 0){
+          salary = String(rjob.sl) + "~" + String(rjob.sh) + "元";
         }
-        else if (rjobs.sl != null && rjobs.sl > 0){
-          salary = String(rjobs.sl) + "元以上";
+        else if (rjob.sl != null && rjob.sl > 0){
+          salary = String(rjob.sl) + "元以上";
         }
-        else if (rjobs.sh != null && rjobs.sh > 0){
-          salary = String(rjobs.sh) + "元以下";
+        else if (rjob.sh != null && rjob.sh > 0){
+          salary = String(rjob.sh) + "元以下";
         }
         var requirement = "";
-        if (rjobs.edu != null && rjobs.edu > 0){
-          requirement += "&middot;" + ;
+        if (rjob.edu != null && rjob.edu > 0){
+          requirement += "&middot;" + educations[rjob.edu];
+          if (rjob.edu > 1 && rjob.edu < 6){
+            requirement += "以上";
+          }
+          requirement += "学历";
         }
-        if (rjobs.exp != null && rjobs.exp > 0){
-          requirement += "&middot;" + String(rjobs.exp) + "年以上经验";
+        if (rjob.exp != null && rjob.exp > 0){
+          requirement += "&middot;" + String(rjob.exp) + "年以上经验";
         }
-        if (rjobs.sx != null){
-          if (rjobs.sx == 0){
+        if (rjob.sx != null){
+          if (rjob.sx == 0){
             requirement += "&middot;" + "女";
           }
           else {
             requirement += "&middot;" + "男";
           }
         }
-        if (rjobs.al != null && rjobs.ah != null && rjobs.al > 0 && rjobs.ah > 0){
-          requirement += "&middot;" + String(rjobs.al) + "~" + String(rjobs.ah) + "岁";
+        if (rjob.al != null && rjob.ah != null && rjob.al > 0 && rjob.ah > 0){
+          requirement += "&middot;" + String(rjob.al) + "~" + String(rjob.ah) + "岁";
         }
-        else if (rjobs.al != null && rjobs.al > 0){
-          requirement += "&middot;" + String(rjobs.al) + "岁以上";
+        else if (rjob.al != null && rjob.al > 0){
+          requirement += "&middot;" + String(rjob.al) + "岁以上";
         }
-        else if (rjobs.ah != null && rjobs.ah > 0){
-          requirement += "&middot;" + String(rjobs.ah) + "岁以下";
+        else if (rjob.ah != null && rjob.ah > 0){
+          requirement += "&middot;" + String(rjob.ah) + "岁以下";
         }
-        if (rjobs.hl != null && rjobs.hh != null && rjobs.hl > 0 && rjobs.hh > 0){
-          requirement += "&middot;" + String(rjobs.hl) + "~" + String(rjobs.hh) + "公分";
+        if (rjob.hl != null && rjob.hh != null && rjob.hl > 0 && rjob.hh > 0){
+          requirement += "&middot;" + String(rjob.hl) + "~" + String(rjob.hh) + "公分";
         }
-        else if (rjobs.hl != null && rjobs.hl > 0){
-          requirement += "&middot;" + String(rjobs.hl) + "公分以上";
+        else if (rjob.hl != null && rjob.hl > 0){
+          requirement += "&middot;" + String(rjob.hl) + "公分以上";
         }
-        else if (rjobs.hh != null && rjobs.hh > 0){
-          requirement += "&middot;" + String(rjobs.hh) + "公分以下";
+        else if (rjob.hh != null && rjob.hh > 0){
+          requirement += "&middot;" + String(rjob.hh) + "公分以下";
         }
+        var div_row_3 = div_row_fb.clone();
+        if (salary.length > 0){
+          div_row_3 = div_row_3.append(div_salary.clone().append(salary));
+        }
+        else if (requirement.length > 0){
+          requirement = requirement.substr(8);
+        }
+        if (requirement.length > 0){
+          div_row_3 = div_row_3.append(div_requirement.clone().append(requirement));
+        }
+        div_row_3 = div_row_3.append(div_date.clone().append(rjob.s.slice(0,10)));
+        row = row.append(div_row_3).append(div_row_fc.clone());
 
         $(".list").append(row);
       }
@@ -187,6 +204,28 @@ $(document).ready(function(){
       if (page.i * page.n < page.t){
         $("#more").show();
       }
+
+      $(".list-item").click(function(event){
+        var job = new Object();
+        job.i = $(this).attr("data-i");
+        job.lat = $(this.attr("data-lat"));
+        job.lng = $(this.attr("data-lng"));
+        job.d = $(this.attr("data-d"));
+        job.s = $(this.attr("data-s"));
+        job.t = $(this.attr("data-t"));
+        job.sx = $(this.attr("data-sx"));
+        job.al = $(this.attr("data-al"));
+        job.ah = $(this.attr("data-ah"));
+        job.hl = $(this.attr("data-hl"));
+        job.hh = $(this.attr("data-hh"));
+        job.edu = $(this.attr("data-edu"));
+        job.exp = $(this.attr("data-exp"));
+        job.sl = $(this.attr("data-sl"));
+        job.sh = $(this.attr("data-sh"));
+        job.c = $(this.attr("data-c"));
+
+        get_job(job);
+      });
     }
   }
 
@@ -221,6 +260,221 @@ $(document).ready(function(){
             js = merge_jobs_ids(d.j, hash);
           }
           display_jobs(js);
+        }
+    }, "json")
+    .fail(function( jqxhr, textStatus, error ) {
+      var err = textStatus + ", " + error;
+      alert( "网络出现问题，请刷新页面。" );
+    });
+  }
+
+  function merge_job(rjob, job){
+    job.e = rjob.e;
+    job.ss = rjob.ss;
+    job.hf = rjob.hf;
+    job.av = rjob.av;
+    job.hs = rjob.hs;
+    job.ml = rjob.ml;
+    job.tr = rjob.tr;
+    job.ot = rjob.ot;
+    job.ns = rjob.ns;
+    job.rqr = rjob.rqr;
+    job.dsc = rjob.dsc;
+    job.bnf = rjob.bnf;
+    job.phn = rjob.phn;
+    job.eml = rjob.eml;
+    job.add = rjob.add;
+    job.vws = rjob.vws;
+    return job;
+  }
+
+  function display_job(job){
+    var salary = "";
+    if (job.sl != null && job.sh != null && job.sl > 0 && job.sh > 0){
+      salary = String(job.sl) + "~" + String(job.sh) + "元";
+    }
+    else if (job.sl != null && job.sl > 0){
+      salary = String(job.sl) + "元以上";
+    }
+    else if (job.sh != null && job.sh > 0){
+      salary = String(job.sh) + "元以下";
+    }
+
+    var requirement = "";
+    if (job.edu != null && job.edu > 0){
+      requirement += "&middot;" + educations[job.edu];
+      if (job.edu > 1 && job.edu < 6){
+        requirement += "以上";
+      }
+      requirement += "学历";
+    }
+    if (job.exp != null && job.exp > 0){
+      requirement += "&middot;" + String(job.exp) + "年以上经验";
+    }
+    if (job.sx != null){
+      if (job.sx == 0){
+        requirement += "&middot;" + "女";
+      }
+      else {
+        requirement += "&middot;" + "男";
+      }
+    }
+    if (job.al != null && job.ah != null && job.al > 0 && job.ah > 0){
+      requirement += "&middot;" + String(job.al) + "~" + String(job.ah) + "岁";
+    }
+    else if (job.al != null && job.al > 0){
+      requirement += "&middot;" + String(job.al) + "岁以上";
+    }
+    else if (job.ah != null && job.ah > 0){
+      requirement += "&middot;" + String(job.ah) + "岁以下";
+    }
+    if (job.hl != null && job.hh != null && job.hl > 0 && job.hh > 0){
+      requirement += "&middot;" + String(job.hl) + "~" + String(job.hh) + "公分";
+    }
+    else if (job.hl != null && job.hl > 0){
+      requirement += "&middot;" + String(job.hl) + "公分以上";
+    }
+    else if (job.hh != null && job.hh > 0){
+      requirement += "&middot;" + String(job.hh) + "公分以下";
+    }
+    if (requirement.length > 0){
+      requirement = requirement.substr(8);
+    }
+
+    var benefit = "";
+    if (job.ss){
+      benefit += "&middot;" + "社保";
+    }
+    if (job.hf){
+      benefit += "&middot;" + "公积金";
+    }
+    if (job.av){
+      benefit += "&middot;" + "年休假";
+    }
+    if (job.hs){
+      benefit += "&middot;" + "住宿";
+    }
+    if (job.ml){
+      benefit += "&middot;" + "工作餐";
+    }
+    if (job.tr){
+      benefit += "&middot;" + "无出差";
+    }
+    if (job.ot){
+      benefit += "&middot;" + "无加班";
+    }
+    if (job.ns){
+      benefit += "&middot;" + "无夜班";
+    }
+    if (benefit.length > 0){
+      benefit = benefit.substr(8);
+    }
+
+    $("#complaint-job-id").val(job.i);
+
+    $("#company").text(job.c);
+    $("#title").text(job.t);
+    $("#postdate").text(job.s.slice(0,10));
+    $("#viewed").text(job.vws);
+
+    if (requirement.length > 0){
+      $("#requirement-list").show().html(requirement);
+    }
+    else{
+      $("#requirement-list").hide().html("");
+    }
+    if (salary.length > 0){
+      $("#salary").show().html(salary);
+    }
+    else{
+      $("#salary").hide().html("");
+    }
+    if (benefit.length > 0){
+      $("#benefit-list").show().html(benefit);
+    }
+    else{
+      $("#benefit-list").hide().html("");
+    }
+
+    if (job.rqr != null && job.rqr.length > 0){
+      $("#requirement").html(job.rqr);
+      $("#requirement-block").show();
+    }
+    else{
+      $("#requirement-block").hide();
+      $("#requirement").html("");
+    }
+    $("#description").html(job.dsc);
+    if (job.bnf != null && job.bnf.length > 0){
+      $("#benefit").html(job.bnf);
+      $("#benefit-block").show();
+    }
+    else{
+      $("#benefit-block").hide();
+      $("#benefit").html("");
+    }
+
+    if (job.phn != null && job.phn.length > 0){
+      var tag_a = '<a href="tel:phone">phone [<span class="call">拨打</span>]</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+      var phones = job.phn.split(",");
+      var html_phones = "";
+      for (var i = 0; i < phones.length; i++){
+        var phone = phones[i];
+        html_phones += tag_a.replace(/phone/g, phone);
+      }
+      if (html_phones.length > 0){
+        html_phones = html_phones.substr(0, html_phones.length - 5 - 14*6);
+      }
+      $("#phone-div").show().html("请联系：" + html_phones);
+    }
+    else{
+      $("#phone-div").hide().html("");
+    }
+
+    if (job.eml != null && job.eml.length > 0){
+      var tag_a = '<a href="mailto:email">email</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+      var emails = job.eml.split(",");
+      var html_emails = "";
+      for (var i = 0; i < emails.length; i++){
+        var email = emails[i];
+        html_emails += tag_a.replace(/email/g, email);
+      }
+      if (html_emails.length > 0){
+        html_emails = html_emails.substr(0, html_emails.length - 5 - 14*6);
+      }
+      $("#email-div").show().html("发邮件：" + html_emails);
+    }
+    else{
+      $("#email-div").hide().html("");
+    }
+
+    if (job.add != null && job.add.length > 0){
+      $("#address-div").show().html("地址：<span>" + job.add + "</span>");
+    }
+    else{
+      $("#address-div").hide().html("");
+    }
+  }
+
+  function get_job(job){
+    // get nearby jobs
+    var url = home + 'php/get_nearby_job.php';
+    var params = new Object();
+    params.i = job.i;
+
+    $.post(url, params, 
+      function(d) {
+        if (d.result != null && d.result == 0){
+          alert(hashMap.Get(String(d.error)));
+        }
+        else {
+          js = merge_job(d, job);
+          display_job(js);
+          if (tab_detail_disabled){
+            $('#tab-detail').click(tabHandler);
+            tab_detail_disabled = false;
+          }
+          $('#tab-detail').click();
         }
     }, "json")
     .fail(function( jqxhr, textStatus, error ) {
@@ -326,11 +580,11 @@ $(document).ready(function(){
   });
 
   $('#more').click(function(){
+    $(this).hide();
+    $(".list").append(html_searching);
     var openid = $("#openid").val();
     var key = $("#key").val();
     get_jobs(openid, key);
-    $(this).hide();
-    $(".list").append(html_searching);
   });
 
 });
