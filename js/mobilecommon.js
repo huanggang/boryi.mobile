@@ -153,7 +153,6 @@ var waitLoading = {
             target = $("#" + target);
         }
         if(!this.lastTarget || this.lastTarget.attr('id') != target.attr('id')){
-            console.log("aaa");
             this.lastTarget = target;
             this.loadingDiv.appendTo(target.parent());
         }
