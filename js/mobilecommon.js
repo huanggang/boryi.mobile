@@ -175,7 +175,8 @@ var waitLoading = {
 //@url is the url use to query data of the first page.
 //@maxRetry is the retries tiems.
 //@lag is the delay time to retry send request.
-function getTotalNumByRetry(target,url,maxRetry,lag){
+//@callback callback function use to set values
+function getTotalNumByRetry(target,url,maxRetry,lag,callback){
     //if target is not a string, we assume that it is a JQeury Object and get it's id.
     if(typeof target != "string" && !target instanceof String){
         target = target.attr("id");
@@ -193,10 +194,19 @@ function getTotalNumByRetry(target,url,maxRetry,lag){
                 cache: true,
                 timeout: 5000,
             }).done(function(d) {
-                waitLoading.stop();
-                page.total = d.t;
-                if (d.t > 20){//only show the more again when there are more than 20 results
-                    $('#' + target).show();
+                if(d.t>0){
+                    waitLoading.stop();
+                    callback(d);
+                    if (d.t > 20){//only show the more again when there are more than 20 results
+                        $('#' + target).show();
+                    }
+                } else {        // t is not returned, we should retry
+                    if (maxRetry-- > 0){
+                        setTimeout(getTotalNum, lag);
+                    } else {
+                        waitLoading.stop();
+                        $('#' + target).show();
+                    }
                 }
             }).fail(function(xhr, status, msg) {
                 // shouldn't alert() anything, or it will interrup the iteration
