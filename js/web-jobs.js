@@ -262,9 +262,6 @@
 
 
         var getTotalNum = function(){
-
-          console.log('start to query t...');
-
           $.ajax({
               url: targetUrl,
               dataType: "jsonp", 
@@ -281,7 +278,6 @@
             }
           }).fail(function(xhr, status, msg) {
               // shouldn't alert() anything, or it will interrup the iteration
-              console.log('failed to get t, retrying...' + maxRetry);
               if (maxRetry-- > 0){
                 setTimeout(getTotalNum, 5000);
               } else {
@@ -492,9 +488,6 @@
     $('#requirement-list').html(rqs);
     $('#benefit-list').html(bns);
 
-    console.log('...job...');
-    console.log(job);
-    
     if (company.ty){
       var cmpType = companyTypes[(company.ty - 1)];
       $('#cmp-type-str').html(cmpType);  
@@ -596,7 +589,6 @@
 
         var str = '';
         $.each(items, function(index, value){
-          console.log(href_prefix + ':' + value);
             var e = $('<a>').attr('href', href_prefix + ':' + value)
                           .attr('id', id_prefix + index).html(value + val_appenix + '<br />');
             str += e.wrap('<div>').parent().html();
