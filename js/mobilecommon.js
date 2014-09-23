@@ -109,7 +109,6 @@ function getSetCityFunction(){
         }
         else{
             var url = 'js/city/cities_' + provinceid + '.js';
-            console.log(url);
             var cities;
             $.ajax({
                 dataType: "script",
@@ -169,4 +168,41 @@ var waitLoading = {
         this.timer && (clearInterval(this.timer),this.timer=null);
         this.loadingDiv.hide();
     },
+}
+
+function getTotalNumByRetry(target,url,maxRetry,lag){
+    //if target is not a string, we assume that it is a JQeury Object and get it's id.
+    if(typeof target != "string" && !target instanceof String){
+        target = target.attr("id");
+    }
+
+    waitLoading.show(target,'更多结果正在查询中');
+    $('#' + target).hide()       // hide the more div
+    if (url.length > 0){
+        var targetUrl = url.replace("/jobs?", "/total?");
+        function getTotalNum(){
+            $.ajax({
+                url: targetUrl,
+                dataType: "jsonp", 
+                jsonpCallback: "_ttl" + Date.now(), 
+                cache: true,
+                timeout: 5000,
+            }).done(function(d) {
+                waitLoading.stop();
+                page.total = d.t;
+                if (d.t > 20){
+                    $('#' + target).show();
+                }
+            }).fail(function(xhr, status, msg) {
+                // shouldn't alert() anything, or it will interrup the iteration
+                if (maxRetry-- > 0){
+                    setTimeout(getTotalNum, lag);
+                } else {
+                    waitLoading.stop();
+                    $('#' + target).show();
+                }
+            });  
+        }
+        setTimeout(getTotalNum,lag);
+    }
 }

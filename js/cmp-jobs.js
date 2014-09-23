@@ -168,44 +168,7 @@ $(document).ready(function(){
         if (page.total == 0 && page.j.length == 20)
         {
             // probably has more than 20 items, try to collect the total
-            getTotalNumByRetry(firstPageUrl,3,5000);
-        }
-    }
-
-    //url is the url for first page.
-    function getTotalNumByRetry(url,maxRetry,lag){
-        waitLoading.show('more','更多结果正在查询中');
-        if (url.length > 0){
-            var targetUrl = url.replace("/jobs?", "/total?");
-            function getTotalNum(){
-
-                console.log('start to query t...');
-
-                $.ajax({
-                    url: targetUrl,
-                    dataType: "jsonp", 
-                    jsonpCallback: "_ttl" + Date.now(), 
-                    cache: true,
-                    timeout: 5000,
-                }).done(function(d) {
-                    if (d.t > 0){
-                        var t = d.t
-                        page.total = t;
-                        $('#more').show();
-                        waitLoading.stop();
-                    }
-                }).fail(function(xhr, status, msg) {
-                    // shouldn't alert() anything, or it will interrup the iteration
-                    console.log('failed to get t, retrying...' + maxRetry);
-                    if (maxRetry-- > 0){
-                        setTimeout(getTotalNum, lag);
-                    } else {
-                        $('#more').show();
-                        waitLoading.stop();
-                    }
-                });  
-            }
-            setTimeout(getTotalNum,lag);
+            getTotalNumByRetry('more',firstPageUrl,3,5000);
         }
     }
 
