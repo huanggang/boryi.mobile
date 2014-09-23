@@ -110,7 +110,8 @@ $(document).ready(function(){
                 // display results in the list tab 
                 $('#tab-list').trigger('click');
                 tooMuchResult.hide();
-                showJobs(d);          
+                showJobs(d);
+                window.scroll(0,0);
             }
         }).fail(function(xhr, status, msg) {
             waitLoading.stop();
@@ -173,9 +174,7 @@ $(document).ready(function(){
 
     //url is the url for first page.
     function getTotalNumByRetry(url,maxRetry,lag){
-        this.queryingDiv || (queryingDiv = $('#more').clone(false).html('更多结果正在查询中...').show());
-        queryingDiv.appendTo($('#more').parent());
-
+        waitLoading.show('more','更多结果正在查询中');
         if (url.length > 0){
             var targetUrl = url.replace("/jobs?", "/total?");
             function getTotalNum(){
@@ -193,7 +192,7 @@ $(document).ready(function(){
                         var t = d.t
                         page.total = t;
                         $('#more').show();
-                        queryingDiv.remove();
+                        waitLoading.stop();
                     }
                 }).fail(function(xhr, status, msg) {
                     // shouldn't alert() anything, or it will interrup the iteration
@@ -202,7 +201,7 @@ $(document).ready(function(){
                         setTimeout(getTotalNum, lag);
                     } else {
                         $('#more').show();
-                        queryingDiv.remove();
+                        waitLoading.stop();
                     }
                 });  
             }
@@ -256,10 +255,10 @@ $(document).ready(function(){
     }
     
     function k(s){
-        return ["","实习","校招","社招"][s] || "";
+        return ["实习","校招","社招"][s-1] || "";
     }
     function b(s){
-        return ["","国企","外企","民企","其他"][s] || "";
+        return ["国企","外企","民企","其他"][s-1] || "";
     }
 
     function showJobDetails(listid){

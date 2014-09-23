@@ -143,11 +143,11 @@ var tooMuchResult = {
 };
 
 var waitLoading = {
-    loadingDiv:$("<div style='text-align:center;padding:8px 0px' class='fc'>搜索中</div>"),
+    loadingDiv:$("<div style='text-align:center;padding:8px 0px' class='fc'></div>"),
     lastTarget:null,
     text:["·&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;","··&nbsp;&nbsp;&nbsp;","···&nbsp;&nbsp;","····&nbsp;","·····"],
     timer:null,
-    show:function(target){
+    show:function(target,content){
         //check whether target is a string,and convert it to a JQurey object if it is.
         if(typeof target == "string" || typeof target== "object" && target instanceof String){
             target = $("#" + target);
@@ -156,16 +156,17 @@ var waitLoading = {
             this.lastTarget = target;
             this.loadingDiv.appendTo(target.parent());
         }
-        this.loadingDiv.show();
+        this.loadingDiv.text(content || "搜索中").show();
         var tloadingDiv = this.loadingDiv;
         var i = 0;
         var text = this.text;
+        this.timer && clearInterval(this.timer); //clear the timer if there is any to avoid memory leak
         this.timer = setInterval(function(){
-            tloadingDiv.html("搜索中" + text[i++%(text.length)]);
+            tloadingDiv.html((content || "搜索中") + text[i++%(text.length)]);
         },500);
     },
     stop:function(){
-        this.timer && clearInterval(this.timer);
+        this.timer && (clearInterval(this.timer),this.timer=null);
         this.loadingDiv.hide();
     },
 }
