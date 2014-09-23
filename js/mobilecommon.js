@@ -170,6 +170,11 @@ var waitLoading = {
     },
 }
 
+//call this function send request when the website didn't return a t(total)
+//@target should be 'more' or a more JQeury Object.
+//@url is the url use to query data of the first page.
+//@maxRetry is the retries tiems.
+//@lag is the delay time to retry send request.
 function getTotalNumByRetry(target,url,maxRetry,lag){
     //if target is not a string, we assume that it is a JQeury Object and get it's id.
     if(typeof target != "string" && !target instanceof String){
@@ -190,7 +195,7 @@ function getTotalNumByRetry(target,url,maxRetry,lag){
             }).done(function(d) {
                 waitLoading.stop();
                 page.total = d.t;
-                if (d.t > 20){
+                if (d.t > 20){//only show the more again when there are more than 20 results
                     $('#' + target).show();
                 }
             }).fail(function(xhr, status, msg) {
