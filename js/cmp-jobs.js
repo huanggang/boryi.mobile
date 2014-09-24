@@ -168,7 +168,7 @@ $(document).ready(function(){
         if (page.total == 0 && page.j.length == 20)
         {
             // probably has more than 20 items, try to collect the total
-            getTotalNumByRetry('more',firstPageUrl,3,5000);
+            getTotalNumByRetry('more',firstPageUrl,3,5000,function(d){page.total = d.t;});
         }
     }
 
