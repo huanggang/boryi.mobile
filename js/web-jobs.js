@@ -391,6 +391,7 @@
     var age = job.age;
     var hgh = job.hgh;
     var lng = job.lng;
+    var wrk = job.wrk;
     
     var bnf = job.bnf;
     var ftr = job.ftr;
@@ -498,6 +499,15 @@
     if (size){
       $('#cmp-size-str').html(showRange(size, '人以上', '人以下', '人', ' - '));
     }
+
+    if (wrk){
+      var wrk_str = '';
+      $.each(wrk, function(index, value){
+        wrk_str += worktypes[value - 1] + '/';
+      })  
+      $('#work-type').html(wrk_str.substring(0, wrk_str.length - 1));
+    }
+
 
     setLocation(company['lc'].toString(), 'cmp-location');
 
