@@ -23,8 +23,6 @@ $(document).ready(function(){
 
   function init() {
     var openid = null;
-    var key = null;
-    var state = 0;
     var hash = window.location.hash;
     if (hash.length > 1){
       hash = hash.slice(1);
@@ -34,16 +32,10 @@ $(document).ready(function(){
         if (pairs[0] === "oi") {
           openid = pairs[1];
           $("#openid").val(openid);
-          state++;
-        }
-        else if (pairs[0] == "k"){
-          key = pairs[1];
-          $("#key").val(key);
-          state++;
         }
       }
     }
-    if (state < 2){
+    if (openid == null){
       if (confirm("请先关注伯益网微信公众号：boryi_com，并通过伯益网微信公众号访问此页面。")){
         window.location.href = home;
       }
@@ -53,7 +45,7 @@ $(document).ready(function(){
     }
     else{
       $(".list").append(html_searching);
-      get_hires(openid, key);
+      get_hires(openid);
     }
   }
 
@@ -165,12 +157,11 @@ $(document).ready(function(){
     }
   }
 
-  function get_hires(openid, key){
+  function get_hires(openid){
     // get nearby hires
     var url = home + 'php/get_nearby_hires.php';
     var params = new Object();
     params.oi = openid;
-    params.k = key;
     var hash = null;
     if (page.i > 0){
       var obj = get_ids();
@@ -363,13 +354,11 @@ $(document).ready(function(){
     if (valid)
     {
       var openid = $("#openid").val();
-      var key = $("#key").val();
       var id = $("#complaint-hire-id").val();
 
       var url = home + 'php/complaint_hire.php';
       var params = new Object();
       params.oi = openid;
-      params.k = key;
       params.i = id;
       params.t = complaint_type;
       params.c = complaint;
@@ -394,8 +383,7 @@ $(document).ready(function(){
     $(this).hide();
     $(".list").append(html_searching);
     var openid = $("#openid").val();
-    var key = $("#key").val();
-    get_hires(openid, key);
+    get_hires(openid);
   });
 
 });

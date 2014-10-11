@@ -23,13 +23,9 @@ $(document).ready(function(){
           $("#openid").val(pairs[1]);
           state++;
         }
-        else if (pairs[0] == "k"){
-          $("#key").val(pairs[1]);
-          state++;
-        }
       }
     }
-    if (state < 2){
+    if (state == 0){
       if (confirm("请先关注伯益网微信公众号：boryi_com，并通过伯益网微信公众号访问此页面。")){
         window.location.href = home;
       }
@@ -300,10 +296,10 @@ $(document).ready(function(){
 
     if(validator.form() && valid){
       var openid = get_string($("#openid").val());
-      var key = get_string($("#key").val());
       var company = get_string($("#company").val());
       var title = get_string($("#title").val());
       var end = get_string($("#end").val());
+      var work_type = Number($('#work-type option:selected').val());
       var sex = Number($(".gender:checked").val());
       var age_low = get_number($("#age-low").val());
       var age_high = get_number($("#age-high").val());
@@ -328,9 +324,9 @@ $(document).ready(function(){
       var url = home + 'php/post_nearby_job.php';
       var params = new Object();
       params.oi = openid;
-      params.k = key;
       params.e = end;
       params.t = title;
+      params.ty = work_type;
       if (sex != null) params.sx = sex;
       if (age_low != null) params.al = age_low;
       if (age_high != null) params.ah = age_high;
@@ -359,7 +355,7 @@ $(document).ready(function(){
       $.post(url, params, 
         function(d) {
           if (d.result){
-            window.location.href = home + "nearby-jobs.htm#oi=" + openid + "&k=" + key;
+            window.location.href = home + "nearby-jobs.htm#oi=" + openid;
           }
           else {
             alert(hashMap.Get(String(d.error)));

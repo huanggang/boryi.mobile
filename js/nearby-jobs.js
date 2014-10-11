@@ -23,8 +23,6 @@ $(document).ready(function(){
 
   function init() {
     var openid = null;
-    var key = null;
-    var state = 0;
     var hash = window.location.hash;
     if (hash.length > 1){
       hash = hash.slice(1);
@@ -34,16 +32,10 @@ $(document).ready(function(){
         if (pairs[0] === "oi") {
           openid = pairs[1];
           $("#openid").val(openid);
-          state++;
-        }
-        else if (pairs[0] == "k"){
-          key = pairs[1];
-          $("#key").val(key);
-          state++;
         }
       }
     }
-    if (state < 2){
+    if (openid == null){
       if (confirm("请先关注伯益网微信公众号：boryi_com，并通过伯益网微信公众号访问此页面。")){
         window.location.href = home;
       }
@@ -53,7 +45,7 @@ $(document).ready(function(){
     }
     else{
       $(".list").append(html_searching);
-      get_jobs(openid, key);
+      get_jobs(openid);
     }
   }
 
@@ -126,7 +118,7 @@ $(document).ready(function(){
       var div_row = $("<div />");
       var div_row_fc = div_row.clone().addClass("fc");
       var div_row_fb = div_row_fc.clone().addClass("fb");
-      var div_job = div_row.clone().addClass("list-title fb");
+      var div_job = div_row.clone().addClass("list-title fl fb w80");
       var div_company = div_row.clone().addClass("fl fb w80");
       var div_distance = div_row.clone().addClass("fr");
       var div_salary = div_row.clone().addClass("fl");
@@ -134,9 +126,9 @@ $(document).ready(function(){
       var div_date = div_distance.clone();
       for (var i = 0; i < rjobs.length; i++){
         var rjob = rjobs[i];
-        var row = li.clone().attr("data-i", rjob.i).attr("data-lat", rjob.lat).attr("data-lng", rjob.lng).attr("data-d", rjob.d).attr("data-s", rjob.s).attr("data-t", rjob.t).attr("data-sx", rjob.sx).attr("data-al", rjob.al).attr("data-ah", rjob.ah).attr("data-hl", rjob.hl).attr("data-hh", rjob.hh).attr("data-edu", rjob.edu).attr("data-exp", rjob.exp).attr("data-sl", rjob.sl).attr("data-sh", rjob.sh).attr("data-c", rjob.c);
+        var row = li.clone().attr("data-i", rjob.i).attr("data-lat", rjob.lat).attr("data-lng", rjob.lng).attr("data-d", rjob.d).attr("data-s", rjob.s).attr("data-t", rjob.t).attr("data-ty", rjob.ty).attr("data-sx", rjob.sx).attr("data-al", rjob.al).attr("data-ah", rjob.ah).attr("data-hl", rjob.hl).attr("data-hh", rjob.hh).attr("data-edu", rjob.edu).attr("data-exp", rjob.exp).attr("data-sl", rjob.sl).attr("data-sh", rjob.sh).attr("data-c", rjob.c);
         row = row
-          .append(div_row.clone().append(div_job.clone().append(rjob.t)))
+          .append(div_row.clone().append(div_job.clone().append(rjob.t)).append(div_distance.clone().append(worktypes[rjob.ty])))
           .append(div_row_fc.clone().append(div_company.clone().append(rjob.c)).append(div_distance.clone().append(String(Math.ceil(rjob.d * 100)*10) + "米")));
         var salary = "";
         if (rjob.sl != null && rjob.sh != null && rjob.sl > 0 && rjob.sh > 0){
@@ -213,6 +205,7 @@ $(document).ready(function(){
         job.d = $(this).attr("data-d");
         job.s = $(this).attr("data-s");
         job.t = $(this).attr("data-t");
+        job.ty = $(this).attr("data-ty");
         job.sx = $(this).attr("data-sx");
         job.al = $(this).attr("data-al");
         job.ah = $(this).attr("data-ah");
@@ -229,12 +222,11 @@ $(document).ready(function(){
     }
   }
 
-  function get_jobs(openid, key){
+  function get_jobs(openid){
     // get nearby jobs
     var url = home + 'php/get_nearby_jobs.php';
     var params = new Object();
     params.oi = openid;
-    params.k = key;
     var hash = null;
     if (page.i > 0){
       var obj = get_ids();
@@ -301,6 +293,9 @@ $(document).ready(function(){
     }
 
     var requirement = "";
+    if (job.ty != null && job.ty > 0){
+      requirement += "&middot;" + worktypes[job.ty];
+    }
     if (job.edu != null && job.edu > 0){
       requirement += "&middot;" + educations[job.edu];
       if (job.edu > 1 && job.edu < 6){
@@ -552,13 +547,11 @@ $(document).ready(function(){
     if (valid)
     {
       var openid = $("#openid").val();
-      var key = $("#key").val();
       var id = $("#complaint-job-id").val();
 
       var url = home + 'php/complaint_job.php';
       var params = new Object();
       params.oi = openid;
-      params.k = key;
       params.i = id;
       params.t = complaint_type;
       params.c = complaint;
@@ -583,8 +576,7 @@ $(document).ready(function(){
     $(this).hide();
     $(".list").append(html_searching);
     var openid = $("#openid").val();
-    var key = $("#key").val();
-    get_jobs(openid, key);
+    get_jobs(openid);
   });
 
 });

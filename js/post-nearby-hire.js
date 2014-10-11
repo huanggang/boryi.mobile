@@ -23,13 +23,9 @@ $(document).ready(function(){
           $("#openid").val(pairs[1]);
           state++;
         }
-        else if (pairs[0] == "k"){
-          $("#key").val(pairs[1]);
-          state++;
-        }
       }
     }
-    if (state < 2){
+    if (state == 0){
       if (confirm("请先关注伯益网微信公众号：boryi_com，并通过伯益网微信公众号访问此页面。")){
         window.location.href = home;
       }
@@ -185,7 +181,6 @@ $(document).ready(function(){
 
     if(validator.form() && valid){
       var openid = get_string($("#openid").val());
-      var key = get_string($("#key").val());
       var titles = get_string($("#titles").val());
       var end = get_string($("#end").val());
       var location = get_string($("#location").val());
@@ -196,7 +191,6 @@ $(document).ready(function(){
       var url = home + 'php/post_nearby_hire.php';
       var params = new Object();
       params.oi = openid;
-      params.k = key;
       params.e = end;
       params.t = titles;
       params.l = location;
@@ -210,7 +204,7 @@ $(document).ready(function(){
       $.post(url, params, 
         function(d) {
           if (d.result){
-            window.location.href = home + "nearby-hires.htm#oi=" + openid + "&k=" + key;
+            window.location.href = home + "nearby-hires.htm#oi=" + openid;
           }
           else {
             alert(hashMap.Get(String(d.error)));

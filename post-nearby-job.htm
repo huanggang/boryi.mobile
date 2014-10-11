@@ -22,11 +22,19 @@
 <body class="lh20">
   <form id="setForm">
   <input type="hidden" name="openid" id="openid">
-  <input type="hidden" name="key" id="key">
   <div class="detail-top">
     <div><label>公司名：</label><input type="text" name="company" class="w75" id="company"></div>
     <div><label>职位名：</label><input type="text" name="title" class="w75" id="title"></div>
     <div><label>截止日：</label><input type="text" name="end" class="w75" id="end"></div>
+    <div><label>工作类型：</label>
+      <select id="work-type">
+        <option value="1" selected="selected">全职</option>
+        <option value="2">兼职</option>
+        <option value="3">临时</option>
+        <option value="4">钟点</option>
+        <option value="5">实习</option>
+      </select>
+    </div>
   </div>
   <div class="detail-label">职位要求</div>
   <div class="detail">
