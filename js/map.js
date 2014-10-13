@@ -13,7 +13,7 @@ function map_click(target){
       if (map == null){
         if (target != null){
           $.ajax({
-              url: "http://api.map.baidu.com/geoconv/v1/?ak=B80e31da09924630b63f8aeb4d07218f&from=1&to=5&coords=" + target.lng + "," + target.lat,
+              url: "http://api.map.baidu.com/geoconv/v1/?ak=B80e31da09924630b63f8aeb4d07218f&from=3&to=5&coords=" + target.lng + "," + target.lat,
               dataType: "jsonp", 
               jsonpCallback: "_gps", 
               cache: true,
