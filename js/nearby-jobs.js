@@ -128,7 +128,7 @@ $(document).ready(function(){
         var rjob = rjobs[i];
         var row = li.clone().attr("data-i", rjob.i).attr("data-lat", rjob.lat).attr("data-lng", rjob.lng).attr("data-d", rjob.d).attr("data-s", rjob.s).attr("data-t", rjob.t).attr("data-ty", rjob.ty).attr("data-sx", rjob.sx).attr("data-al", rjob.al).attr("data-ah", rjob.ah).attr("data-hl", rjob.hl).attr("data-hh", rjob.hh).attr("data-edu", rjob.edu).attr("data-exp", rjob.exp).attr("data-sl", rjob.sl).attr("data-sh", rjob.sh).attr("data-c", rjob.c);
         row = row
-          .append(div_row.clone().append(div_job.clone().append(rjob.t)).append(div_distance.clone().append(worktypes[rjob.ty])))
+          .append(div_row.clone().append(div_job.clone().append(rjob.t)).append(div_distance.clone().append(worktypes[rjob.ty-1])))
           .append(div_row_fc.clone().append(div_company.clone().append(rjob.c)).append(div_distance.clone().append(String(Math.ceil(rjob.d * 100)*10) + "米")));
         var salary = "";
         if (rjob.sl != null && rjob.sh != null && rjob.sl > 0 && rjob.sh > 0){
@@ -142,7 +142,7 @@ $(document).ready(function(){
         }
         var requirement = "";
         if (rjob.edu != null && rjob.edu > 0){
-          requirement += "&middot;" + educations[rjob.edu];
+          requirement += "&middot;" + educations[rjob.edu-1];
           if (rjob.edu > 1 && rjob.edu < 6){
             requirement += "以上";
           }
@@ -294,10 +294,10 @@ $(document).ready(function(){
 
     var requirement = "";
     if (job.ty != null && job.ty > 0){
-      requirement += "&middot;" + worktypes[job.ty];
+      requirement += "&middot;" + worktypes[job.ty-1];
     }
     if (job.edu != null && job.edu > 0){
-      requirement += "&middot;" + educations[job.edu];
+      requirement += "&middot;" + educations[job.edu-1];
       if (job.edu > 1 && job.edu < 6){
         requirement += "以上";
       }

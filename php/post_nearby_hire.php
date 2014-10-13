@@ -92,13 +92,13 @@ else
     exit;
   }
 }
-$phone = $_POST['phn'];
+$phone = isset($_POST['phn']) ? $_POST['phn'] : null;
 $phone = verify_string_length($phone, 7, 64);
 $phone = format_phones($phone);
-$email = $_POST['eml'];
+$email = isset($_POST['eml']) ? $_POST['eml'] : null;
 $email = verify_string_length($email, 7, 64);
 $email = format_emails($email);
-$address = $_POST['add'];
+$address = isset($_POST['add']) ? $_POST['add'] : null;
 $address = verify_string_length($address, 4, 256);
 if (is_null($phone) && is_null($email) && is_null($address))
 {
@@ -192,11 +192,7 @@ if (is_null($json))
         $query_6 = "INSERT INTO nearby_hires_nh (nh_id,nh_lat,nh_lng) VALUES (?,?,?)";
 
         $stmt_4 = mysqli_prepare($con, $query_4);
-        $stmt_6 = mysqli_prepare($con, $query_6);
-
         mysqli_stmt_bind_param($stmt_4, "ssssssissss", $openid,$now->format("Y-m-d H:i:s"),$end->format("Y-m-d"),$titles,$location,$content,$duration,$contact,$phone,$email,$address);
-        mysqli_stmt_bind_param($stmt_6, "idd", $id,$l_latitude,$l_longitude);
-
         mysqli_stmt_execute($stmt_4);
         mysqli_stmt_close($stmt_4);
 
@@ -209,6 +205,8 @@ if (is_null($json))
 
         if ($id > 0)
         {
+          $stmt_6 = mysqli_prepare($con, $query_6);
+          mysqli_stmt_bind_param($stmt_6, "idd", $id,$l_latitude,$l_longitude);
           mysqli_stmt_execute($stmt_6);
           mysqli_stmt_close($stmt_6);
           $json = "{\"result\":1}";
@@ -230,7 +228,8 @@ echo $json;
 
 function is_valid_end($end)
 {
-  $today = (new DateTime)->format('Y-m-d');
+  $now = new DateTime;
+  $today = $now->format('Y-m-d');
   $today = new DateTime($today);
   $days = $today->diff($end)->days;
   return (($end > $today) && ($days <= 15) && ($days >= 5));

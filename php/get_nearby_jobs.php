@@ -9,7 +9,7 @@ if (is_null($openid))
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-$ids = $_POST["s"];
+$ids = isset($_POST["s"]) ? $_POST["s"] : null;
 
 $con=mysqli_connect($db_host, $db_user, $db_pwd, $db_name);
 // Check connection

@@ -1,6 +1,6 @@
 <?php 
 
-define(TOKEN, "boryiwx");
+define("TOKEN", "boryiwx");
 require_once("boryi.php");
 
 $b = new Boryi();

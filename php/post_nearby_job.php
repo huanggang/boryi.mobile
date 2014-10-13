@@ -50,13 +50,13 @@ else if (!is_valid_type($type))
   echo "{\"result\":0,\"error\":".$errors["invalid type"]."}";
   exit;
 }
-$sex = format_boolean(str2int($_POST['sx'], -1));
-$age_low = str2int($_POST['al']);
+$sex = isset($_POST['sx']) ? format_boolean(str2int($_POST['sx'], -1)) : -1;
+$age_low = isset($_POST['al']) ? str2int($_POST['al']) : 0;
 if ($age_low <= 0)
 {
   $age_low = null;
 }
-$age_high = str2int($_POST['ah']);
+$age_high = isset($_POST['ah']) ? str2int($_POST['ah']) : 0;
 if ($age_high <= 0)
 {
   $age_high = null;
@@ -66,12 +66,12 @@ if (!is_valid_age($age_low, $age_high))
   echo "{\"result\":0,\"error\":".$errors["invalid age"]."}";
   exit;
 }
-$height_low = str2int($_POST['hl']);
+$height_low = isset($_POST['hl']) ? str2int($_POST['hl']) : 0;
 if ($height_low <= 0)
 {
   $height_low = null;
 }
-$height_high = str2int($_POST['hh']);
+$height_high = isset($_POST['hh']) ? str2int($_POST['hh']) : 0;
 if ($height_high <= 0)
 {
   $height_high = null;
@@ -81,7 +81,7 @@ if (!is_valid_height($height_low, $height_high))
   echo "{\"result\":0,\"error\":".$errors["invalid height"]."}";
   exit;
 }
-$education = str2int($_POST['edu']);
+$education = isset($_POST['edu']) ? str2int($_POST['edu']) : 0;
 if ($education <= 0)
 {
   $education = null;
@@ -91,7 +91,7 @@ else if (!is_valid_education($education))
   echo "{\"result\":0,\"error\":".$errors["invalid education"]."}";
   exit;
 }
-$experience = str2int($_POST['exp'], -1);
+$experience = isset($_POST['exp']) ? str2int($_POST['exp'], -1) : -1;
 if ($experience < 0)
 {
   $experience = null;
@@ -101,12 +101,12 @@ else if (!is_valid_experience($experience))
   echo "{\"result\":0,\"error\":".$errors["invalid experience"]."}";
   exit;
 }
-$salary_low = str2int($_POST['sl']);
+$salary_low = isset($_POST['sl']) ? str2int($_POST['sl']) : 0;
 if ($salary_low <= 0)
 {
   $salary_low = null;
 }
-$salary_high = str2int($_POST['sh']);
+$salary_high = isset($_POST['sh']) ? str2int($_POST['sh']) : 0;
 if ($salary_high <= 0)
 {
   $salary_high = null;
@@ -116,15 +116,15 @@ if (!is_valid_salary($salary_low, $salary_high))
   echo "{\"result\":0,\"error\":".$errors["invalid salary"]."}";
   exit;
 }
-$social_security = format_boolean(str2int($_POST['ss'], -1));
-$housing_fund = format_boolean(str2int($_POST['hf'], -1));
-$annual_vacations = format_boolean(str2int($_POST['av'], -1));
-$housing = format_boolean(str2int($_POST['hs'], -1));
-$meals = format_boolean(str2int($_POST['ml'], -1));
-$no_travel = format_boolean(str2int($_POST['tr'], -1));
-$no_overtime = format_boolean(str2int($_POST['ot'], -1));
-$no_nightshift = format_boolean(str2int($_POST['ns'], -1));
-$requirement = $_POST['rqr'];
+$social_security = isset($_POST['ss']) ? format_boolean(str2int($_POST['ss'], -1)) : -1;
+$housing_fund = isset($_POST['hf']) ? format_boolean(str2int($_POST['hf'], -1)) : -1;
+$annual_vacations = isset($_POST['av']) ? format_boolean(str2int($_POST['av'], -1)) : -1;
+$housing = isset($_POST['hs']) ? format_boolean(str2int($_POST['hs'], -1)) : -1;
+$meals = isset($_POST['ml']) ? format_boolean(str2int($_POST['ml'], -1)) : -1;
+$no_travel = isset($_POST['tr']) ? format_boolean(str2int($_POST['tr'], -1)) : -1;
+$no_overtime = isset($_POST['ot']) ? format_boolean(str2int($_POST['ot'], -1)) : -1;
+$no_nightshift = isset($_POST['ns']) ? format_boolean(str2int($_POST['ns'], -1)) : -1;
+$requirement = isset($_POST['rqr']) ? $_POST['rqr'] : null;
 $requirement = verify_string_length($requirement, 1, 512);
 if (!is_null($requirement))
 {
@@ -151,7 +151,7 @@ else
     exit;
   }
 }
-$benefit = $_POST['bnf'];
+$benefit = isset($_POST['bnf']) ? $_POST['bnf'] : null;
 $benefit = verify_string_length($benefit, 1, 512);
 if (!is_null($benefit))
 {
@@ -178,13 +178,13 @@ else
     exit;
   }
 }
-$phone = $_POST['phn'];
+$phone = isset($_POST['phn']) ? $_POST['phn'] : null;
 $phone = verify_string_length($phone, 7, 64);
 $phone = format_phones($phone);
-$email = $_POST['eml'];
+$email = isset($_POST['eml']) ? $_POST['eml'] : null;
 $email = verify_string_length($email, 7, 64);
 $email = format_emails($email);
-$address = $_POST['add'];
+$address = isset($_POST['add']) ? $_POST['add'] : null;
 $address = verify_string_length($address, 4, 256);
 if (is_null($phone) && is_null($email) && is_null($address))
 {
@@ -279,11 +279,7 @@ if (is_null($json))
         $query_6 = "INSERT INTO nearby_jobs_nj (nj_id,nj_lat,nj_lng) VALUES (?,?,?)";
 
         $stmt_4 = mysqli_prepare($con, $query_4);
-        $stmt_6 = mysqli_prepare($con, $query_6);
-
         mysqli_stmt_bind_param($stmt_4, "ssssiiiiiiiiiiiiiiiiiisssssss", $openid,$now->format("Y-m-d H:i:s"),$end->format("Y-m-d"),$title,$type,$sex,$age_low,$age_high,$height_low,$height_high,$education,$experience,$salary_low,$salary_high,$social_security,$housing_fund,$annual_vacations,$housing,$meals,$no_travel,$no_overtime,$no_nightshift,$requirement,$description,$benefit,$company,$phone,$email,$address);
-        mysqli_stmt_bind_param($stmt_6, "idd", $id,$l_latitude,$l_longitude);
-
         mysqli_stmt_execute($stmt_4);
         mysqli_stmt_close($stmt_4);
 
@@ -296,6 +292,8 @@ if (is_null($json))
 
         if ($id > 0)
         {
+          $stmt_6 = mysqli_prepare($con, $query_6);
+          mysqli_stmt_bind_param($stmt_6, "idd", $id,$l_latitude,$l_longitude);
           mysqli_stmt_execute($stmt_6);
           mysqli_stmt_close($stmt_6);
           $json = "{\"result\":1}";
@@ -317,7 +315,8 @@ echo $json;
 
 function is_valid_end($end)
 {
-  $today = (new DateTime)->format('Y-m-d');
+  $now = new DateTime;
+  $today = $now->format('Y-m-d');
   $today = new DateTime($today);
   $days = $today->diff($end)->days;
   return (($end > $today) && ($days <= 30) && ($days >= 5));

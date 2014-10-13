@@ -97,7 +97,8 @@ if (is_null($json))
             $query_5 = "INSERT INTO complaint_nearby_hires_cnh (cnh_nh_id,cnh_openid,cnh_time,cnh_type,cnh_content) VALUES (?,?,?,?,?)";
             if ($stmt = mysqli_prepare($con, $query_5))
             {
-              mysqli_stmt_bind_param($stmt, "issis", $id, $openid, (new DateTime)->format("Y-m-d\TH:i:sP"), $type, $content);
+              $now = new DateTime;
+              mysqli_stmt_bind_param($stmt, "issis", $id, $openid, $now->format("Y-m-d\TH:i:sP"), $type, $content);
               if (mysqli_stmt_execute($stmt) != false)
               {
                 $json = "{\"result\":1}";
@@ -106,6 +107,7 @@ if (is_null($json))
               {
                 $json = "{\"result\":0,\"error\":".$errors["db write failure"]."}";
               }
+              mysqli_stmt_close($stmt);
             }
             else
             {

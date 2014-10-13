@@ -1,12 +1,13 @@
 <?php
+include_once '../util_global.php';
+include_once '../util_data.php';
 
 /*
 $openid: not null
 */
 function get_user_credit($openid)
 {
-  include_once '../util_global.php';
-  include_once '../util_data.php';
+  global $db_host, $db_user, $db_pwd, $db_name, $errors;
 
   $con=mysqli_connect($db_host, $db_user, $db_pwd, $db_name);
   // Check connection
@@ -25,32 +26,21 @@ function get_user_credit($openid)
   if ($stmt_1 = mysqli_prepare($con, $query_1))
   {
     mysqli_stmt_bind_param($stmt_1, "s", $openid);
-    $flag = mysqli_stmt_execute($stmt_1) != false;
-    if ($flag)
+    if (mysqli_stmt_execute($stmt_1))
     {
-      if ($result = mysqli_stmt_get_result($stmt_1))
+      mysqli_stmt_bind_result($stmt_1, $ucr_credit);
+      if (mysqli_stmt_fetch($stmt_1))
       {
-        if ($row = mysqli_fetch_array($result))
-        {
-          $ucr_credit = $row['ucr_credit'];
-
-          mysqli_free_result($result);
-
-          $json = "{\"result\":1,\"credit\":".$ucr_credit."}";
-        }
-        else
-        {
-          $json = "{\"result\":0,\"error\":".$errors["not found"]."}";
-        }
+        $json = "{\"result\":1,\"credit\":".$ucr_credit."}";
       }
       else
       {
-        $json = "{\"result\":0,\"error\":".$errors["db read failure"]."}";
+        $json = "{\"result\":0,\"error\":".$errors["not found"]."}";
       }
     }
     else
     {
-      $json = "{\"result\":0,\"error\":".$errors["internal error"]."}";
+      $json = "{\"result\":0,\"error\":".$errors["not found"]."}";
     }
     mysqli_stmt_close($stmt_1);
   }

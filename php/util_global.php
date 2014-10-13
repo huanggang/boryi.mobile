@@ -64,6 +64,13 @@ function str2datetime($str, $default = null)
   return $value;
 }
 
+function unixtimestamp2datetimestr($timestamp)
+{
+  $datetime = new DateTime();
+  $timestamp = $datetime->setTimestamp($timestamp);
+  return $timestamp->format('Y-m-d\TH:i:sP');
+}
+
 function jsonstr($str)
 {
   return (is_null($str) || empty($str)) ? "null" : "\"".str_replace("\"", "\\\"", str_replace("\r", "", str_replace("\n", "<br/>", $str)))."\"";
