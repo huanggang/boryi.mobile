@@ -449,6 +449,12 @@ $(document).ready(function(){
     else{
       $("#address-div").hide().html("");
     }
+
+    var target = new Object();
+    target.lng = job.lng;
+    target.lat = job.lat;
+    target.add = job.add;
+    map_click(target);
   }
 
   function get_job(job){
@@ -463,7 +469,7 @@ $(document).ready(function(){
           alert(hashMap.Get(String(d.error)));
         }
         else {
-          js = merge_job(d, job);
+          var js = merge_job(d, job);
           display_job(js);
           if (tab_detail_disabled){
             $('#tab-detail').click(tabHandler);

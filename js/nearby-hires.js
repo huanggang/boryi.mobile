@@ -256,6 +256,12 @@ $(document).ready(function(){
     else{
       $("#address-div").hide().html("");
     }
+    
+    var target = new Object();
+    target.lng = job.lng;
+    target.lat = job.lat;
+    target.add = job.add;
+    map_click(target);
   }
 
   function get_hire(hire){
@@ -270,7 +276,7 @@ $(document).ready(function(){
           alert(hashMap.Get(String(d.error)));
         }
         else {
-          hs = merge_hire(d, hire);
+          var hs = merge_hire(d, hire);
           display_hire(hs);
           if (tab_detail_disabled){
             $('#tab-detail').click(tabHandler);
