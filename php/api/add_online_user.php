@@ -43,7 +43,7 @@ function add_online_user($openid, $latitude, $longitude, $precision)
         if ($stmt_2 = mysqli_prepare($con, $query_2))
         {
           mysqli_stmt_bind_param($stmt_2, "ssddd", $openid, $l_entered, $l_latitude, $l_longitude, $l_precision);
-          $flag = mysqli_stmt_execute($stmt_2) != false;
+          mysqli_stmt_execute($stmt_2);
           mysqli_stmt_close($stmt_2);
         }
         else
@@ -51,10 +51,10 @@ function add_online_user($openid, $latitude, $longitude, $precision)
           $json = "{\"result\":0,\"error\":".$errors["internal error"]."}";
         }
 
-        if ($flag && $stmt_3 = mysqli_prepare($con, $query_3))
+        if ($stmt_3 = mysqli_prepare($con, $query_3))
         {
           mysqli_stmt_bind_param($stmt_3, "sddds", $now, $latitude, $longitude, $precision, $openid);
-          $flag = $flag && mysqli_stmt_execute($stmt_3) != false;
+          $flag = mysqli_stmt_execute($stmt_3);
           mysqli_stmt_close($stmt_3);
         }
         else
@@ -68,7 +68,7 @@ function add_online_user($openid, $latitude, $longitude, $precision)
         if ($stmt_4 = mysqli_prepare($con, $query_4))
         {
           mysqli_stmt_bind_param($stmt_4, "ssddd", $openid, $now, $latitude, $longitude, $precision);
-          $flag = mysqli_stmt_execute($stmt_4) != false;
+          $flag = mysqli_stmt_execute($stmt_4);
           mysqli_stmt_close($stmt_4);
         }
         else
@@ -94,7 +94,7 @@ function add_online_user($openid, $latitude, $longitude, $precision)
     else
     {
       mysqli_stmt_close($stmt_1);
-      $json = "{\"result\":0,\"error\":".$errors["not found"]."}";
+      $json = "{\"result\":0,\"error\":".$errors["internal error"]."}";
     }
   }
   else

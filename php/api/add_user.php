@@ -47,19 +47,21 @@ function add_user($openid, $nickname, $sex, $language, $city, $province, $countr
           if ($stmt_2 = mysqli_prepare($con, $query_2))
           {
             mysqli_stmt_bind_param($stmt_2, "ssisssssiss", $openid, $nickname, $sex, $language, $city, $province, $country, $headimgurl, $subscribe, unixtimestamp2datetimestr($subscribe_time), $unionid);
-            $flag = mysqli_stmt_execute($stmt_2) != false;
+            $flag = mysqli_stmt_execute($stmt_2);
             mysqli_stmt_close($stmt_2);
 
-            if ($flag && $stmt_5 = mysqli_prepare($con, $query_5))
+            if ($flag)
             {
-              mysqli_stmt_bind_param($stmt_5, "s", $openid);
-              $flag = $flag && mysqli_stmt_execute($stmt_5) != false;
-              mysqli_stmt_close($stmt_5);
-
-            }
-            else
-            {
-              $json = "{\"result\":0,\"error\":".$errors["internal error"]."}";
+              if ($stmt_5 = mysqli_prepare($con, $query_5))
+              {
+                mysqli_stmt_bind_param($stmt_5, "s", $openid);
+                $flag = mysqli_stmt_execute($stmt_5);
+                mysqli_stmt_close($stmt_5);
+              }
+              else
+              {
+                $json = "{\"result\":0,\"error\":".$errors["internal error"]."}";
+              }
             }
           }
           else
@@ -80,7 +82,7 @@ function add_user($openid, $nickname, $sex, $language, $city, $province, $countr
           if ($stmt_3 = mysqli_prepare($con, $query_3))
           {
             mysqli_stmt_bind_param($stmt_3, "sisssssss", $nickname, $sex, $language, $city, $province, $country, $headimgurl, $unionid, $openid);
-            $flag = mysqli_stmt_execute($stmt_3) != false;
+            $flag = mysqli_stmt_execute($stmt_3);
             mysqli_stmt_close($stmt_3);
           }
           else
@@ -93,7 +95,7 @@ function add_user($openid, $nickname, $sex, $language, $city, $province, $countr
           if ($stmt_4 = mysqli_prepare($con, $query_4))
           {
             mysqli_stmt_bind_param($stmt_4, "ss", $unsubscribe_time, $openid);
-            $flag = mysqli_stmt_execute($stmt_4) != false;
+            $flag = mysqli_stmt_execute($stmt_4);
             mysqli_stmt_close($stmt_4);
           }
           else
@@ -120,7 +122,7 @@ function add_user($openid, $nickname, $sex, $language, $city, $province, $countr
     else
     {
       mysqli_stmt_close($stmt_1);
-      $json = "{\"result\":0,\"error\":".$errors["not found"]."}";
+      $json = "{\"result\":0,\"error\":".$errors["internal error"]."}";
     }
   }
   else

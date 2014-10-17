@@ -99,7 +99,7 @@ if (is_null($json))
             {
               $now = new DateTime;
               mysqli_stmt_bind_param($stmt, "issis", $id, $openid, $now->format("Y-m-d\TH:i:sP"), $type, $content);
-              if (mysqli_stmt_execute($stmt) != false)
+              if (mysqli_stmt_execute($stmt))
               {
                 $json = "{\"result\":1}";
               }

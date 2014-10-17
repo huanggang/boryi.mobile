@@ -40,7 +40,7 @@ function get_user_credit($openid)
     }
     else
     {
-      $json = "{\"result\":0,\"error\":".$errors["not found"]."}";
+      $json = "{\"result\":0,\"error\":".$errors["internal error"]."}";
     }
     mysqli_stmt_close($stmt_1);
   }
