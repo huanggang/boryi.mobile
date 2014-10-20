@@ -5,52 +5,49 @@ include_once 'util_global.php';
 include_once 'util_data.php';
 include_once 'ac/AhoCorasickMatch.php';
 
-$openid = $_POST["oi"];
+$openid = isset($_POST["oi"]) ? $_POST["oi"] : null;
 if (is_null($openid))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-$end = str2datetime($_POST['e']);
-$end = new DateTime($end->format('Y-m-d'));
+$end = isset($_POST['e']) ? str2datetime($_POST['e']) : null;
 if (is_null($end))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-else if (!is_valid_end($end))
+$end = new DateTime($end->format('Y-m-d'));
+if (!is_valid_end($end))
 {
   echo "{\"result\":0,\"error\":".$errors["invalid end date"]."}";
   exit;
 }
-$title = $_POST['t'];
-$title = verify_string_length($title, 2, 32);
+$title = isset($_POST['t']) ? $_POST['t'] : null;
 if (is_null($title))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-else
+$title = verify_string_length($title, 2, 32);
+$res = ac_match($title);
+if (!is_null($res) && sizeof($res) > 0)
 {
-  $res = ac_match($title);
-  if (!is_null($res) && sizeof($res) > 0)
-  {
-    echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
-    exit;
-  }
+  echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
+  exit;
 }
-$type = str2int($_POST['ty']);
+$type = isset($_POST['ty']) ? str2int($_POST['ty']) : 0;
 if ($type <= 0)
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-else if (!is_valid_type($type))
+if (!is_valid_type($type))
 {
   echo "{\"result\":0,\"error\":".$errors["invalid type"]."}";
   exit;
 }
-$sex = isset($_POST['sx']) ? format_boolean(str2int($_POST['sx'], -1)) : -1;
+$sex = isset($_POST['sx']) ? format_boolean(str2int($_POST['sx'])) : null;
 $age_low = isset($_POST['al']) ? str2int($_POST['al']) : 0;
 if ($age_low <= 0)
 {
@@ -116,18 +113,18 @@ if (!is_valid_salary($salary_low, $salary_high))
   echo "{\"result\":0,\"error\":".$errors["invalid salary"]."}";
   exit;
 }
-$social_security = isset($_POST['ss']) ? format_boolean(str2int($_POST['ss'], -1)) : -1;
-$housing_fund = isset($_POST['hf']) ? format_boolean(str2int($_POST['hf'], -1)) : -1;
-$annual_vacations = isset($_POST['av']) ? format_boolean(str2int($_POST['av'], -1)) : -1;
-$housing = isset($_POST['hs']) ? format_boolean(str2int($_POST['hs'], -1)) : -1;
-$meals = isset($_POST['ml']) ? format_boolean(str2int($_POST['ml'], -1)) : -1;
-$no_travel = isset($_POST['tr']) ? format_boolean(str2int($_POST['tr'], -1)) : -1;
-$no_overtime = isset($_POST['ot']) ? format_boolean(str2int($_POST['ot'], -1)) : -1;
-$no_nightshift = isset($_POST['ns']) ? format_boolean(str2int($_POST['ns'], -1)) : -1;
+$social_security = isset($_POST['ss']) ? format_boolean(str2int($_POST['ss'])) : null;
+$housing_fund = isset($_POST['hf']) ? format_boolean(str2int($_POST['hf'])) : null;
+$annual_vacations = isset($_POST['av']) ? format_boolean(str2int($_POST['av'])) : null;
+$housing = isset($_POST['hs']) ? format_boolean(str2int($_POST['hs'])) : null;
+$meals = isset($_POST['ml']) ? format_boolean(str2int($_POST['ml'])) : null;
+$no_travel = isset($_POST['tr']) ? format_boolean(str2int($_POST['tr'])) : null;
+$no_overtime = isset($_POST['ot']) ? format_boolean(str2int($_POST['ot'])) : null;
+$no_nightshift = isset($_POST['ns']) ? format_boolean(str2int($_POST['ns'])) : null;
 $requirement = isset($_POST['rqr']) ? $_POST['rqr'] : null;
-$requirement = verify_string_length($requirement, 1, 512);
 if (!is_null($requirement))
 {
+  $requirement = verify_string_length($requirement, 1, 512);
   $res = ac_match($requirement);
   if (!is_null($res) && sizeof($res) > 0)
   {
@@ -135,26 +132,23 @@ if (!is_null($requirement))
     exit;
   }
 }
-$description = $_POST['dsc'];
-$description = verify_string_length($description, 4, 512);
+$description = isset($_POST['dsc']) ? $_POST['dsc'] : null;
 if (is_null($description))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-else
+$description = verify_string_length($description, 4, 512);
+$res = ac_match($description);
+if (!is_null($res) && sizeof($res) > 0)
 {
-  $res = ac_match($description);
-  if (!is_null($res) && sizeof($res) > 0)
-  {
-    echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
-    exit;
-  }
+  echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
+  exit;
 }
 $benefit = isset($_POST['bnf']) ? $_POST['bnf'] : null;
-$benefit = verify_string_length($benefit, 1, 512);
 if (!is_null($benefit))
 {
+  $benefit = verify_string_length($benefit, 1, 512);
   $res = ac_match($benefit);
   if (!is_null($res) && sizeof($res) > 0)
   {
@@ -162,37 +156,52 @@ if (!is_null($benefit))
     exit;
   }
 }
-$company = $_POST['c'];
-$company = verify_string_length($company, 2, 64);
+$company = isset($_POST['c']) ? $_POST['c'] : null;
 if (is_null($company))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-else
+$company = verify_string_length($company, 2, 64);
+$res = ac_match($company);
+if (!is_null($res) && sizeof($res) > 0)
 {
-  $res = ac_match($company);
-  if (!is_null($res) && sizeof($res) > 0)
-  {
-    echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
-    exit;
-  }
+  echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
+  exit;
+}
+$wx = isset($_POST['wx']) ? $_POST['wx'] : null;
+if (!is_null($wx))
+{
+  $wx = verify_string_length($wx, 6, 64);
+  $wx = format_wxs($wx);
+}
+$qq = isset($_POST['qq']) ? $_POST['qq'] : null;
+if (!is_null($qq))
+{
+  $qq = verify_string_length($qq, 4, 64);
+  $qq = format_qqs($qq);
 }
 $phone = isset($_POST['phn']) ? $_POST['phn'] : null;
-$phone = verify_string_length($phone, 7, 64);
-$phone = format_phones($phone);
+if (!is_null($phone))
+{
+  $phone = verify_string_length($phone, 7, 64);
+  $phone = format_phones($phone);
+}
 $email = isset($_POST['eml']) ? $_POST['eml'] : null;
-$email = verify_string_length($email, 7, 64);
-$email = format_emails($email);
+if (!is_null($email))
+{
+  $email = verify_string_length($email, 7, 64);
+  $email = format_emails($email);
+}
 $address = isset($_POST['add']) ? $_POST['add'] : null;
-$address = verify_string_length($address, 4, 256);
-if (is_null($phone) && is_null($email) && is_null($address))
+if (is_null($wx) && is_null($qq) && is_null($phone) && is_null($email) && is_null($address))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
 else if (!is_null($address))
 {
+  $address = verify_string_length($address, 4, 256);
   $res = ac_match($address);
   if (!is_null($res) && sizeof($res) > 0)
   {
@@ -226,7 +235,7 @@ if ($row = mysqli_fetch_array($result))
   $l_longitude = $row['l_longitude'];
   mysqli_free_result($result);
 }
-if (is_null($l_latitude) || is_null($l_longitude))
+if (is_null($l_latitude) || is_null($l_longitude) || ($l_latitude == 0 && $l_longitude == 0))
 {
   $json = "{\"result\":0,\"error\":".$errors["login location missed"]."}";
 }
@@ -255,8 +264,9 @@ if (is_null($json))
           || ($ucr_credit >= 150 && $ucr_job_count < 5) // max 5
           || ($ucr_credit >= 50 && $ucr_job_count < 2)) // max 2
         {
+          $ucr_credit++;
           $ucr_job_count++;
-          $query_3 = "UPDATE user_credits_ucr SET ucr_job_count=".sqlstrval($ucr_job_count)." WHERE ucr_openid=".sqlstr($openid);
+          $query_3 = "UPDATE user_credits_ucr SET ucr_credit=".strval($ucr_credit).", ucr_job_count=".sqlstrval($ucr_job_count)." WHERE ucr_openid=".sqlstr($openid);
           mysqli_query($con, $query_3);
         }
         else
@@ -266,7 +276,8 @@ if (is_null($json))
       }
       else
       {
-        $query_3 = "UPDATE user_credits_ucr SET ucr_job_start=".sqlstr($now->format('Y-m-d')).", ucr_job_count=1 WHERE ucr_openid=".sqlstr($openid);
+        $ucr_credit++;
+        $query_3 = "UPDATE user_credits_ucr SET ucr_credit=".strval($ucr_credit).", ucr_job_start=".sqlstr($now->format('Y-m-d')).", ucr_job_count=1 WHERE ucr_openid=".sqlstr($openid);
         mysqli_query($con, $query_3);
       }
 

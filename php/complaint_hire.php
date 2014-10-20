@@ -3,31 +3,31 @@
 include_once 'util_global.php';
 include_once 'util_data.php';
 
-$openid = $_POST["oi"];
+$openid = isset($_POST["oi"]) ? $_POST["oi"] : null;
 if (is_null($openid))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-$id = str2int($_POST["i"]);
+$id = isset($_POST["i"]) ? str2int($_POST["i"]) : 0;
 if ($id < 1)
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-$type = str2int($_POST["t"]);
+$type = isset($_POST["t"]) ? str2int($_POST["t"]) : 0;
 if ($type < 1 || $type > 5)
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-$content = $_POST["c"];
-$content = verify_string_length($content, 1, 256);
+$content = isset($_POST["c"]) ? $_POST["c"] : null;
 if (is_null($content))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
+$content = verify_string_length($content, 1, 256);
 
 $con=mysqli_connect($db_host, $db_user, $db_pwd, $db_name);
 // Check connection

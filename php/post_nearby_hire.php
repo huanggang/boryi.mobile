@@ -4,109 +4,115 @@ include_once 'util_global.php';
 include_once 'util_data.php';
 include_once 'ac/AhoCorasickMatch.php';
 
-$openid = $_POST["oi"];
+$openid = isset($_POST["oi"]) ? $_POST["oi"] : null;
 if (is_null($openid))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-$end = str2datetime($_POST['e']);
-$end = new DateTime($end->format('Y-m-d'));
+$end = isset($_POST['e']) ? str2datetime($_POST['e']) : null;
 if (is_null($end))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-else if (!is_valid_end($end))
+$end = new DateTime($end->format('Y-m-d'));
+if (!is_valid_end($end))
 {
   echo "{\"result\":0,\"error\":".$errors["invalid end date"]."}";
   exit;
 }
-$titles = $_POST['t'];
-$titles = verify_string_length($titles, 2, 64);
+$titles = isset($_POST['t']) ? $_POST['t'] : null;
 if (is_null($titles))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-else
+$titles = verify_string_length($titles, 2, 64);
+$res = ac_match($titles);
+if (!is_null($res) && sizeof($res) > 0)
 {
-  $res = ac_match($titles);
-  if (!is_null($res) && sizeof($res) > 0)
-  {
-    echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
-    exit;
-  }
+  echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
+  exit;
 }
-$location = $_POST['l'];
-$location = verify_string_length($location, 2, 256);
+$location = isset($_POST['l']) ? $_POST['l'] : null;
 if (is_null($location))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-else
+$location = verify_string_length($location, 2, 256);
+$res = ac_match($location);
+if (!is_null($res) && sizeof($res) > 0)
 {
-  $res = ac_match($location);
-  if (!is_null($res) && sizeof($res) > 0)
-  {
-    echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
-    exit;
-  }
+  echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
+  exit;
 }
-$content = $_POST['c'];
-$content = verify_string_length($content, 4, 512);
+$content = isset($_POST['c']) ? $_POST['c'] : null;
 if (is_null($content))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-else
+$content = verify_string_length($content, 4, 512);
+$res = ac_match($content);
+if (!is_null($res) && sizeof($res) > 0)
 {
-  $res = ac_match($content);
-  if (!is_null($res) && sizeof($res) > 0)
-  {
-    echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
-    exit;
-  }
+  echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
+  exit;
 }
-$duration = str2int($_POST['dur']);
+$duration = isset($_POST['dur']) ? str2int($_POST['dur']) : 0;
 if ($duration <= 0 || $duration > 1000)
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-$contact = $_POST['cnt'];
-$contact = verify_string_length($contact, 2, 32);
+$contact = isset($_POST['cnt']) ? $_POST['cnt'] : null;
 if (is_null($contact))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-else
+$contact = verify_string_length($contact, 2, 32);
+$res = ac_match($contact);
+if (!is_null($res) && sizeof($res) > 0)
 {
-  $res = ac_match($contact);
-  if (!is_null($res) && sizeof($res) > 0)
-  {
-    echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
-    exit;
-  }
+  echo "{\"result\":0,\"error\":".$errors["illegal words"].get_illegal_words($res)."}";
+  exit;
+}
+$wx = isset($_POST['wx']) ? $_POST['wx'] : null;
+if (!is_null($wx))
+{
+  $wx = verify_string_length($wx, 6, 64);
+  $wx = format_wxs($wx);
+}
+$qq = isset($_POST['qq']) ? $_POST['qq'] : null;
+if (!is_null($qq))
+{
+  $qq = verify_string_length($qq, 4, 64);
+  $qq = format_qqs($qq);
 }
 $phone = isset($_POST['phn']) ? $_POST['phn'] : null;
-$phone = verify_string_length($phone, 7, 64);
-$phone = format_phones($phone);
+if (!is_null($phone))
+{
+  $phone = verify_string_length($phone, 7, 64);
+  $phone = format_phones($phone);
+}
 $email = isset($_POST['eml']) ? $_POST['eml'] : null;
-$email = verify_string_length($email, 7, 64);
-$email = format_emails($email);
+if (!is_null($email))
+{
+  $email = verify_string_length($email, 7, 64);
+  $email = format_emails($email);
+}
 $address = isset($_POST['add']) ? $_POST['add'] : null;
-$address = verify_string_length($address, 4, 256);
-if (is_null($phone) && is_null($email) && is_null($address))
+if (is_null($wx) && is_null($qq) && is_null($phone) && is_null($email) && is_null($address))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
 else if (!is_null($address))
 {
+  $address = verify_string_length($address, 4, 256);
   $res = ac_match($address);
   if (!is_null($res) && sizeof($res) > 0)
   {
@@ -139,7 +145,7 @@ if ($row = mysqli_fetch_array($result))
   $l_longitude = $row['l_longitude'];
   mysqli_free_result($result);
 }
-if (is_null($l_latitude) || is_null($l_longitude))
+if (is_null($l_latitude) || is_null($l_longitude) || ($l_latitude == 0 && $l_longitude == 0))
 {
   $json = "{\"result\":0,\"error\":".$errors["login location missed"]."}";
 }
@@ -168,8 +174,9 @@ if (is_null($json))
           || ($ucr_credit >= 150 && $ucr_hire_count < 5) // max 5
           || ($ucr_credit >= 50 && $ucr_hire_count < 2)) // max 2
         {
+          $ucr_credit++;
           $ucr_hire_count++;
-          $query_3 = "UPDATE user_credits_ucr SET ucr_hire_count=".sqlstrval($ucr_hire_count)." WHERE ucr_openid=".sqlstr($openid);
+          $query_3 = "UPDATE user_credits_ucr SET ucr_credit=".strval($ucr_credit).", ucr_hire_count=".sqlstrval($ucr_hire_count)." WHERE ucr_openid=".sqlstr($openid);
           mysqli_query($con, $query_3);
         }
         else
@@ -179,7 +186,8 @@ if (is_null($json))
       }
       else
       {
-        $query_3 = "UPDATE user_credits_ucr SET ucr_hire_start=".sqlstr($now->format('Y-m-d')).", ucr_hire_count=1 WHERE ucr_openid=".sqlstr($openid);
+        $ucr_credit++;
+        $query_3 = "UPDATE user_credits_ucr SET ucr_credit=".strval($ucr_credit).", ucr_hire_start=".sqlstr($now->format('Y-m-d')).", ucr_hire_count=1 WHERE ucr_openid=".sqlstr($openid);
         mysqli_query($con, $query_3);
       }
 

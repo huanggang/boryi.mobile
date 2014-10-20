@@ -151,13 +151,69 @@ function get_geo_distance_query($table, $columns, $column_lat, $column_lng, $lat
   return $query;
 }
 
+function format_wxs($wxs)
+{
+  if (is_null($wxs))
+  {
+    return null;
+  }
+  $wxs = preg_split("/[^\d\w\-_]+/", $wxs);
+  $value = "";
+  for ($i = 0; $i < sizeof($wxs); $i++)
+  {
+    if (is_valid_wx($wxs[$i]))
+    {
+      $value = $value.",".$wxs[$i];
+    }
+  }
+  if (strlen($value) == 0)
+  {
+    return null;
+  }
+  return substr($value, 1);
+}
+
+function is_valid_wx($wx)
+{
+  $pattern = "/^\w[\d\w\-_]{5,19}$/";
+  return (preg_match($pattern, $wx) == 1);
+}
+
+function format_qqs($qqs)
+{
+  if (is_null($qqs))
+  {
+    return null;
+  }
+  $qqs = preg_split("/[^\d]+/", $qqs);
+  $value = "";
+  for ($i = 0; $i < sizeof($qqs); $i++)
+  {
+    if (is_valid_qq($qqs[$i]))
+    {
+      $value = $value.",".$qqs[$i];
+    }
+  }
+  if (strlen($value) == 0)
+  {
+    return null;
+  }
+  return substr($value, 1);
+}
+
+function is_valid_qq($qq)
+{
+  $pattern = "/^\d{4,12}$/";
+  return (preg_match($pattern, $qq) == 1);
+}
+
 function format_phones($phones)
 {
   if (is_null($phones))
   {
     return null;
   }
-  $phones = preg_split("/[\s,，]+/", $phones);
+  $phones = preg_split("/[^\d]+/", $phones);
   $value = "";
   for ($i = 0; $i < sizeof($phones); $i++)
   {

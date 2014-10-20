@@ -3,7 +3,7 @@
 include_once 'util_global.php';
 include_once 'util_data.php';
 
-$openid = $_POST["oi"];
+$openid = isset($_POST["oi"]) ? $_POST["oi"] : null;
 if (is_null($openid))
 {
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
