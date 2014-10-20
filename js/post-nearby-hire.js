@@ -32,7 +32,21 @@ $(document).ready(function(){
       else{
         window.location.href = home + "not_found.htm"
       }
+      return;
     }
+
+    // check if the user can post a job
+    var url = home + 'php/post_checking.php?oi=' + $("#openid").val() + "&t=2";
+    $.getJSON(url, 
+      function(d) {
+        if (d.result == 0){
+          alert(hashMap.Get(String(d.error)));
+        }
+      })
+    .fail(function( jqxhr, textStatus, error ) {
+      var err = textStatus + ", " + error;
+      //alert( "网络出现问题，请重新刷新页面。");
+    });
   }
 
   $.validator.addMethod("enddate", function(value, elem, param) {
@@ -76,6 +90,12 @@ $(document).ready(function(){
         required: true,
         rangelength: [2,64],
       },
+      weixin: {
+        rangelength: [6,64],
+      },
+      qq: {
+        rangelength: [4,64],
+      },
       phone: {
         rangelength: [7,64],
       },
@@ -112,6 +132,12 @@ $(document).ready(function(){
       contact: { 
         required: "请填写雇主名",
         rangelength: "雇主名至少两个字最长32个字", 
+      },
+      weixin: {
+        rangelength: "微信号以空格或逗号分隔，长度应在6至64个字",
+      },
+      qq: {
+        rangelength: "QQ号以空格或逗号分隔，长度应在4至64个字",
       },
       phone: {
         rangelength: "电话以空格或逗号分隔，长度应在7至64个字",
@@ -171,10 +197,12 @@ $(document).ready(function(){
     }
     // check phone, email, address
     $('#address').parent().find(".myerror").remove();
+    var weixin = get_string($("#weixin").val());
+    var qq = get_string($("#qq").val());
     var phone = get_string($("#phone").val());
     var email = get_string($("#email").val());
     var address = get_string($("#address").val());
-    if (phone == null && email == null && address == null) {
+    if (weixin == null && qq == null && phone == null && email == null && address == null) {
       valid = false;
       $('#address').parent().append(div.clone().append("请填写至少一种联系方式"));
     }
@@ -197,6 +225,8 @@ $(document).ready(function(){
       params.dur = duration;
       params.c = content;
       params.cnt = contact;
+      if (weixin != null) params.wx = weixin;
+      if (qq != null) params.qq = qq;
       if (phone != null) params.phn = phone;
       if (email != null) params.eml = email;
       if (address != null) params.add = address;
