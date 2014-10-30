@@ -37,8 +37,12 @@ class Boryi
     $this->boryi_urls['wx'] = "http://m.boryi.com/php/wx/action.php";
     $this->boryi_urls['nearby-jobs'] = "http://m.boryi.com/nearby-jobs.htm#oi=";
     $this->boryi_urls['nearby-hires'] = "http://m.boryi.com/nearby-hires.htm#oi=";
+    $this->boryi_urls['nearby-shops'] = "http://m.boryi.com/nearby-shops.htm#oi=";
+    $this->boryi_urls['nearby-news'] = "http://m.boryi.com/nearby-news.htm#oi=";
     $this->boryi_urls['post-nearby-job'] = "http://m.boryi.com/post-nearby-job.htm#oi=";
     $this->boryi_urls['post-nearby-hire'] = "http://m.boryi.com/post-nearby-hire.htm#oi=";
+    $this->boryi_urls['post-nearby-shop'] = "http://m.boryi.com/post-nearby-shop.htm#oi=";
+    $this->boryi_urls['post-nearby-news'] = "http://m.boryi.com/post-nearby-news.htm#oi=";
   }
 
   /*
@@ -90,9 +94,13 @@ class Boryi
                 ]},
                 {"name":"我发布","sub_button":[
                   {"type":"view","name":"附近招工","url":"' . str_replace("{STATE}", "n11", $redirect_url) . '"},
-                  {"type":"view","name":"周边包工","url":"' . str_replace("{STATE}", "n12", $redirect_url) . '"}
+                  {"type":"view","name":"周边包工","url":"' . str_replace("{STATE}", "n12", $redirect_url) . '"},
+                  {"type":"view","name":"附近商家","url":"' . str_replace("{STATE}", "n13", $redirect_url) . '"},
+                  {"type":"view","name":"广告迅息","url":"' . str_replace("{STATE}", "n14", $redirect_url) . '"}
                 ]},
                 {"name":"社区","sub_button":[
+                  {"type":"view","name":"附近商家","url":"' . str_replace("{STATE}", "n21", $redirect_url) . '"},
+                  {"type":"view","name":"广告迅息","url":"' . str_replace("{STATE}", "n22", $redirect_url) . '"},
                   {"type":"click","name":"我的信用","key":"V1001_CREDITS"},
                   {"type":"location_select","name":"我的位置","key":"rselfmenu_2_0"}
                 ]},
@@ -122,7 +130,7 @@ class Boryi
             $result_str = $this->eventHandle($post_obj);
             break;
           case 'text':
-            $result_str = "您好，伯益网帮助信息。\n一、搜工作\n  1、各人才网：全国各人才网发布的网络招聘信息；\n  2、政府官网：各级各地政府部门在其官网发布的招聘信息；\n  3、名企官网：国内知名企业在其官网发布的招聘信息；\n  4、附近招工：附近用户发布的招工信息；\n  5、周边包工：附近用户发布的包工信息。\n二、我发布\n  1、附近招工：发布招工信息，可以被附近用户搜索；\n  2、周边包工：发布包工信息，可以被附近用户搜索。\n三、社区\n  1、我的信用：您的信用积分，决定发布信息的数量；\n  2、我的位置：手动设置您的地理位置。\n注意：搜索或发布附近招工/周边包工信息时，请您开启GPS及伯益公众号的“提供位置信息”功能，或者手动设置您的地理位置。";
+            $result_str = "您好，伯益网帮助信息。\n一、搜工作\n  1、各人才网：全国各人才网发布的网络招聘信息；\n  2、政府官网：各级各地政府部门在其官网发布的招聘信息；\n  3、名企官网：国内知名企业在其官网发布的招聘信息；\n  4、附近招工：附近用户发布的招工信息；\n  5、周边包工：附近用户发布的包工信息。\n二、我发布\n  1、附近招工：发布招工信息，可以被附近用户搜索；\n  2、周边包工：发布包工信息，可以被附近用户搜索；\n  3、附近商家：发布商家信息，可以被附近用户搜索；\n  4、广告迅息：发布广告迅息，可以被附近用户搜索。\n三、社区\n  1、附近商家：搜索附近商家信息；\n  2、广告迅息：搜索附近广告迅息；\n  3、我的信用：您的信用积分，决定发布信息的数量；\n  4、我的位置：手动设置您的地理位置。\n注意：搜索或发布附近招工/周边包工/附近商家/广告迅息时，请您开启GPS及伯益公众号的“提供位置信息”功能，或者手动设置您的地理位置。";
             break;
           case 'location':
             $openid = $post_obj->FromUserName;
@@ -167,6 +175,18 @@ class Boryi
           break;
         case "n12":
           $url = $this->boryi_urls['post-nearby-hire'] . $openid;
+          break;
+        case "n13":
+          $url = $this->boryi_urls['post-nearby-shop'] . $openid;
+          break;
+        case "n14":
+          $url = $this->boryi_urls['post-nearby-news'] . $openid;
+          break;
+        case "n21":
+          $url = $this->boryi_urls['nearby-shops'] . $openid;
+          break;
+        case "n22":
+          $url = $this->boryi_urls['nearby-news'] . $openid;
           break;
       }
       header('Location: ' . $url);
@@ -251,7 +271,7 @@ class Boryi
     switch ($post_obj->Event)
     {
       case "subscribe":
-        $content = "感谢您关注伯益网公众号。\n全国招聘，一网搜尽。\n发送信息，获得帮助。\n点击菜单，获取信息。";
+        $content = "感谢您关注伯益网公众号。\n全国招聘，一网搜尽。\n周边迅息，一览无遗。\n点击菜单，获取信息。";
         // get user info and add user
         $this->save_user_info($openid);
         break;
@@ -318,23 +338,23 @@ class Boryi
                 $txt = "";
                 if ($credit >= 400)
                 {
-                  $txt = "恭喜您，您可无限制发布招工或包工信息。";
+                  $txt = "恭喜您，您可无限制发布迅息。";
                 }
                 else if ($credit >= 150)
                 {
-                  $txt = "每个月您能发布五条招工或包工信息。";
+                  $txt = "每个月您能发布招工、包工、商家、广告各五条迅息。";
                 }
                 else if ($credit >= 50)
                 {
-                  $txt = "每个月您能发布两条招工或包工信息。";
+                  $txt = "每个月您能发布招工、包工、商家、广告各两条迅息。";
                 }
                 else if ($credit >= 0)
                 {
-                  $txt = "每个月您能发布一条招工或包工信息。\n请您举报虚假非法招工或包工信息，获取积分。";
+                  $txt = "每个月您能发布招工、包工、商家、广告各一条迅息。\n请您举报虚假、非法迅息，获取积分。";
                 }
                 else
                 {
-                  $txt = "很遗憾，你不可以发布招或包工信息。";
+                  $txt = "很遗憾，你不可以发布任何迅息。";
                 }
                 $content = $content . $txt;
               }

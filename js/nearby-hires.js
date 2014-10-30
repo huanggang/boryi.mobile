@@ -37,10 +37,10 @@ $(document).ready(function(){
     }
     if (openid == null){
       if (confirm("请先关注伯益网微信公众号：boryi_com，并通过伯益网微信公众号访问此页面。")){
-        window.location.href = home;
+        window.location.href = home + "not_found.htm"
       }
       else{
-        window.location.href = home + "not_found.htm"
+        window.location.href = home;
       }
     }
     else{
@@ -198,6 +198,8 @@ $(document).ready(function(){
   function merge_hire(rhire, hire){
     hire.e = rhire.e;
     hire.cnt = rhire.c; // content
+    hire.wx = rhire.wx;
+    hire.qq = rhire.qq;
     hire.phn = rhire.ph;
     hire.eml = rhire.em;
     hire.add = rhire.ad;
@@ -215,6 +217,20 @@ $(document).ready(function(){
     $("#duration").text(hire.dr);
     $("#description").html(hire.cnt);
     $("#contact").text(hire.c);
+
+    if (hire.wx != null && hire.wx.length > 0){
+      $("#weixin-div").show().html("微信：<span>" + hire.wx + "</span>");
+    }
+    else{
+      $("#weixin-div").hide().html("");
+    }
+
+    if (hire.qq != null && hire.qq.length > 0){
+      $("#qq-div").show().html("QQ号：<span>" + hire.qq + "</span>");
+    }
+    else{
+      $("#qq-div").hide().html("");
+    }
 
     if (hire.phn != null && hire.phn.length > 0){
       var tag_a = '<a href="tel:phone">phone [<span class="call">拨打</span>]</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';

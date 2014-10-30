@@ -31,4 +31,7 @@ $errors["cannot post due to over limits"] = 402;
 
 $errors["illegal words"] = 501;
 
+$errors["upload file failed"] = 601;
+$errors["upload illegal file"] = 602;
+
 ?>

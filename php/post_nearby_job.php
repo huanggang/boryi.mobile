@@ -285,12 +285,12 @@ if (is_null($json))
       {
         $id = 0;
 
-        $query_4 = "INSERT INTO nearby_job_info_nj (nj_openid,nj_start,nj_end,nj_title,nj_type,nj_sex,nj_age_l,nj_age_h,nj_height_l,nj_height_h,nj_edu,nj_exp,nj_salary_l,nj_salary_h,nj_social_security,nj_housing_fund,nj_annual_vacations,nj_housing,nj_meals,nj_travel,nj_overtime,nj_nightshift,nj_requirement,nj_description,nj_benefit,nj_company,nj_phone,nj_email,nj_address) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $query_4 = "INSERT INTO nearby_job_info_nj (nj_openid,nj_start,nj_end,nj_title,nj_type,nj_sex,nj_age_l,nj_age_h,nj_height_l,nj_height_h,nj_edu,nj_exp,nj_salary_l,nj_salary_h,nj_social_security,nj_housing_fund,nj_annual_vacations,nj_housing,nj_meals,nj_travel,nj_overtime,nj_nightshift,nj_requirement,nj_description,nj_benefit,nj_company,nj_wx,nj_qq,nj_phone,nj_email,nj_address) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $query_5 = "SELECT last_insert_id() AS id";
         $query_6 = "INSERT INTO nearby_jobs_nj (nj_id,nj_lat,nj_lng) VALUES (?,?,?)";
 
         $stmt_4 = mysqli_prepare($con, $query_4);
-        mysqli_stmt_bind_param($stmt_4, "ssssiiiiiiiiiiiiiiiiiisssssss", $openid,$now->format("Y-m-d H:i:s"),$end->format("Y-m-d"),$title,$type,$sex,$age_low,$age_high,$height_low,$height_high,$education,$experience,$salary_low,$salary_high,$social_security,$housing_fund,$annual_vacations,$housing,$meals,$no_travel,$no_overtime,$no_nightshift,$requirement,$description,$benefit,$company,$phone,$email,$address);
+        mysqli_stmt_bind_param($stmt_4, "ssssiiiiiiiiiiiiiiiiiisssssssss", $openid,$now->format("Y-m-d H:i:s"),$end->format("Y-m-d"),$title,$type,$sex,$age_low,$age_high,$height_low,$height_high,$education,$experience,$salary_low,$salary_high,$social_security,$housing_fund,$annual_vacations,$housing,$meals,$no_travel,$no_overtime,$no_nightshift,$requirement,$description,$benefit,$company,$wx,$qq,$phone,$email,$address);
         mysqli_stmt_execute($stmt_4);
         mysqli_stmt_close($stmt_4);
 
@@ -330,7 +330,7 @@ function is_valid_end($end)
   $today = $now->format('Y-m-d');
   $today = new DateTime($today);
   $days = $today->diff($end)->days;
-  return (($end > $today) && ($days <= 30) && ($days >= 5));
+  return (($end > $today) && ($days <= 31) && ($days >= 5));
 }
 
 function is_valid_age($age_low, $age_high)

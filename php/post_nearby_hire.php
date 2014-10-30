@@ -195,12 +195,12 @@ if (is_null($json))
       {
         $id = 0;
 
-        $query_4 = "INSERT INTO nearby_hire_info_nh (nh_openid,nh_start,nh_end,nh_titles,nh_location,nh_content,nh_duration,nh_contact,nh_phone,nh_email,nh_address) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        $query_4 = "INSERT INTO nearby_hire_info_nh (nh_openid,nh_start,nh_end,nh_titles,nh_location,nh_content,nh_duration,nh_contact,nh_wx,nh_qq,nh_phone,nh_email,nh_address) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $query_5 = "SELECT last_insert_id() AS id";
         $query_6 = "INSERT INTO nearby_hires_nh (nh_id,nh_lat,nh_lng) VALUES (?,?,?)";
 
         $stmt_4 = mysqli_prepare($con, $query_4);
-        mysqli_stmt_bind_param($stmt_4, "ssssssissss", $openid,$now->format("Y-m-d H:i:s"),$end->format("Y-m-d"),$titles,$location,$content,$duration,$contact,$phone,$email,$address);
+        mysqli_stmt_bind_param($stmt_4, "ssssssissss", $openid,$now->format("Y-m-d H:i:s"),$end->format("Y-m-d"),$titles,$location,$content,$duration,$contact,$wx,$qq,$phone,$email,$address);
         mysqli_stmt_execute($stmt_4);
         mysqli_stmt_close($stmt_4);
 

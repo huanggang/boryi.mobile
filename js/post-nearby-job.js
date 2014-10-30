@@ -27,10 +27,10 @@ $(document).ready(function(){
     }
     if (state == 0){
       if (confirm("请先关注伯益网微信公众号：boryi_com，并通过伯益网微信公众号访问此页面。")){
-        window.location.href = home;
+        window.location.href = home + "not_found.htm"
       }
       else{
-        window.location.href = home + "not_found.htm"
+        window.location.href = home;
       }
       return;
     }
@@ -55,8 +55,8 @@ $(document).ready(function(){
     dtoday.setHours(0,0,0,0);
     var dend = new Date($("#end").val());
     var time = dend.getTime() - dtoday.getTime();
-    return (time >= (5 * aday) && time <= (30 * aday));
-  }, "职位有效期至少5天最多30天");
+    return (time >= (5 * aday) && time <= (31 * aday));
+  }, "职位有效期至少5天最多31天");
 
   $.validator.addMethod("age", function(value, elem, param) {
     var age_low = $("#age-low").val();
@@ -181,7 +181,7 @@ $(document).ready(function(){
       end: {
         required: "请填写截止日期",
         date: "请输入截止日期：年/月/日",
-        enddate: "职位有效期至少5天最多30天",
+        enddate: "职位有效期至少5天最多31天",
       },
       "age-low": {
         digits: "请输入整数",

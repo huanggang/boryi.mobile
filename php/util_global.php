@@ -11,9 +11,13 @@ $max_pages = 50;
 $per_page = 20;
 
 // distance
-$distance_min = 1;
+$distance_min = 2;
 $distance_max = 5;
 $distance_step = 1;
+
+// photo
+$max_photo_size = 524288; // 500KB
+$dir_photo = "upload/news/img/"; 
 
 // convert string to interger with default value
 function str2int($str, $default = 0)
@@ -118,7 +122,7 @@ function downgrade_credit($credit)
 
 //$table = "nearby_jobs_nj"
 //$columns = "nj_id,nj_lat,nj_lng";
-function get_geo_distance_query($table, $columns, $column_lat, $column_lng, $latitude, $longitude, $distance, $number)
+function get_geo_distance_query($table, $columns, $column_lat, $column_lng, $latitude, $longitude, $conditions, $distance, $number)
 {
   $radius = 6378.137; // kilometers
   $diameter = 2 * $radius;
@@ -141,6 +145,11 @@ function get_geo_distance_query($table, $columns, $column_lat, $column_lng, $lat
 
   $query = $query.$column_lat." BETWEEN ".$lat1." AND ".$lat2;
   $query = $query." AND ".$column_lng." BETWEEN ".$lng1." AND ".$lng2;
+
+  if (!is_null($conditions))
+  {
+    $query = $query.$conditions;
+  }
 
   $query = $query." HAVING distance<".$distance." ORDER BY distance";
   if (!is_null($number) && $number > 0)
@@ -297,6 +306,27 @@ function get_illegal_words($res)
 {
   $words = ",\"words\":[\"" . implode("\",\"", $res) . "\"]";
   return $words;
+}
+
+function get_cat_level($id)
+{
+  $level = 3;
+  $max = 3;
+  $step = 100;
+  for ($i = 2; $i > 0; $i--)
+  {
+    $delta = pow($step, ($max - $i));
+    $value = floor($id / $delta) * $delta;
+    if ($value == $id)
+    {
+      $level = $i;
+    }
+    else
+    {
+      break;
+    }
+  }
+  return $level;
 }
 
 ?>

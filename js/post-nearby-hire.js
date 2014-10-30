@@ -27,10 +27,10 @@ $(document).ready(function(){
     }
     if (state == 0){
       if (confirm("请先关注伯益网微信公众号：boryi_com，并通过伯益网微信公众号访问此页面。")){
-        window.location.href = home;
+        window.location.href = home + "not_found.htm"
       }
       else{
-        window.location.href = home + "not_found.htm"
+        window.location.href = home;
       }
       return;
     }

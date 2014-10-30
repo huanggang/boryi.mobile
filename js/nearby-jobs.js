@@ -37,10 +37,10 @@ $(document).ready(function(){
     }
     if (openid == null){
       if (confirm("请先关注伯益网微信公众号：boryi_com，并通过伯益网微信公众号访问此页面。")){
-        window.location.href = home;
+        window.location.href = home + "not_found.htm"
       }
       else{
-        window.location.href = home + "not_found.htm"
+        window.location.href = home;
       }
     }
     else{
@@ -273,6 +273,8 @@ $(document).ready(function(){
     job.rqr = rjob.rqr;
     job.dsc = rjob.dsc;
     job.bnf = rjob.bnf;
+    job.wx = rjob.wx;
+    job.qq = rjob.qq;
     job.phn = rjob.phn;
     job.eml = rjob.eml;
     job.add = rjob.add;
@@ -407,6 +409,20 @@ $(document).ready(function(){
     else{
       $("#benefit-block").hide();
       $("#benefit").html("");
+    }
+
+    if (job.wx != null && job.wx.length > 0){
+      $("#weixin-div").show().html("微信：<span>" + job.wx + "</span>");
+    }
+    else{
+      $("#weixin-div").hide().html("");
+    }
+
+    if (job.qq != null && job.qq.length > 0){
+      $("#qq-div").show().html("QQ号：<span>" + job.qq + "</span>");
+    }
+    else{
+      $("#qq-div").hide().html("");
     }
 
     if (job.phn != null && job.phn.length > 0){

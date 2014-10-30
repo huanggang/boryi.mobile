@@ -49,10 +49,11 @@ if (is_null($json))
   {
     $total = 0;
     $distance = $distance_min;
+    $max_total = $max_pages * $per_page;
     while ($total < $per_page && $distance <= $distance_max)
     {
-      $number = $distance > $distance_min ? $per_page : null;
-      $query_1 = get_geo_distance_query('nearby_hires_nh', 'nh_id,nh_lat,nh_lng', 'nh_lat', 'nh_lng', $l_latitude, $l_longitude, $distance, $number);
+      $number = $max_total - $total;
+      $query_1 = get_geo_distance_query('nearby_hires_nh', 'nh_id,nh_lat,nh_lng', 'nh_lat', 'nh_lng', $l_latitude, $l_longitude, null, $distance, $number);
     
       $total = 0;
       $nh_ids = array();
@@ -71,10 +72,6 @@ if (is_null($json))
       }
       mysqli_free_result($result);
 
-      if ($distance > $distance_min && $total > $per_page)
-      {
-        $total = $per_page;
-      }
       $distance += $distance_step;
     }
   }
