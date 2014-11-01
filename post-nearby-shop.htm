@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Cache-Control" content="no-cache"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="MobileOptimized" content="240"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <meta name="format-detection" content="email=no"/>
+  <meta name="format-detection" content="address=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="msapplication-tap-highlight" content="no"/>
+  <title>伯益网&dash;&dash;发布附近商家</title>
+  <link href="css/base.css" rel="stylesheet" type="text/css"/>
+  <script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
+  <script src="js/jquery.validate.min.js" type="text/javascript"></script>
+  <script src="js/errorcodes.js" type="text/javascript"></script>
+  <script src="js/src_shops.js" type="text/javascript"></script>
+  <script src="js/cat_att_functions.js" type="text/javascript"></script>
+  <script src="js/post-nearby-shop.js" type="text/javascript"></script>
+</head>
+<body class="lh20">
+  <form id="setForm">
+  <input type="hidden" name="openid" id="openid">
+  <div class="detail-top">
+    <div><label>商家名：</label><input type="text" name="shop" class="w75" id="shop"></div>
+    <div><label>截止日：</label><span id="end"></span></div>
+    <div><label>所属类别：</label>
+      <select id="cat_level_1"></select>
+      <div class="hd" id="cat_level_2_div"><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <select id="cat_level_2"></select>
+      </div>
+      <div class="hd" id="cat_level_3_div"><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <select id="cat_level_3"></select>
+      </div>
+    </div>
+  </div>
+  <div class="detail-label hd" id="att_tag_label">类别标签</div>
+  <div class="detail hd" id="att_tag_div">
+  </div>
+  <div class="detail-label">营业时间</div>
+  <div class="detail">
+    <textarea rows="5" class="w95" id="business_hours"></textarea>
+  </div>
+  <div class="detail-label">服务描述</div>
+  <div class="detail">
+    <textarea rows="5" class="w95" id="services"></textarea>
+  </div>
+  <div class="detail-label">商品描述</div>
+  <div class="detail">
+    <textarea rows="5" class="w95" id="products"></textarea>
+  </div>
+  <div class="detail-label">商家简介</div>
+  <div class="detail">
+    <textarea rows="5" class="w95" id="content"></textarea>
+  </div>
+  <div class="detail-label">特色标签</div>
+  <div class="detail">
+    <div class="fl mgr10"><input type="checkbox" id="free_parking"><label for="free_parking">免费停车</label></div>
+    <div class="fl mgr10"><input type="checkbox" id="free_wifi"><label for="free_wifi">无线上网</label></div>
+    <div class="fl mgr10"><input type="checkbox" id="cards"><label for="cards">可以刷卡</label></div>
+    <div class="fl mgr10"><input type="checkbox" id="restroom"><label for="restroom">公共厕所</label></div>
+    <div class="fc"></div>
+  </div>
+  <div class="detail-label">联系方式</div>
+  <div class="detail">
+    <div><label>微信：</label><input type="text" name="weixin" class="w80" id="weixin"></div>
+    <div><label>QQ ：</label><input type="text" name="qq" class="w80" id="qq"></div>
+    <div><label>电话：</label><input type="text" name="phone" class="w80" id="phone"></div>
+    <div><label>地址：</label><input type="text" name="address" class="w80" id="address"></div>
+  </div>
+  <div class="mgt10 txtc"><input type="submit" name="submit" value="发布" id="postShop"></div>
+  </form>
+  <footer class="mgt10">
+    <div>
+      &copy;2014&nbsp;伯益&nbsp;&nbsp;湘ICP备13011766
+    </div>
+  </footer>
+</body>
+</html>

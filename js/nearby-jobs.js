@@ -419,7 +419,7 @@ $(document).ready(function(){
     }
 
     if (job.qq != null && job.qq.length > 0){
-      $("#qq-div").show().html("QQ号：<span>" + job.qq + "</span>");
+      $("#qq-div").show().html("QQ ：<span>" + job.qq + "</span>");
     }
     else{
       $("#qq-div").hide().html("");

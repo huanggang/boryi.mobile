@@ -226,7 +226,7 @@ $(document).ready(function(){
     }
 
     if (hire.qq != null && hire.qq.length > 0){
-      $("#qq-div").show().html("QQ号：<span>" + hire.qq + "</span>");
+      $("#qq-div").show().html("QQ ：<span>" + hire.qq + "</span>");
     }
     else{
       $("#qq-div").hide().html("");
@@ -274,9 +274,9 @@ $(document).ready(function(){
     }
     
     var target = new Object();
-    target.lng = job.lng;
-    target.lat = job.lat;
-    target.add = job.add;
+    target.lng = hire.lng;
+    target.lat = hire.lat;
+    target.add = hire.add;
     map_click(target);
   }
 

@@ -1,4 +1,4 @@
-// http://m.boryi.com/post-nearby-job.htm#oi=9032g19pvbh19g&k=02349
+// http://m.boryi.com/post-nearby-job.htm#oi=9032g19pvbh19g
 $(document).ready(function(){
 
   var baseurl = document.URL;

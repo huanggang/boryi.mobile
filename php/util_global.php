@@ -316,7 +316,7 @@ function get_cat_level($id)
   for ($i = 2; $i > 0; $i--)
   {
     $delta = pow($step, ($max - $i));
-    $value = floor($id / $delta) * $delta;
+    $value = intval(floor($id / $delta) * $delta);
     if ($value == $id)
     {
       $level = $i;
