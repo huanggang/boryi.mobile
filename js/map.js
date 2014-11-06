@@ -1,6 +1,8 @@
 function map_click(target){
   // 百度地图API功能
   var map = null;
+  $("#golist").text("显示地图").unbind("click");
+  $("#allmap").hide().html("");
 
   $("#golist").click(function(event){
     if ($("#allmap").is(":visible")){
