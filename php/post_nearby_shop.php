@@ -204,12 +204,12 @@ if (is_null($json))
       {
         $id = 0;
 
-        $query_4 = "INSERT INTO nearby_shop_info_ns (ns_openid,ns_start,ns_end,ns_shp_att_ids,ns_business_hours,ns_services,ns_products,ns_content,ns_free_parking,ns_free_wifi,ns_cards,ns_wx,ns_qq,ns_phone,ns_address) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $query_4 = "INSERT INTO nearby_shop_info_ns (ns_openid,ns_owner_openid,ns_start,ns_end,ns_shp_att_ids,ns_business_hours,ns_services,ns_products,ns_content,ns_free_parking,ns_free_wifi,ns_cards,ns_wx,ns_qq,ns_phone,ns_address) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $query_5 = "SELECT last_insert_id() AS id";
         $query_6 = "INSERT INTO nearby_shops_ns (ns_id,ns_lat,ns_lng,ns_shp_cat_id,ns_name,ns_restroom) VALUES (?,?,?,?,?,?)";
 
         $stmt_4 = mysqli_prepare($con, $query_4);
-        mysqli_stmt_bind_param($stmt_4, "ssssssssiiissss", $openid,$now->format("Y-m-d H:i:s"),$end->format("Y-m-d"),$att_ids,$business_hours,$services,$products,$content,$free_parking,$free_wifi,$cards,$wx,$qq,$phone,$address);
+        mysqli_stmt_bind_param($stmt_4, "sssssssssiiissss", $openid,$openid,$now->format("Y-m-d H:i:s"),$end->format("Y-m-d"),$att_ids,$business_hours,$services,$products,$content,$free_parking,$free_wifi,$cards,$wx,$qq,$phone,$address);
         mysqli_stmt_execute($stmt_4);
         mysqli_stmt_close($stmt_4);
 

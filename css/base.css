@@ -70,9 +70,10 @@ ul, ol, li {
   font-size: 12px;
 }
 
-#complaint-btn {
+#complaint-btn, .small-btn {
   background-color: #fcfdfd;
   border: 1px solid #e0e1e2;
+  font-weight: normal;
   height: 2em;
   text-align: center;
   width: 63px;

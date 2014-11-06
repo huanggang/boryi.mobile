@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Cache-Control" content="no-cache"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="MobileOptimized" content="240"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <meta name="format-detection" content="email=no"/>
+  <meta name="format-detection" content="address=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="msapplication-tap-highlight" content="no"/>
+  <title>伯益网&dash;&dash;附近商家</title>
+  <link href="css/tab.css" rel="stylesheet" type="text/css"/>
+  <link href="css/base.css" rel="stylesheet" type="text/css"/>
+  <script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
+  <script src="js/tab.js" type="text/javascript"></script>
+  <script src="js/errorcodes.js" type="text/javascript"></script>
+  <script src="js/src_shops.js" type="text/javascript"></script>
+  <script src="js/cat_att_functions.js" type="text/javascript"></script>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?type=quick&ak=B80e31da09924630b63f8aeb4d07218f&v=1.0"></script>
+  <script src="js/map.js" type="text/javascript"></script>
+  <script src="js/nearby-shops.js" type="text/javascript"></script>
+</head>
+<body>
+  <header>
+    <a class="fl" href="/">&lt;&nbsp;返回</a>
+    <span class="fr" id="expand-search">+ 展开搜索</span>
+    <span>附近商家</span>
+    <div class="fc"></div>
+  </header>
+  <input type="hidden" name="openid" id="openid">
+  <input type="hidden" name="complaint-shop-id" id="complaint-shop-id">
+  <input type="hidden" name="category_id" id="category_id" value="0">
+  <input type="hidden" name="keyword_s" id="keyword_s" value="">
+  <input type="hidden" name="restroom_s" id="restroom_s" value="0">
+  <div class="detail-top hd" id="search-block">
+    <div><label>关键词：</label><input type="text" name="keyword" class="w75" id="keyword">
+    </div>
+    <div><label for="restroom">公共洗手间：</label><input type="checkbox" name="restroom" id="restroom" value="1">
+    </div>
+    <div><label>按类别：</label>
+      <select id="cat_level_1"></select><div class="blue src-btn fr" id="search">搜索</div>
+      <div class="fc hd" id="cat_level_2_div"><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <select id="cat_level_2"></select>
+      </div>
+      <div class="hd" id="cat_level_3_div"><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <select id="cat_level_3"></select>
+      </div>
+    </div>
+  </div>
+  <div class="ui-tab ui-tab-transparent">
+    <ul class="ui-tab-items">
+      <li class="ui-tab-item ui-tab-item-current" data-name="list" id="tab-list">
+        <a class="ui-tab-item-link">附近商家</a>
+      </li>
+      <li class="ui-tab-item" data-name="detail" id="tab-detail">
+        <a class="ui-tab-item-link">商家详情</a>
+      </li>
+    </ul>
+  </div>
+  <div class="ui-tab-content ui-tab-content-current fc mh300" data-name="list">
+    <ul class="list">
+    </ul>
+    <div class="hd" id="more">显示更多结果...</div>
+  </div>
+  <div class="ui-tab-content fc mh300" data-name="detail">
+    <div class="detail-win lh15">
+      <div class="detail-top">
+        <div class="list-title lh20" id="name"></div>
+        <div class="postdate">
+          <div class="lh20 hd">
+            <div class="fl mgr10 small-btn lh20 hd" id="refresh-btn">刷新</div>
+            <div class="fl small-btn lh20 hd" id="relocation-btn">重新定位</div>
+            <div class="fr small-btn lh20" id="close-btn">删除</div>
+            <div class="fc"></div>
+          </div>
+          <div class="lh20 mgt10">
+            <div class="fl small-btn lh20 orange hd" id="comment-btn">点评</div>
+            <div class="fl small-btn lh20 mgr10 hd" id="save-comment-btn">点评</div>
+            <div class="fl small-btn lh20 hd" id="cancel-comment-btn">放弃</div>
+            <div class="fr small-btn lh20" id="edit-btn">编辑</div>
+            <div class="fr small-btn lh20 hd" id="view-btn">查看</div>
+            <div class="fc"></div>
+          </div>
+          <div class="lh20 mgt10 hd" id="edit-comment">
+            <input type="radio" name="comment" class="comment" id="star5" value="5"><label for="star5" class="mgr10">很好</label>
+            <input type="radio" name="comment" class="comment" id="star4" value="4"><label for="star4" class="mgr10">好</label>
+            <input type="radio" name="comment" class="comment" id="star3" value="3" checked="checked"><label for="star3" class="mgr10">一般</label>
+            <input type="radio" name="comment" class="comment" id="star2" value="2"><label for="star2" class="mgr10">差</label>
+            <input type="radio" name="comment" class="comment" id="star1" value="1"><label for="star1">很差</label>
+          </div>
+          <div class="lh20 mgt10">
+            <div class="fl lh20" id="category"></div>
+            <div class="fc"></div>
+          </div>
+          <div class="hd" id="stars">评分：<span id="average_points"></span>/5.0，共<span id="comments"></span>次点评</div>
+          <div class="lh20">
+            <div class="fl">看过<span id="viewed"></span>次</div>
+            <div class="fr" id="complaint-btn">举报</div>
+            <div class="fc"></div>
+          </div>
+        </div>
+        <div class="complaint-win lh15 mgt10 hd">
+          <div class="detail-label lh20">举报类型</div>
+          <div class="detail">
+            <input type="radio" name="complaint-type" class="complaint-type" id="complaint-type-1" value="1"><label for="complaint-type-1">虚假联系方式</label><br/>
+            <input type="radio" name="complaint-type" class="complaint-type" id="complaint-type-2" value="2"><label for="complaint-type-2">虚假商家信息</label><br/>
+            <input type="radio" name="complaint-type" class="complaint-type" id="complaint-type-3" value="3"><label for="complaint-type-3">2公里内重复发布</label><br/>
+            <input type="radio" name="complaint-type" class="complaint-type" id="complaint-type-4" value="4"><label for="complaint-type-4">违法信息</label><br/>
+          </div>
+          <div class="detail-label lh20">举报内容</div>
+          <div class="detail">
+            <textarea class="w90" id="complaint" rows="5" name="complaint"></textarea>
+          </div>
+          <div class="detail">
+            <input type="button" value="放弃" class="mgr10" id="complaint-giveup">
+            <input type="button" value="举报" id="complaint-submit">
+          </div>
+          <div class="detail mgt10">请尽量详细反映实际情况,以便我们及时正确地处理您的举报</div>
+        </div>
+      </div>
+      <div id="view-win">
+        <div id="att-tag-block">
+          <div class="detail-label lh20">类别标签</div>
+          <div class="detail" id="att-tag">
+          </div>
+        </div>
+        <div id="business-hours-block">
+          <div class="detail-label lh20">营业时间</div>
+          <div class="detail" id="business-hours">
+          </div>
+        </div>
+        <div id="services-block">
+          <div class="detail-label lh20">服务描述</div>
+          <div class="detail" id="services">
+          </div>
+        </div>
+        <div id="products-block">
+          <div class="detail-label lh20">商品描述</div>
+          <div class="detail" id="products">
+          </div>
+        </div>
+        <div id="content-block">
+          <div class="detail-label lh20">商家简介</div>
+          <div class="detail" id="content">
+          </div>
+        </div>
+        <div id="tag-block">
+          <div class="detail-label lh20">特色标签</div>
+          <div class="detail" id="tag">
+          </div>
+        </div>
+        <div class="detail">
+          <div id="weixin-div">
+          </div>
+          <div id="qq-div">
+          </div>
+          <div class="phone" id="phone-div">
+          </div>
+          <div id="address-div">
+          </div>
+          <div class="orange src-btn" id="golist">显示地图</div>
+        </div>
+        <div id="allmap"></div>
+      </div>
+      <div class="hd" id="edit-win">
+        <div>
+          <div class="detail-label lh20">类别标签
+            <span class="fr small-btn postdate lh20" id="save-attributes-btn">保存</span>
+            <span class="fr small-btn postdate lh20 mgr10" id="cancel-attributes-btn">取消</span>
+            <div class="fc"></div>
+          </div>
+          <div class="detail">
+            <div class="hd" id="edit-cat_level_1_div">
+              <select id="edit-cat_level_1"></select>
+            </div>
+            <div class="hd" id="edit-cat_level_2_div"><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+              <select id="edit-cat_level_2"></select>
+            </div>
+            <div class="hd" id="edit-cat_level_3_div"><label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+              <select id="edit-cat_level_3"></select>
+            </div>
+            <div id="edit-att_tag_div">
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="detail-label lh20">营业时间
+            <span class="fr small-btn postdate lh20" id="save-business-hours-btn">保存</span>
+            <span class="fr small-btn postdate lh20 mgr10" id="cancel-business-hours-btn">取消</span>
+            <div class="fc"></div>
+          </div>
+          <div class="detail">
+            <textarea rows="5" class="w95" id="edit-business-hours"></textarea>
+          </div>
+        </div>
+        <div>
+          <div class="detail-label lh20">服务描述
+            <span class="fr small-btn postdate lh20" id="save-services-btn">保存</span>
+            <span class="fr small-btn postdate lh20 mgr10" id="cancel-services-btn">取消</span>
+            <div class="fc"></div>
+          </div>
+          <div class="detail">
+            <textarea rows="5" class="w95" id="edit-services"></textarea>
+          </div>
+        </div>
+        <div>
+          <div class="detail-label lh20">商品描述
+            <span class="fr small-btn postdate lh20" id="save-products-btn">保存</span>
+            <span class="fr small-btn postdate lh20 mgr10" id="cancel-products-btn">取消</span>
+            <div class="fc"></div>
+          </div>
+          <div class="detail">
+            <textarea rows="5" class="w95" id="edit-products"></textarea>
+          </div>
+        </div>
+        <div>
+          <div class="detail-label lh20">商家简介
+            <span class="fr small-btn postdate lh20" id="save-content-btn">保存</span>
+            <span class="fr small-btn postdate lh20 mgr10" id="cancel-content-btn">取消</span>
+            <div class="fc"></div>
+          </div>
+          <div class="detail">
+            <textarea rows="5" class="w95" id="edit-content"></textarea>
+          </div>
+        </div>
+        <div>
+          <div class="detail-label lh20">特色标签
+            <span class="fr small-btn postdate lh20" id="save-tag-btn">保存</span>
+            <span class="fr small-btn postdate lh20 mgr10" id="cancel-tag-btn">取消</span>
+            <div class="fc"></div>
+          </div>
+          <div class="detail">
+            <div class="fl mgr10"><input type="checkbox" id="edit-free_parking"><label for="edit-free_parking">免费停车</label></div>
+            <div class="fl mgr10"><input type="checkbox" id="edit-free_wifi"><label for="edit-free_wifi">无线上网</label></div>
+            <div class="fl mgr10"><input type="checkbox" id="edit-cards"><label for="edit-cards">可以刷卡</label></div>
+            <div class="fl mgr10"><input type="checkbox" id="edit-restroom"><label for="edit-restroom">公共洗手间</label></div>
+            <div class="fc"></div>
+          </div>
+        </div>
+        <div>
+          <div class="detail-label lh20">联系方式
+            <span class="fr small-btn postdate lh20" id="save-contact-btn">保存</span>
+            <span class="fr small-btn postdate lh20 mgr10" id="cancel-contact-btn">取消</span>
+            <div class="fc"></div>
+          </div>
+          <div class="detail">
+            <div><label>微信：</label><input type="text" name="edit-weixin" class="w80" id="edit-weixin"></div>
+            <div><label>QQ ：</label><input type="text" name="edit-qq" class="w80" id="edit-qq"></div>
+            <div><label>电话：</label><input type="text" name="edit-phone" class="w80" id="edit-phone"></div>
+            <div><label>地址：</label><input type="text" name="edit-address" class="w80" id="edit-address"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div>
+      &copy;2014&nbsp;伯益&nbsp;&nbsp;湘ICP备13011766
+    </div>
+  </footer>
+</body>
+</html>

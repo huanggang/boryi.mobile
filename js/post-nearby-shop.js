@@ -287,7 +287,7 @@ $(document).ready(function(){
           $('#att_tag_div').append(row);
         }
       }
-       $("#att_tag_div input").click(function(event){
+      $("#att_tag_div input").click(function(event){
         $('#att_tag_div').find(".myerror").remove();
         var count = 0;
         $("#att_tag_div input:checked").each(function(){

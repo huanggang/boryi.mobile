@@ -167,12 +167,17 @@ switch ($type)
     break;
   case 9: // GPS latitude, longitude
     break;
-  case 10: // shop category id
+  case 10: // shop category id and attributes
     $cat_id = isset($_POST["ci"]) ? str2int($_POST["ci"]) : 0;
     if ($cat_id <= 0)
     {
       echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
       exit;
+    }
+    $att_ids = isset($_POST['aid']) ? $_POST['aid'] : null;
+    if (!is_null($att_ids))
+    {
+      $att_ids = format_shop_attribute_ids($att_ids);
     }
     break;
   case 11: // end date - refresh
@@ -231,40 +236,41 @@ if (is_null($json))
     }
     else
     {
+      $json = "{\"result\":1}";
       switch ($type)
       {
         case 1: // business housrs
-          $query_3 = "UPDATE nearby_shop_info_ns SET ns_business_hours=? WHERE ns_id=? AND (ns_owner_openid IS NULL OR ns_owner_openid=?)";
+          $query_3 = "UPDATE nearby_shop_info_ns SET ns_openid=?,ns_business_hours=? WHERE ns_id=? AND (ns_certified_openid IS NULL OR ns_certified_openid=?)";
           $stmt_3 = mysqli_prepare($con, $query_3);
-          mysqli_stmt_bind_param($stmt_3, "sis", $business_hours,$id,$openid);
+          mysqli_stmt_bind_param($stmt_3, "ssis", $openid,$business_hours,$id,$openid);
           mysqli_stmt_execute($stmt_3);
           mysqli_stmt_close($stmt_3);
           break;
         case 2: // services
-          $query_3 = "UPDATE nearby_shop_info_ns SET ns_services=? WHERE ns_id=? AND (ns_owner_openid IS NULL OR ns_owner_openid=?)";
+          $query_3 = "UPDATE nearby_shop_info_ns SET ns_openid=?,ns_services=? WHERE ns_id=? AND (ns_certified_openid IS NULL OR ns_certified_openid=?)";
           $stmt_3 = mysqli_prepare($con, $query_3);
-          mysqli_stmt_bind_param($stmt_3, "sis", $services,$id,$openid);
+          mysqli_stmt_bind_param($stmt_3, "ssis", $openid,$services,$id,$openid);
           mysqli_stmt_execute($stmt_3);
           mysqli_stmt_close($stmt_3);
           break;
         case 3: // products
-          $query_3 = "UPDATE nearby_shop_info_ns SET ns_products=? WHERE ns_id=? AND (ns_owner_openid IS NULL OR ns_owner_openid=?)";
+          $query_3 = "UPDATE nearby_shop_info_ns SET ns_openid=?,ns_products=? WHERE ns_id=? AND (ns_certified_openid IS NULL OR ns_certified_openid=?)";
           $stmt_3 = mysqli_prepare($con, $query_3);
-          mysqli_stmt_bind_param($stmt_3, "sis", $products,$id,$openid);
+          mysqli_stmt_bind_param($stmt_3, "ssis", $openid,$products,$id,$openid);
           mysqli_stmt_execute($stmt_3);
           mysqli_stmt_close($stmt_3);
           break;
         case 4: // content
-          $query_3 = "UPDATE nearby_shop_info_ns SET ns_content=? WHERE ns_id=? AND (ns_owner_openid IS NULL OR ns_owner_openid=?)";
+          $query_3 = "UPDATE nearby_shop_info_ns SET ns_openid=?,ns_content=? WHERE ns_id=? AND (ns_certified_openid IS NULL OR ns_certified_openid=?)";
           $stmt_3 = mysqli_prepare($con, $query_3);
-          mysqli_stmt_bind_param($stmt_3, "sis", $content,$id,$openid);
+          mysqli_stmt_bind_param($stmt_3, "ssis", $openid,$content,$id,$openid);
           mysqli_stmt_execute($stmt_3);
           mysqli_stmt_close($stmt_3);
           break;
         case 5: // restroom, free parking, free wifi, cards
-          $query_3 = "UPDATE nearby_shop_info_ns SET ns_free_parking=?,ns_free_wifi=?,ns_cards=? WHERE ns_id=? AND (ns_owner_openid IS NULL OR ns_owner_openid=?)";
+          $query_3 = "UPDATE nearby_shop_info_ns SET ns_openid=?,ns_free_parking=?,ns_free_wifi=?,ns_cards=? WHERE ns_id=? AND (ns_certified_openid IS NULL OR ns_certified_openid=?)";
           $stmt_3 = mysqli_prepare($con, $query_3);
-          mysqli_stmt_bind_param($stmt_3, "iiiis", $free_parking,$free_wifi,$cards,$id,$openid);
+          mysqli_stmt_bind_param($stmt_3, "siiiis", $openid,$free_parking,$free_wifi,$cards,$id,$openid);
           $flag = mysqli_stmt_execute($stmt_3);
           mysqli_stmt_close($stmt_3);
           if ($flag)
@@ -277,16 +283,16 @@ if (is_null($json))
           }
           break;
         case 6: // wx, qq, phone, address
-          $query_3 = "UPDATE nearby_shop_info_ns SET ns_wx=?,ns_qq=?,ns_phone=?,ns_address=? WHERE ns_id=? AND (ns_owner_openid IS NULL OR ns_owner_openid=?)";
+          $query_3 = "UPDATE nearby_shop_info_ns SET ns_openid=?,ns_wx=?,ns_qq=?,ns_phone=?,ns_address=? WHERE ns_id=? AND (ns_certified_openid IS NULL OR ns_certified_openid=?)";
           $stmt_3 = mysqli_prepare($con, $query_3);
-          mysqli_stmt_bind_param($stmt_3, "ssssis", $wx,$qq,$phone,$address,$id,$openid);
+          mysqli_stmt_bind_param($stmt_3, "sssssis", $openid,$wx,$qq,$phone,$address,$id,$openid);
           mysqli_stmt_execute($stmt_3);
           mysqli_stmt_close($stmt_3);
           break;
         case 7: // attribute ids
-          $query_3 = "UPDATE nearby_shop_info_ns SET ns_shp_att_ids=? WHERE ns_id=? AND (ns_owner_openid IS NULL OR ns_owner_openid=?)";
+          $query_3 = "UPDATE nearby_shop_info_ns SET ns_openid=?,ns_shp_att_ids=? WHERE ns_id=? AND (ns_certified_openid IS NULL OR ns_certified_openid=?)";
           $stmt_3 = mysqli_prepare($con, $query_3);
-          mysqli_stmt_bind_param($stmt_3, "sis", $att_ids,$id,$openid);
+          mysqli_stmt_bind_param($stmt_3, "ssis", $openid,$att_ids,$id,$openid);
           mysqli_stmt_execute($stmt_3);
           mysqli_stmt_close($stmt_3);
           break;
@@ -328,7 +334,7 @@ if (is_null($json))
           }
           break;
         case 9: // GPS latitude, longitude
-          $query_3 = "SELECT ns_id FROM nearby_shop_info_ns WHERE ns_id=".strval($id)." AND ns_owner_openid=".sqlstr($openid);
+          $query_3 = "SELECT ns_id FROM nearby_shop_info_ns WHERE ns_id=".strval($id)." AND ns_certified_openid=".sqlstr($openid);
           $result = mysqli_query($con, $query_3);
           if ($row = mysqli_fetch_array($result))
           {
@@ -342,7 +348,7 @@ if (is_null($json))
           }
           break;
         case 10: // shop category id
-          $query_3 = "SELECT ns_id FROM nearby_shop_info_ns WHERE ns_id=".strval($id)." AND ns_owner_openid=".sqlstr($openid);
+          $query_3 = "SELECT ns_id FROM nearby_shop_info_ns WHERE ns_id=".strval($id)." AND ns_certified_openid=".sqlstr($openid);
           $result = mysqli_query($con, $query_3);
           if ($row = mysqli_fetch_array($result))
           {
@@ -353,10 +359,16 @@ if (is_null($json))
             mysqli_stmt_bind_param($stmt_3, "ii", $cat_id,$id);
             mysqli_stmt_execute($stmt_3);
             mysqli_stmt_close($stmt_3);
+
+            $query_3 = "UPDATE nearby_shop_info_ns SET ns_shp_att_ids=? WHERE ns_id=?";
+            $stmt_3 = mysqli_prepare($con, $query_3);
+            mysqli_stmt_bind_param($stmt_3, "si", $att_ids,$id);
+            mysqli_stmt_execute($stmt_3);
+            mysqli_stmt_close($stmt_3);
           }
           break;
         case 11: // end date - refresh
-          $query_3 = "SELECT ns_end FROM nearby_shop_info_ns WHERE ns_id=".strval($id)." AND ((ns_owner_openid IS NULL AND ns_openid=".sqlstr($openid).") OR ns_owner_openid=".sqlstr($openid).")";
+          $query_3 = "SELECT ns_end FROM nearby_shop_info_ns WHERE ns_id=".strval($id)." AND ((ns_certified_openid IS NULL AND ns_owner_openid=".sqlstr($openid).") OR ns_certified_openid=".sqlstr($openid).")";
           $result = mysqli_query($con, $query_3);
           if ($row = mysqli_fetch_array($result))
           {
@@ -364,20 +376,27 @@ if (is_null($json))
             mysqli_free_result($result);
 
             $ns_end = new DateTime($ns_end);
-            $interval = new DateInterval('P1M');
-            $ns_end = $ns_end->add($interval);
 
-            $query_3 = "UPDATE nearby_shop_info_ns SET ns_end=".sqlstr($ns_end->format("Y-m-d"))." WHERE ns_id=".strval($id);
-            mysqli_query($con, $query_3);
+            $today = new DateTime();
+            $today = new DateTime($today->format('Y-m-d'));
+            if ($today < $end && $today->diff($end)->days <= 5)
+            {
+              $interval = new DateInterval('P1M');
+              $ns_end = $ns_end->add($interval);
+
+              $query_3 = "UPDATE nearby_shop_info_ns SET ns_end=".sqlstr($ns_end->format("Y-m-d"))." WHERE ns_id=".strval($id);
+              mysqli_query($con, $query_3);
+            }
           }        
           break;
         case 12: // close/shutdown
-          $query_3 = "SELECT ns_openid,ns_owner_openid,ns_start,ns_end,ns_shp_att_ids,ns_business_hours,ns_services,ns_products,ns_content,ns_free_parking,ns_free_wifi,ns_cards,ns_wx,ns_qq,ns_phone,ns_address,ns_star_5,ns_star_4,ns_star_3,ns_star_2,ns_star_1,ns_views FROM nearby_shop_info_ns WHERE ns_id=".strval($id)." AND ((ns_owner_openid IS NULL AND ns_openid=".sqlstr($openid).") OR ns_owner_openid=".sqlstr($openid).")";
+          $query_3 = "SELECT ns_openid,ns_owner_openid,ns_certified_openid,ns_start,ns_end,ns_shp_att_ids,ns_business_hours,ns_services,ns_products,ns_content,ns_free_parking,ns_free_wifi,ns_cards,ns_wx,ns_qq,ns_phone,ns_address,ns_star_5,ns_star_4,ns_star_3,ns_star_2,ns_star_1,ns_views FROM nearby_shop_info_ns WHERE ns_id=".strval($id)." AND ((ns_certified_openid IS NULL AND ns_owner_openid=".sqlstr($openid).") OR ns_certified_openid=".sqlstr($openid).")";
           $result = mysqli_query($con, $query_3);
           if ($row = mysqli_fetch_array($result))
           {
             $ns_openid = $row['ns_openid'];
             $ns_owner_openid = $row['ns_owner_openid'];
+            $ns_certified_openid = $row['ns_certified_openid'];
             $ns_start = $row['ns_start'];
             $ns_end = $row['ns_end'];
             $ns_shp_att_ids = $row['ns_shp_att_ids'];
@@ -419,9 +438,9 @@ if (is_null($json))
               $query_3 = "DELETE FROM nearby_shops_ns WHERE ns_id=".strval($id);
               mysqli_query($con, $query_3);
 
-              $query_3 = "INSERT INTO nearby_old_shops_nos (nos_id,nos_openid,nos_owner_openid,nos_start,nos_end,nos_lat,nos_lng,nos_shp_cat_id,nos_name,nos_restroom,nos_enabled,nos_shp_att_ids,nos_business_hours,nos_services,nos_products,nos_content,nos_free_parking,nos_free_wifi,nos_cards,nos_wx,nos_qq,nos_phone,nos_address,nos_star_5,nos_star_4,nos_star_3,nos_star_2,nos_star_1,nos_views) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+              $query_3 = "INSERT INTO nearby_old_shops_nos (nos_id,nos_openid,nos_owner_openid,nos_certified_openid,nos_start,nos_end,nos_lat,nos_lng,nos_shp_cat_id,nos_name,nos_restroom,nos_enabled,nos_shp_att_ids,nos_business_hours,nos_services,nos_products,nos_content,nos_free_parking,nos_free_wifi,nos_cards,nos_wx,nos_qq,nos_phone,nos_address,nos_star_5,nos_star_4,nos_star_3,nos_star_2,nos_star_1,nos_views) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
               $stmt_3 = mysqli_prepare($con, $query_3);
-              mysqli_stmt_bind_param($stmt_3, "issssddisiisssssiiissssiiiiii", $id,$ns_openid,$ns_owner_openid,$ns_start,$ns_end,$ns_lat,$ns_lng,$ns_shp_cat_id,$ns_name,$ns_restroom,$nos_enabled,$ns_shp_att_ids,$ns_business_hours,$ns_services,$ns_products,$ns_content,$ns_free_parking,$ns_free_wifi,$ns_cards,$ns_wx,$ns_qq,$ns_phone,$ns_address,$ns_star_5,$ns_star_4,$ns_star_3,$ns_star_2,$ns_star_1,$ns_views);
+              mysqli_stmt_bind_param($stmt_3, "isssssddisiisssssiiissssiiiiii", $id,$ns_openid,$ns_owner_openid,$ns_certified_openid,$ns_start,$ns_end,$ns_lat,$ns_lng,$ns_shp_cat_id,$ns_name,$ns_restroom,$nos_enabled,$ns_shp_att_ids,$ns_business_hours,$ns_services,$ns_products,$ns_content,$ns_free_parking,$ns_free_wifi,$ns_cards,$ns_wx,$ns_qq,$ns_phone,$ns_address,$ns_star_5,$ns_star_4,$ns_star_3,$ns_star_2,$ns_star_1,$ns_views);
               mysqli_stmt_execute($stmt_3);
               mysqli_stmt_close($stmt_3);
             }
@@ -429,6 +448,10 @@ if (is_null($json))
           break;
       }
     }
+  }
+  else
+  {
+    $json = "{\"result\":0,\"error\":".$errors["no privileges"]."}";
   }
 }
 //mysqli_query($con, "UNLOCK TABLES");

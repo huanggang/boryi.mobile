@@ -1,13 +1,12 @@
-function get_cat_att_map(categories){
-  var map = new Array();
+function get_cat_att_map(categories, map){
   for (var i = 0; i < categories.length; i++){
     var category = categories[i];
-    map[category.i.toString()] = category.n;
+    map.Set(String(category.i), category.n);
     if (category.s != null){
-      map = map.concat(get_cat_att_map(category.s));
+      get_cat_att_map(category.s, map);
     }
     if (category.a != null){
-      map = map.concat(get_cat_att_map(category.a));
+      get_cat_att_map(category.a, map);
     }
   }
   return map;

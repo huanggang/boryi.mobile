@@ -51,7 +51,7 @@ $(document).ready(function(){
 
   function get_ids(){
     var obj = new Object();
-    var hash = new Array();
+    var hash = new Object();
     var start = page.i * page.n;
     var end = start + page.n;
     if (end > hires.length){
@@ -212,7 +212,7 @@ $(document).ready(function(){
 
     $("#title").text(hire.t);
     $("#postdate").text(hire.s.slice(0,10));
-    $("#viewed").text(hire.vws == null ? "0" : String(hire.vws));
+    $("#viewed").text(hire.vws == null ? "0" : hire.vws.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     $("#location").text(hire.l);
     $("#duration").text(hire.dr);
     $("#description").html(hire.cnt);

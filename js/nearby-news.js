@@ -19,7 +19,12 @@ $(document).ready(function(){
   var html_notfound = html_p.clone().attr("id", "notfound").append("附近5公里以内，没有广告讯息。");
   var html_prompt = html_p.clone().attr("id", "prompt").append("发布广告讯息，获取信用积分。");
 
-  var map_categories = get_cat_att_map(news_categories);
+  var map_categories = {
+    Set : function(key,value){this[key] = value},
+    Get : function(key){return this[key]},
+    Size: function(){var t = 0; for(var k in this) t++; return t},
+  };
+  get_cat_att_map(news_categories, map_categories);
 
   init();
 
@@ -61,11 +66,11 @@ $(document).ready(function(){
 
     $("#expand-search").click(function(event){
       if ($("#search-block").is(":visible")){
-        $(this).text("展开搜索");
+        $(this).text("+ 展开搜索");
         $("#search-block").hide();
       }
       else{
-        $(this).text("收起搜索");
+        $(this).text("- 收起搜索");
         $("#search-block").show();
       }
     });
@@ -90,15 +95,15 @@ $(document).ready(function(){
 
     // search button
     $("#search").click(function(event){
+      var old_cat_id = Number($("#category_id").val());
+      if (!(old_cat_id > 0)) old_cat_id = null;
       var cat_id_1 = Number($('#cat_level_1 option:selected').val());
       var cat_id_2 = Number($('#cat_level_2 option:selected').val());
       var cat_id = cat_id_2 > 0 ? cat_id_2 : cat_id_1;
-      if (!(cat_id > 0)){
-        cat_id = null;
-      }
-      else{
+      if (!(cat_id > 0)) cat_id = null;
+      if (old_cat_id != cat_id){
         var openid = $("#openid").val();
-        $("#category_id").val(String(cat_id));
+        $("#category_id").val(cat_id > 0 ? String(cat_id) : "0");
         get_newss(openid, cat_id);
         $("#expand-search").click();
       }
@@ -107,7 +112,7 @@ $(document).ready(function(){
 
   function get_ids(){
     var obj = new Object();
-    var hash = new Array();
+    var hash = new Object();
     var start = page.i * page.n;
     var end = start + page.n;
     if (end > newss.length){
@@ -183,7 +188,7 @@ $(document).ready(function(){
         var row = li.clone().attr("data-i", rnews.i).attr("data-lat", rnews.lat).attr("data-lng", rnews.lng).attr("data-d", rnews.d).attr("data-c", rnews.c).attr("data-t", rnews.t).attr("data-s", rnews.s).attr("data-e", rnews.e);
         row = row
           .append(div_row.clone().append(div_news.clone().append(rnews.t)))
-          .append(div_row_fc.clone().append(div_category.clone().append(map_categories[String(rnews.c)])).append(div_distance.clone().append(String(Math.ceil(rnews.d * 100)*10) + "米")))
+          .append(div_row_fc.clone().append(div_category.clone().append(map_categories.Get(String(rnews.c)))).append(div_distance.clone().append(String(Math.ceil(rnews.d * 100)*10) + "米")))
           .append(div_row_fb.clone().append(div_valid_date.clone().append("有效期：" + rnews.s.slice(0,10) + " ~ " + news.e.slice(0,10))))
           .append(div_row_fc.clone());
 
@@ -230,17 +235,17 @@ $(document).ready(function(){
         }
         else {
           page.i += 1;
-          var hs = null;
+          var ns = null;
           if (page.i == 1) {// first page
             page.t = d.t;
             position.lat = d.lat;
             position.lng = d.lng;
-            hs = store_ids(d.h);
+            ns = store_ids(d.n);
           }
           else{
-            hs = merge_hires_ids(d.h, hash);
+            ns = merge_newss_ids(d.n, hash);
           }
-          display_hires(hs);
+          display_newss(ns);
         }
     }, "json")
     .fail(function( jqxhr, textStatus, error ) {
@@ -267,7 +272,7 @@ $(document).ready(function(){
     $("#title").text(news.t);
     $("#validdate").text(news.s.slice(0,10) + " ~ " + news.e.slice(0,10));
     $("#postdate").text(news.p.slice(0,10));
-    $("#viewed").text(news.vws == null ? "0" : String(news.vws));
+    $("#viewed").text(news.vws == null ? "0" : news.vws.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
     if (news.ct != null && news.ct.length > 0){
       $("#content-block").show();

@@ -51,7 +51,7 @@ $(document).ready(function(){
 
   function get_ids(){
     var obj = new Object();
-    var hash = new Array();
+    var hash = new Object();
     var start = page.i * page.n;
     var end = start + page.n;
     if (end > jobs.length){
@@ -372,7 +372,7 @@ $(document).ready(function(){
     $("#company").text(job.c);
     $("#title").text(job.t);
     $("#postdate").text(job.s.slice(0,10));
-    $("#viewed").text(job.vws == null ? "0" : String(job.vws));
+    $("#viewed").text(job.vws == null ? "0" : job.vws.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
     if (requirement.length > 0){
       $("#requirement-list").show().html(requirement);

@@ -14,7 +14,11 @@ if ($cat_id <= 0)
 {
   $cat_id = null;
 }
-$keyword = isset($_POST["k"]) ? $_POST["k"] : null;
+$keyword = isset($_POST["k"]) ? trim($_POST["k"]) : null;
+if (strlen($keyword) == 0) 
+{
+  $keyword = null;
+}
 $restroom = isset($_POST['rt']) ? format_boolean(str2int($_POST['rt'])) : false;
 $ids = isset($_POST["s"]) ? $_POST["s"] : null;
 
@@ -161,7 +165,17 @@ function format_conditions($cat_id, $keyword, $restroom)
   }
   if (!is_null($keyword) && strlen($keyword) > 0)
   {
-    $conditions = $conditions . " AND ns_name LIKE '%".$keyword."%'";
+    $str = "";
+    $keywords = preg_split("/[^0-9a-z\x{4e00}-\x{9fa5}]+/iu", $keyword);
+    for ($i = 0; $i < sizeof($keywords) && i < 3; $i++)
+    {
+      $str = $str . " OR ns_name LIKE '%".$keywords[$i]."%'";
+    }
+    if (strlen($str) > 0)
+    {
+      $str = $str.substr($str, 4);
+      $conditions = $conditions . " AND (" . $str . ")";
+    }
   }
   if ($restroom)
   {
