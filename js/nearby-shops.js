@@ -1,7 +1,6 @@
 $(document).ready(function(){
 
   $('#tab-list').click(tabHandler);
-  $('#tab-detail').click(tabHandler);
   var tab_detail_disabled = true;
 
   var baseurl = document.URL;
