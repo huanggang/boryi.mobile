@@ -297,7 +297,7 @@ if (is_null($json))
           mysqli_stmt_close($stmt_3);
           break;
         case 8: // comment/star
-          $flag = true;
+          $flag = false;
           $query_3 = "SELECT sus_date FROM shop_user_stars_sus WHERE sus_ns_id=".strval($id)." AND sus_openid=".sqlstr($openid);
           $result = mysqli_query($con, $query_3);
           if ($row = mysqli_fetch_array($result))
@@ -306,11 +306,16 @@ if (is_null($json))
             mysqli_free_result($result);
             $now = new DateTime();
             $flag = !is_same_month(new DateTime($sus_date), $now);
+            $query_3 = "UPDATE shop_user_stars_sus SET sus_date=".sqlstr($now->format('Y-m-d'))." WHERE sus_ns_id=".strval($id)." AND sus_openid=".sqlstr($openid);
+            mysqli_query($con, $query_3);
+          }
+          else{
+            $flag = true;
+            $query_3 = "INSERT INTO shop_user_stars_sus (sus_ns_id,sus_openid,sus_date) VALUES (".strval($id).",".sqlstr($openid).",".sqlstr($now->format('Y-m-d')).")";
+            mysqli_query($con, $query_3);
           }
           if ($flag)
           {
-            $query_3 = "UPDATE shop_user_stars_sus SET sus_date=".sqlstr($now->format('Y-m-d'))." WHERE sus_ns_id=".strval($id)." AND sus_openid=".sqlstr($openid);
-            mysqli_query($con, $query_3);
             $query_3 = "";
             switch ($star)
             {

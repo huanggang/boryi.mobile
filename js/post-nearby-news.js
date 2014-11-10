@@ -193,6 +193,7 @@ $(document).ready(function(){
   });
 
   $('#postNews').click(function(event){
+    $(this).attr("disabled", true);
     var valid = true;
     var div = $('<div/>').addClass('myerror').css("color", "red");
     
@@ -254,11 +255,16 @@ $(document).ready(function(){
           else {
             alert(hashMap.Get(String(d.error)));
           }
+          $("#postNews").removeAttr("disabled");
       }, "json")
       .fail(function( jqxhr, textStatus, error ) {
         var err = textStatus + ", " + error;
         alert( "网络出现问题，请刷新页面。" );
+        $("#postNews").removeAttr("disabled");
       });
+    }
+    else{
+      $(this).removeAttr("disabled");
     }
   });
 

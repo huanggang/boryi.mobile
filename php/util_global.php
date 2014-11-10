@@ -222,6 +222,7 @@ function format_phones($phones)
   {
     return null;
   }
+  $phones = preg_replace("/[—\-\(\)（）\.]/", "", $phones);
   $phones = preg_split("/[^\d]+/", $phones);
   $value = "";
   for ($i = 0; $i < sizeof($phones); $i++)
@@ -274,7 +275,7 @@ function format_emails($emails)
 
 function is_valid_email($email)
 {
-  $pattern = "/^[_a-z0-9\-]+(\.[_a-z0-9\-]+)*@[a-z0-9\-]+(\.[a-z0-9\-]+)*(\.[a-z]{2,4})$/";
+  $pattern = "/^[_a-z0-9\-]+(\.[_a-z0-9\-]+)*@[a-z0-9\-]+(\.[a-z0-9\-]+)*(\.[a-z]{2,4})$/i";
   return (preg_match($pattern, $email) == 1);
 }
 

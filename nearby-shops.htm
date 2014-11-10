@@ -26,7 +26,7 @@
 </head>
 <body>
   <header>
-    <a class="fl" href="/">&lt;&nbsp;返回</a>
+    <a class="fl" id="back">&lt;&nbsp;返回</a>
     <span class="fr" id="expand-search">+ 展开搜索</span>
     <span>附近商家</span>
     <div class="fc"></div>
@@ -71,10 +71,10 @@
       <div class="detail-top">
         <div class="list-title lh20" id="name"></div>
         <div class="postdate">
-          <div class="lh20 hd">
+          <div class="lh20">
             <div class="fl mgr10 small-btn lh20 hd" id="refresh-btn">刷新</div>
             <div class="fl small-btn lh20 hd" id="relocation-btn">重新定位</div>
-            <div class="fr small-btn lh20" id="close-btn">删除</div>
+            <div class="fr small-btn lh20 hd" id="close-btn">删除</div>
             <div class="fc"></div>
           </div>
           <div class="lh20 mgt10">
@@ -254,6 +254,7 @@
             <div><label>地址：</label><input type="text" name="edit-address" class="w80" id="edit-address"></div>
           </div>
         </div>
+        <div class="hd" id="save-message">已保存</div>
       </div>
     </div>
   </div>

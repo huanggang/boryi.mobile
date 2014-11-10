@@ -1,6 +1,14 @@
 $(document).ready(function(){
-
   $('#tab-list').click(tabHandler);
+  $('#back').click(function(event){
+    hideSaveMessage();
+    if ($('#tab-list').hasClass("ui-tab-item-current")){
+      $('#tab-detail').click();
+    }
+    else {
+      $('#tab-list').click();
+    }
+  });
   var tab_detail_disabled = true;
 
   var baseurl = document.URL;
@@ -139,6 +147,7 @@ $(document).ready(function(){
         $("#category_id").val(cat_id > 0 ? String(cat_id) : "0");
         $("#keyword_s").val(keyword != null ? keyword : "");
         $("#restroom_s").val(restroom == 1 ? "1" : "0");
+        $(".list").html("").append(html_searching);
         get_shops(openid, cat_id, keyword, restroom);
         $("#expand-search").click();
       }
@@ -253,16 +262,16 @@ $(document).ready(function(){
         shop.i = $(this).attr("data-i");
         shop.lat = $(this).attr("data-lat");
         shop.lng = $(this).attr("data-lng");
-        shop.d = $(this).attr("data-d");
+        shop.d = $(this).attr("data-d") != null ? Number($(this).attr("data-d")) : 0;
         shop.c = $(this).attr("data-c");
         shop.n = $(this).attr("data-n");
         shop.r = $(this).attr("data-r");
         shop.a = $(this).attr("data-a");
-        shop.s5 = $(this).attr("data-s5");
-        shop.s4 = $(this).attr("data-s4");
-        shop.s3 = $(this).attr("data-s3");
-        shop.s2 = $(this).attr("data-s2");
-        shop.s1 = $(this).attr("data-s1");
+        shop.s5 = $(this).attr("data-s5") != null ? Number($(this).attr("data-s5")) : 0;
+        shop.s4 = $(this).attr("data-s4") != null ? Number($(this).attr("data-s4")) : 0;
+        shop.s3 = $(this).attr("data-s3") != null ? Number($(this).attr("data-s3")) : 0;
+        shop.s2 = $(this).attr("data-s2") != null ? Number($(this).attr("data-s2")) : 0;
+        shop.s1 = $(this).attr("data-s1") != null ? Number($(this).attr("data-s1")) : 0;
 
         get_shop(shop);
       });
@@ -310,7 +319,7 @@ $(document).ready(function(){
     });
   }
 
-  function merge_shops(rshop, shop){
+  function merge_shop(rshop, shop){
     shop.ooi = rshop.ooi;
     shop.coi = rshop.coi;
     shop.e = rshop.e;
@@ -334,6 +343,10 @@ $(document).ready(function(){
 
     $("#comment-btn").show();
 
+    if ($("#view-btn").is(":visible")){
+      $("#view-btn").click();
+    }
+
     $("#name").text(shop.n);
     $("#viewed").text(shop.vws == null ? "0" : shop.vws.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
@@ -353,14 +366,15 @@ $(document).ready(function(){
     $("#refresh-btn").hide();
     $("#relocation-btn").hide();
     $("#close-btn").hide();
-    $("#refresh-btn").click(function(event){});
-    $("#relocation-btn").click(function(event){});
-    $("#close-btn").click(function(event){});
+    $("#refresh-btn").unbind("click");
+    $("#relocation-btn").unbind("click");
+    $("#close-btn").unbind("click");
     if (openid == shop.ooi || openid == shop.coi) {
       // close shop
       $("#close-btn").show();
       $("#close-btn").click(function(event){
         if (confirm("是否删除此商家信息？")){
+          $(this).attr("disabled", true);
           var url = home + 'php/edit_nearby_shop.php';
           var params = new Object();
           params.oi = $("#openid").val();
@@ -377,11 +391,17 @@ $(document).ready(function(){
                 $("#refresh-btn").hide();
                 $("#relocation-btn").hide();
                 $("#edit-btn").hide();
+
+                $('#tab-list').click();
+                tab_detail_disabled = true;
+                $('#tab-detail').unbind("click");
               }
+              $("#close-btn").removeAttr("disabled");
           }, "json")
           .fail(function( jqxhr, textStatus, error ) {
             var err = textStatus + ", " + error;
             alert( "网络出现问题，请刷新页面。" );
+            $("#close-btn").removeAttr("disabled");
           });
         }
       });
@@ -396,6 +416,7 @@ $(document).ready(function(){
       if (time1 >= time0 && (time1 - time0) <= 5 * 24 * 3600 * 1000){
         $("#refresh-btn").show();
         $("#refresh-btn").click(function(event){
+          $(this).attr("disabled", true);
           var url = home + 'php/edit_nearby_shop.php';
           var params = new Object();
           params.oi = $("#openid").val();
@@ -408,12 +429,14 @@ $(document).ready(function(){
                 alert(hashMap.Get(String(d.error)));
               }
               else{
-                $("#refresh-btn").show();
+                $("#refresh-btn").hide();
               }
+              $("#refresh-btn").removeAttr("disabled");
           }, "json")
           .fail(function( jqxhr, textStatus, error ) {
             var err = textStatus + ", " + error;
             alert( "网络出现问题，请刷新页面。" );
+            $("#refresh-btn").removeAttr("disabled");
           });
         });
       }
@@ -423,6 +446,7 @@ $(document).ready(function(){
         $("#relocation-btn").show();
         $("#relocation-btn").click(function(event){
           if (confirm("﻿是否重新定位此商家地理位置？")){
+            $(this).attr("disabled", true);
             var url = home + 'php/edit_nearby_shop.php';
             var params = new Object();
             params.oi = $("#openid").val();
@@ -434,10 +458,12 @@ $(document).ready(function(){
                 if (d.result != null && d.result == 0){
                   alert(hashMap.Get(String(d.error)));
                 }
+                $("#relocation-btn").removeAttr("disabled");
             }, "json")
             .fail(function( jqxhr, textStatus, error ) {
               var err = textStatus + ", " + error;
               alert( "网络出现问题，请刷新页面。" );
+              $("#relocation-btn").removeAttr("disabled");
             });
           }
         });
@@ -843,6 +869,7 @@ $(document).ready(function(){
 
     // save/cancel categories & attribute
     $("#save-attributes-btn").click(function(event){
+      $(this).attr("disabled", true);
       $('#edit-att_tag_div').find(".myerror").remove();
       // retrive data
       // send to edit_nearby_shop.php
@@ -897,6 +924,7 @@ $(document).ready(function(){
                     alert(hashMap.Get(String(d.error)));
                   }
                   else {
+                    hideSaveMessage();
                     $("#edit-att_tag_div").attr("data-c", String(cat_id));
                     $("#edit-att_tag_div").attr("data-a", att_ids);
                     $("#category").text(map_categories.Get(String(cat_id)));
@@ -910,10 +938,12 @@ $(document).ready(function(){
                       $("#att-tag").html("");
                     }
                   }
+                  $("#save-attributes-btn").removeAttr("disabled");
               }, "json")
               .fail(function( jqxhr, textStatus, error ) {
                 var err = textStatus + ", " + error;
                 alert( "网络出现问题，请刷新页面。" );
+                $("#save-attributes-btn").removeAttr("disabled");
               });
             }
             else if (att_ids != null && att_ids != a){
@@ -930,6 +960,7 @@ $(document).ready(function(){
                     alert(hashMap.Get(String(d.error)));
                   }
                   else {
+                    hideSaveMessage();
                     $("#edit-att_tag_div").attr("data-a", att_ids);
                     var attributes = get_attributes(att_ids);
                     if (attributes != null){
@@ -941,15 +972,24 @@ $(document).ready(function(){
                       $("#att-tag").html("");
                     }
                   }
+                  $("#save-attributes-btn").removeAttr("disabled");
               }, "json")
               .fail(function( jqxhr, textStatus, error ) {
                 var err = textStatus + ", " + error;
                 alert( "网络出现问题，请刷新页面。" );
+                $("#save-attributes-btn").removeAttr("disabled");
               });
             }
             else if (att_ids == null){
               $('#edit-att_tag_div').parent().append(div.clone().append("请选择商家类别标签"));
+              $(this).removeAttr("disabled");
             }
+            else{
+              $(this).removeAttr("disabled");
+            }
+          }
+          else{
+            $(this).removeAttr("disabled");
           }
         }
         else{ // not certified owner
@@ -967,6 +1007,7 @@ $(document).ready(function(){
                   alert(hashMap.Get(String(d.error)));
                 }
                 else {
+                  hideSaveMessage();
                   $("#edit-att_tag_div").attr("data-a", att_ids);
                   var attributes = get_attributes(att_ids);
                   if (attributes != null){
@@ -978,16 +1019,25 @@ $(document).ready(function(){
                     $("#att-tag").html("");
                   }
                 }
+                $("#save-attributes-btn").removeAttr("disabled");
             }, "json")
             .fail(function( jqxhr, textStatus, error ) {
               var err = textStatus + ", " + error;
               alert( "网络出现问题，请刷新页面。" );
+              $("#save-attributes-btn").removeAttr("disabled");
             });
           }
           else if (att_ids == null){
             $('#edit-att_tag_div').parent().append(div.clone().append("请选择商家类别标签"));
+            $(this).removeAttr("disabled");
+          }
+          else{
+            $(this).removeAttr("disabled");
           }
         }
+      }
+      else{
+        $(this).removeAttr("disabled");
       }
     });
     $("#cancel-attributes-btn").click(function(event){
@@ -998,6 +1048,7 @@ $(document).ready(function(){
 
     // save/cancel business hours
     $("#save-business-hours-btn").click(function(event){
+      $(this).attr("disabled", true);
       $('#edit-business-hours').parent().find(".myerror").remove();
       var bh0 = get_string($("#edit-business-hours").attr("data-bh"));
       var bh1 = get_string($("#edit-business-hours").val());
@@ -1015,18 +1066,25 @@ $(document).ready(function(){
               alert(hashMap.Get(String(d.error)));
             }
             else {
+              hideSaveMessage();
               $("#edit-business-hours").attr("data-bh", bh1);
               $("#business-hours-block").show();
               $("#business-hours").html(bh1);
             }
+            $("#save-business-hours-btn").removeAttr("disabled");
         }, "json")
         .fail(function( jqxhr, textStatus, error ) {
           var err = textStatus + ", " + error;
           alert( "网络出现问题，请刷新页面。" );
+          $("#save-business-hours-btn").removeAttr("disabled");
         });
       }
       else if (bh1 == null){
         $('#edit-business-hours').parent().append($('<div/>').addClass('myerror').css("color", "red").append("请填写商家营业时间"));
+        $(this).removeAttr("disabled");
+      }
+      else{
+        $(this).removeAttr("disabled");
       }
     });
     $("#cancel-business-hours-btn").click(function(event){
@@ -1036,6 +1094,7 @@ $(document).ready(function(){
 
     // save/cancel services
     $("#save-services-btn").click(function(event){
+      $(this).attr("disabled", true);
       $('#edit-services').parent().find(".myerror").remove();
       var sv0 = get_string($("#edit-services").attr("data-sv"));
       var sv1 = get_string($("#edit-services").val());
@@ -1053,18 +1112,25 @@ $(document).ready(function(){
               alert(hashMap.Get(String(d.error)));
             }
             else {
+              hideSaveMessage();
               $("#edit-services").attr("data-sv", sv1);
               $("#services-block").show();
               $("#services").html(sv1);
             }
+            $("#save-services-btn").removeAttr("disabled");
         }, "json")
         .fail(function( jqxhr, textStatus, error ) {
           var err = textStatus + ", " + error;
           alert( "网络出现问题，请刷新页面。" );
+          $("#save-services-btn").removeAttr("disabled");
         });
       }
       else if (sv1 == null){
         $('#edit-services').parent().append($('<div/>').addClass('myerror').css("color", "red").append("请填写商家服务描述"));
+        $(this).removeAttr("disabled");
+      }
+      else{
+        $(this).removeAttr("disabled");
       }
     });
     $("#cancel-services-btn").click(function(event){
@@ -1074,6 +1140,7 @@ $(document).ready(function(){
 
     // save/cancel products
     $("#save-products-btn").click(function(event){
+      $(this).attr("disabled", true);
       $('#edit-products').parent().find(".myerror").remove();
       var pd0 = get_string($("#edit-products").attr("data-pd"));
       var pd1 = get_string($("#edit-products").val());
@@ -1091,18 +1158,25 @@ $(document).ready(function(){
               alert(hashMap.Get(String(d.error)));
             }
             else {
+              hideSaveMessage();
               $("#edit-products").attr("data-pd", pd1);
               $("#products-block").show();
               $("#products").html(pd1);
             }
+            $("#save-products-btn").removeAttr("disabled");
         }, "json")
         .fail(function( jqxhr, textStatus, error ) {
           var err = textStatus + ", " + error;
           alert( "网络出现问题，请刷新页面。" );
+          $("#save-products-btn").removeAttr("disabled");
         });
       }
       else if (pd1 == null){
         $('#edit-products').parent().append($('<div/>').addClass('myerror').css("color", "red").append("请填写商家商品描述"));
+        $(this).removeAttr("disabled");
+      }
+      else{
+        $(this).removeAttr("disabled");
       }
     });
     $("#cancel-products-btn").click(function(event){
@@ -1112,6 +1186,7 @@ $(document).ready(function(){
 
     // save/cancel content
     $("#save-content-btn").click(function(event){
+      $(this).attr("disabled", true);
       $('#edit-content').parent().find(".myerror").remove();
       var ct0 = get_string($("#edit-content").attr("data-ct"));
       var ct1 = get_string($("#edit-content").val());
@@ -1129,18 +1204,25 @@ $(document).ready(function(){
               alert(hashMap.Get(String(d.error)));
             }
             else {
+              hideSaveMessage();
               $("#edit-content").attr("data-ct", ct1);
               $("#content-block").show();
               $("#content").html(ct1);
             }
+            $("#save-content-btn").removeAttr("disabled");
         }, "json")
         .fail(function( jqxhr, textStatus, error ) {
           var err = textStatus + ", " + error;
           alert( "网络出现问题，请刷新页面。" );
+          $("#save-content-btn").removeAttr("disabled");
         });
       }
       else if (ct1 == null){
         $('#edit-content').parent().append($('<div/>').addClass('myerror').css("color", "red").append("请填写商家简介"));
+        $(this).removeAttr("disabled");
+      }
+      else{
+        $(this).removeAttr("disabled");
       }
     });
     $("#cancel-content-btn").click(function(event){
@@ -1150,6 +1232,7 @@ $(document).ready(function(){
 
     // save/cancel tags
     $("#save-tag-btn").click(function(event){
+      $(this).attr("disabled", true);
       var fp0 = Number($("#edit-free_parking").attr("data-fp")) == 1 ? 1 : null;
       var fw0 = Number($("#edit-free_wifi").attr("data-fw")) == 1 ? 1 : null;
       var cd0 = Number($("#edit-cards").attr("data-cd")) == 1 ? 1 : null;
@@ -1175,6 +1258,7 @@ $(document).ready(function(){
               alert(hashMap.Get(String(d.error)));
             }
             else {
+              hideSaveMessage();
               $("#edit-free_parking").attr("data-fp", fp1 == 1 ? "1" : "0");
               $("#edit-free_wifi").attr("data-fw", fw1 == 1 ? "1" : "0");
               $("#edit-cards").attr("data-cd", cd1 == 1 ? "1" : "0");
@@ -1189,11 +1273,16 @@ $(document).ready(function(){
                 $("#tag").html("");
               }
             }
+            $("#save-tag-btn").removeAttr("disabled");
         }, "json")
         .fail(function( jqxhr, textStatus, error ) {
           var err = textStatus + ", " + error;
           alert( "网络出现问题，请刷新页面。" );
+          $("#save-tag-btn").removeAttr("disabled");
         });
+      }
+      else{
+        $(this).removeAttr("disabled");
       }
     });
     $("#cancel-tag-btn").click(function(event){
@@ -1202,6 +1291,7 @@ $(document).ready(function(){
 
     // save/cancel contacts
     $("#save-contact-btn").click(function(event){
+      $(this).attr("disabled", true);
       $('#edit-address').parent().find(".myerror").remove();
       var wx0 = get_string($("#edit-weixin").attr("data-wx"));
       var qq0 = get_string($("#edit-qq").attr("data-qq"));
@@ -1228,6 +1318,7 @@ $(document).ready(function(){
               alert(hashMap.Get(String(d.error)));
             }
             else {
+              hideSaveMessage();
               $("#edit-weixin").attr("data-wx", wx1 != null ? wx1 : "");
               $("#edit-qq").attr("data-qq", qq1 != null ? qq1 : "");
               $("#edit-phone").attr("data-phn", phn1 != null ? phn1 : "");
@@ -1272,14 +1363,20 @@ $(document).ready(function(){
               }
 
             }
+            $("#save-contact-btn").removeAttr("disabled");
         }, "json")
         .fail(function( jqxhr, textStatus, error ) {
           var err = textStatus + ", " + error;
           alert( "网络出现问题，请刷新页面。" );
+          $("#save-contact-btn").removeAttr("disabled");
         });
       }
       else if (wx1 == null && qq1 == null && phn1 == null && add1 == null) {
         $('#edit-address').parent().append($('<div/>').addClass('myerror').css("color", "red").append("请填写至少一种联系方式"));
+        $(this).removeAttr("disabled");
+      }
+      else{
+        $(this).removeAttr("disabled");
       }
     });
     $("#cancel-contact-btn").click(function(event){
@@ -1492,6 +1589,12 @@ $(document).ready(function(){
       return null;
     }
     return value;
+  }
+
+  function hideSaveMessage(){
+    $("#save-message").show(function(){
+      setTimeout(function(){$("#save-message").hide(1000);}, 1000);
+    });
   }
 
 });

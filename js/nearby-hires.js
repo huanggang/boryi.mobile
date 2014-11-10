@@ -1,6 +1,14 @@
 $(document).ready(function(){
 
   $('#tab-list').click(tabHandler);
+  $('#back').click(function(event){
+    if ($('#tab-list').hasClass("ui-tab-item-current")){
+      $('#tab-detail').click();
+    }
+    else {
+      $('#tab-list').click();
+    }
+  });
   var tab_detail_disabled = true;
 
   var baseurl = document.URL;
@@ -145,7 +153,7 @@ $(document).ready(function(){
         hire.i = $(this).attr("data-i");
         hire.lat = $(this).attr("data-lat");
         hire.lng = $(this).attr("data-lng");
-        hire.d = $(this).attr("data-d");
+        hire.d = $(this).attr("data-d") != null ? Number($(this).attr("data-d")) : 0;
         hire.s = $(this).attr("data-s");
         hire.t = $(this).attr("data-t");
         hire.l = $(this).attr("data-l");

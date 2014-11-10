@@ -1,4 +1,16 @@
 $(document).ready(function(){
+  $("#back").click(function(event){
+    if ($('#tab-detail').hasClass("ui-tab-item-current")){
+      $('#tab-list').click();
+    }
+    else if ($('#tab-list').hasClass("ui-tab-item-current")){
+      $('#tab-search').click();
+    }
+    else if ($('#tab-search').hasClass("ui-tab-item-current")){
+      $('#tab-list').click();
+    }
+  });
+  
     //fill the province first,setSelections defined in mobilecommon.js
     setSelections(provinces, 'province', 10000);
     $('#city').hide();

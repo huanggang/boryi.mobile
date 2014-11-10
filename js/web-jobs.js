@@ -1,4 +1,16 @@
 ﻿$(document).ready(function(){
+  $("#back").click(function(event){
+    if ($('#tab-detail').hasClass("ui-tab-item-current")){
+      $('#tab-list').click();
+    }
+    else if ($('#tab-list').hasClass("ui-tab-item-current")){
+      $('#tab-search').click();
+    }
+    else if ($('#tab-search').hasClass("ui-tab-item-current")){
+      $('#tab-list').click();
+    }
+  });
+  
 	$.cachedScript = function( url, options ) {
     // Allow user to set any option except for dataType, cache, and url
     options = $.extend( options || {}, {

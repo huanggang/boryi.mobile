@@ -1,6 +1,14 @@
 $(document).ready(function(){
 
   $('#tab-list').click(tabHandler);
+  $('#back').click(function(event){
+    if ($('#tab-list').hasClass("ui-tab-item-current")){
+      $('#tab-detail').click();
+    }
+    else {
+      $('#tab-list').click();
+    }
+  });
   var tab_detail_disabled = true;
 
   var baseurl = document.URL;
@@ -202,7 +210,7 @@ $(document).ready(function(){
         job.i = $(this).attr("data-i");
         job.lat = $(this).attr("data-lat");
         job.lng = $(this).attr("data-lng");
-        job.d = $(this).attr("data-d");
+        job.d = $(this).attr("data-d") != null ? Number($(this).attr("data-d")) : 0;
         job.s = $(this).attr("data-s");
         job.t = $(this).attr("data-t");
         job.ty = $(this).attr("data-ty");
@@ -213,8 +221,8 @@ $(document).ready(function(){
         job.hh = $(this).attr("data-hh");
         job.edu = $(this).attr("data-edu");
         job.exp = $(this).attr("data-exp");
-        job.sl = $(this).attr("data-sl");
-        job.sh = $(this).attr("data-sh");
+        job.sl = $(this).attr("data-sl") != null ? Number($(this).attr("data-sl")) : null;
+        job.sh = $(this).attr("data-sh") != null ? Number($(this).attr("data-sh")) : null;
         job.c = $(this).attr("data-c");
 
         get_job(job);
@@ -285,13 +293,13 @@ $(document).ready(function(){
   function display_job(job){
     var salary = "";
     if (job.sl != null && job.sh != null && job.sl > 0 && job.sh > 0){
-      salary = String(job.sl) + "~" + String(job.sh) + "元";
+      salary = job.sl.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "~" + job.sh.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "元";
     }
     else if (job.sl != null && job.sl > 0){
-      salary = String(job.sl) + "元以上";
+      salary = job.sl.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "元以上";
     }
     else if (job.sh != null && job.sh > 0){
-      salary = String(job.sh) + "元以下";
+      salary = job.sh.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "元以下";
     }
 
     var requirement = "";

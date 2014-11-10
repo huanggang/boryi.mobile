@@ -1,6 +1,14 @@
 $(document).ready(function(){
 
   $('#tab-list').click(tabHandler);
+  $('#back').click(function(event){
+    if ($('#tab-list').hasClass("ui-tab-item-current")){
+      $('#tab-detail').click();
+    }
+    else {
+      $('#tab-list').click();
+    }
+  });
   var tab_detail_disabled = true;
 
   var baseurl = document.URL;
@@ -104,6 +112,7 @@ $(document).ready(function(){
       if (old_cat_id != cat_id){
         var openid = $("#openid").val();
         $("#category_id").val(cat_id > 0 ? String(cat_id) : "0");
+        $(".list").html("").append(html_searching);
         get_newss(openid, cat_id);
         $("#expand-search").click();
       }
@@ -189,7 +198,7 @@ $(document).ready(function(){
         row = row
           .append(div_row.clone().append(div_news.clone().append(rnews.t)))
           .append(div_row_fc.clone().append(div_category.clone().append(map_categories.Get(String(rnews.c)))).append(div_distance.clone().append(String(Math.ceil(rnews.d * 100)*10) + "米")))
-          .append(div_row_fb.clone().append(div_valid_date.clone().append("有效期：" + rnews.s.slice(0,10) + " ~ " + news.e.slice(0,10))))
+          .append(div_row_fb.clone().append(div_valid_date.clone().append("有效期：" + rnews.s.slice(0,10) + " ~ " + rnews.e.slice(0,10))))
           .append(div_row_fc.clone());
 
         $(".list").append(row);
@@ -204,7 +213,7 @@ $(document).ready(function(){
         news.i = $(this).attr("data-i");
         news.lat = $(this).attr("data-lat");
         news.lng = $(this).attr("data-lng");
-        news.d = $(this).attr("data-d");
+        news.d = $(this).attr("data-d") != null ? Number($(this).attr("data-d")) : 0;
         news.c = $(this).attr("data-c");
         news.t = $(this).attr("data-t");
         news.s = $(this).attr("data-s");

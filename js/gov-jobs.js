@@ -10,6 +10,18 @@ var loading = false;
 var js_path = "js/";
 $(document).ready(function() {
 
+  $("#back").click(function(event){
+    if ($('.ui-tab-item:last').hasClass("ui-tab-item-current")){
+      $('.ui-tab-item:eq(1)').click();
+    }
+    else if ($('.ui-tab-item:eq(1)').hasClass("ui-tab-item-current")){
+      $('.ui-tab-item:eq(0)').click();
+    }
+    else if ($('.ui-tab-item:eq(0)').hasClass("ui-tab-item-current")){
+      $('.ui-tab-item:eq(1)').click();
+    }
+  });
+
 	setSelections(provinces, 'province', 10000);
 
 	$.cachedScript = function(url, options) {

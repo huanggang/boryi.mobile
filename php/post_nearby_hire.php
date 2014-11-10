@@ -200,7 +200,7 @@ if (is_null($json))
         $query_6 = "INSERT INTO nearby_hires_nh (nh_id,nh_lat,nh_lng) VALUES (?,?,?)";
 
         $stmt_4 = mysqli_prepare($con, $query_4);
-        mysqli_stmt_bind_param($stmt_4, "ssssssissss", $openid,$now->format("Y-m-d H:i:s"),$end->format("Y-m-d"),$titles,$location,$content,$duration,$contact,$wx,$qq,$phone,$email,$address);
+        mysqli_stmt_bind_param($stmt_4, "ssssssissssss", $openid,$now->format("Y-m-d H:i:s"),$end->format("Y-m-d"),$titles,$location,$content,$duration,$contact,$wx,$qq,$phone,$email,$address);
         mysqli_stmt_execute($stmt_4);
         mysqli_stmt_close($stmt_4);
 

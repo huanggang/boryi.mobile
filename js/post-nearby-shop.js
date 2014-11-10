@@ -1,4 +1,4 @@
-// http://m.boryi.com/post-nearby-news.htm#oi=9032g19pvbh19g
+// http://m.boryi.com/post-nearby-shops.htm#oi=9032g19pvbh19g
 $(document).ready(function(){
 
   var baseurl = document.URL;
@@ -151,10 +151,11 @@ $(document).ready(function(){
   });
 
   $('#postShop').click(function(event){
+    $(this).attr("disabled", true);
     var valid = true;
     var div = $('<div/>').addClass('myerror').css("color", "red");
     
-    // check news category
+    // check shops category
     $('#cat_level_1').parent().find(".myerror").remove();
     var cat_id = $("#cat_level_3_div").is(":visible") ? Number($('#cat_level_3 option:selected').val()) : ($("#cat_level_2_div").is(":visible") ? Number($('#cat_level_2 option:selected').val()) : Number($('#cat_level_1 option:selected').val()));
     if (!(cat_id > 0)){
@@ -232,16 +233,21 @@ $(document).ready(function(){
       $.post(url, params, 
         function(d) {
           if (d.result){
-            window.location.href = home + "nearby-news.htm#oi=" + openid;
+            window.location.href = home + "nearby-shops.htm#oi=" + openid;
           }
           else {
             alert(hashMap.Get(String(d.error)));
           }
+          $("#postShop").removeAttr("disabled");
       }, "json")
       .fail(function( jqxhr, textStatus, error ) {
         var err = textStatus + ", " + error;
         alert( "网络出现问题，请刷新页面。" );
+        $("#postShop").removeAttr("disabled");
       });
+    }
+    else{
+      $(this).removeAttr("disabled");
     }
   });
 
