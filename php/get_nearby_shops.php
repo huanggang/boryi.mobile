@@ -146,7 +146,7 @@ echo $json;
 function format_conditions($cat_id, $keyword, $restroom)
 {
   $conditions = "";
-  if (!is_null($cat_id) && $cat_id > 0)
+  if ($cat_id > 0)
   {
     $cat_level = get_cat_level($cat_id);
     $conditions = $conditions . " AND ns_shp_cat_id ";
@@ -167,13 +167,13 @@ function format_conditions($cat_id, $keyword, $restroom)
   {
     $str = "";
     $keywords = preg_split("/[^0-9a-z\x{4e00}-\x{9fa5}]+/iu", $keyword);
-    for ($i = 0; $i < sizeof($keywords) && i < 3; $i++)
+    for ($i = 0; $i < sizeof($keywords) && $i < 3; $i++)
     {
       $str = $str . " OR ns_name LIKE '%".$keywords[$i]."%'";
     }
     if (strlen($str) > 0)
     {
-      $str = $str.substr($str, 4);
+      $str = substr($str, 4);
       $conditions = $conditions . " AND (" . $str . ")";
     }
   }
@@ -186,6 +186,19 @@ function format_conditions($cat_id, $keyword, $restroom)
     return $conditions;
   }
   return null;
+}
+
+function format_boolean($value)
+{
+  if ($value < 0)
+  {
+    return null;
+  }
+  else if ($value > 0)
+  {
+    return 1;
+  }
+  return 0;
 }
 
 ?>

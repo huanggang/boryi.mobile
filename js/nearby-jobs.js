@@ -500,6 +500,10 @@ $(document).ready(function(){
             tab_detail_disabled = false;
           }
           $('#tab-detail').click();
+          
+          if ($('.complaint-win').is(":visible")) {
+            $('.complaint-win').hide();
+          }
         }
     }, "json")
     .fail(function( jqxhr, textStatus, error ) {

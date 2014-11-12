@@ -113,8 +113,10 @@ $(document).ready(function(){
         var openid = $("#openid").val();
         $("#category_id").val(cat_id > 0 ? String(cat_id) : "0");
         $(".list").html("").append(html_searching);
+        page.i = 0;
         get_newss(openid, cat_id);
         $("#expand-search").click();
+        $('#tab-list').click();
       }
     });
   }
@@ -356,6 +358,10 @@ $(document).ready(function(){
             tab_detail_disabled = false;
           }
           $('#tab-detail').click();
+          
+          if ($('.complaint-win').is(":visible")) {
+            $('.complaint-win').hide();
+          }
         }
     }, "json")
     .fail(function( jqxhr, textStatus, error ) {

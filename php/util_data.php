@@ -15,6 +15,8 @@ $errors["login location missed"] = 202;
 $errors["cannot complaint"] = 203;
 $errors["already complainted"] = 204;
 $errors["too many complaints"] = 205;
+$errors["not from university"] = 206;
+$errors["already comment"] = 207;
 
 $errors["invalid end date"] = 301;
 $errors["invalid age"] = 302;

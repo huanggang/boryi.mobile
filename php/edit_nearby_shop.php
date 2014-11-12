@@ -335,6 +335,10 @@ if (is_null($json))
                 $query_3 = "UPDATE nearby_shop_info_ns SET ns_star_5=ns_star_5+1 WHERE ns_id=".strval($id);
                 break;
             }
+            else
+            {
+              $json = "{\"result\":0,\"error\":".$errors["already comment"]."}";
+            }
             mysqli_query($con, $query_3);
           }
           break;
@@ -443,7 +447,7 @@ if (is_null($json))
               $query_3 = "DELETE FROM nearby_shops_ns WHERE ns_id=".strval($id);
               mysqli_query($con, $query_3);
 
-              $query_3 = "INSERT INTO nearby_old_shops_nos (nos_id,nos_openid,nos_owner_openid,nos_certified_openid,nos_start,nos_end,nos_lat,nos_lng,nos_shp_cat_id,nos_name,nos_restroom,nos_enabled,nos_shp_att_ids,nos_business_hours,nos_services,nos_products,nos_content,nos_free_parking,nos_free_wifi,nos_cards,nos_wx,nos_qq,nos_phone,nos_address,nos_star_5,nos_star_4,nos_star_3,nos_star_2,nos_star_1,nos_views) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+              $query_3 = "INSERT INTO nearby_old_shops_nos (nos_id,nos_openid,nos_owner_openid,nos_certified_openid,nos_start,nos_end,nos_lat,nos_lng,nos_shp_cat_id,nos_name,nos_restroom,nos_enabled,nos_shp_att_ids,nos_business_hours,nos_services,nos_products,nos_content,nos_free_parking,nos_free_wifi,nos_cards,nos_wx,nos_qq,nos_phone,nos_address,nos_star_5,nos_star_4,nos_star_3,nos_star_2,nos_star_1,nos_views) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
               $stmt_3 = mysqli_prepare($con, $query_3);
               mysqli_stmt_bind_param($stmt_3, "isssssddisiisssssiiissssiiiiii", $id,$ns_openid,$ns_owner_openid,$ns_certified_openid,$ns_start,$ns_end,$ns_lat,$ns_lng,$ns_shp_cat_id,$ns_name,$ns_restroom,$nos_enabled,$ns_shp_att_ids,$ns_business_hours,$ns_services,$ns_products,$ns_content,$ns_free_parking,$ns_free_wifi,$ns_cards,$ns_wx,$ns_qq,$ns_phone,$ns_address,$ns_star_5,$ns_star_4,$ns_star_3,$ns_star_2,$ns_star_1,$ns_views);
               mysqli_stmt_execute($stmt_3);

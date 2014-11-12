@@ -1,7 +1,6 @@
 $(document).ready(function(){
   $('#tab-list').click(tabHandler);
   $('#back').click(function(event){
-    hideSaveMessage();
     if ($('#tab-list').hasClass("ui-tab-item-current")){
       $('#tab-detail').click();
     }
@@ -148,8 +147,10 @@ $(document).ready(function(){
         $("#keyword_s").val(keyword != null ? keyword : "");
         $("#restroom_s").val(restroom == 1 ? "1" : "0");
         $(".list").html("").append(html_searching);
+        page.i = 0;
         get_shops(openid, cat_id, keyword, restroom);
         $("#expand-search").click();
+        $('#tab-list').click();
       }
     });
   }
@@ -232,7 +233,7 @@ $(document).ready(function(){
 
       for (var i = 0; i < rshops.length; i++){
         var rshop = rshops[i];
-        var row = li.clone().attr("data-i", rshop.i).attr("data-lat", rshop.lat).attr("data-lng", rshop.lng).attr("data-d", rshop.d).attr("data-c", rshop.c).attr("data-n", rshop.n).attr("data-r", rshop.r).attr("data-a", rshop.a).attr("data-s5", rshop.s5).attr("data-s4", rshop.s4).attr("data-s3", rshop.s3).attr("data-s2", rshop.s2).attr("data-s1", rshop.s1);
+        var row = li.clone().attr("data-i", rshop.i).attr("data-lat", rshop.lat).attr("data-lng", rshop.lng).attr("data-d", rshop.d).attr("data-c", rshop.c).attr("data-n", rshop.n).attr("data-r", rshop.r).attr("data-a", rshop.a).attr("data-s5", rshop.s5).attr("data-s4", rshop.s4).attr("data-s3", rshop.s3).attr("data-s2", rshop.s2).attr("data-s1", rshop.s1).attr("id", "l_"+rshop.i);
         row = row
           .append(div_row.clone().append(div_shop.clone().append(rshop.n)))
           .append(div_row_fc.clone().append(div_category.clone().append(map_categories.Get(String(rshop.c)))).append(div_distance.clone().append(String(Math.ceil(rshop.d * 100)*10) + "米")));
@@ -241,12 +242,16 @@ $(document).ready(function(){
           row = row.append(div_row_fb.clone().append(div_attribute.clone().append(attributes)));
         }
         var comments = get_comment_avg_points(rshop.s5, rshop.s4, rshop.s3, rshop.s2, rshop.s1);
-        if (comments.total > 0){
+        if (comments.total > 0 && rshop.r == 1){
+          row = row
+            .append(div_row_fb.clone().append(div_comments.clone().append("评分：" + comments.avg.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "/5.0，共" + comments.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "次点评")).append(div_restroom.clone()));
+        }
+        else if (comments.total > 0){
           row = row
             .append(div_row_fb.clone().append(div_comments.clone().append("评分：" + comments.avg.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "/5.0，共" + comments.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "次点评")));
         }
-        if (rshop.r == 1){
-          row = row.append(div_restroom.clone());
+        else if (rshop.r == 1){
+          row = row.append(div_row_fb.clone().append(div_restroom.clone()));
         }
         row = row.append(div_row_fc.clone());
 
@@ -343,10 +348,6 @@ $(document).ready(function(){
 
     $("#comment-btn").show();
 
-    if ($("#view-btn").is(":visible")){
-      $("#view-btn").click();
-    }
-
     $("#name").text(shop.n);
     $("#viewed").text(shop.vws == null ? "0" : shop.vws.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
@@ -395,6 +396,7 @@ $(document).ready(function(){
                 $('#tab-list').click();
                 tab_detail_disabled = true;
                 $('#tab-detail').unbind("click");
+                $('#l_'+shop.i).remove();
               }
               $("#close-btn").removeAttr("disabled");
           }, "json")
@@ -595,6 +597,13 @@ $(document).ready(function(){
             tab_detail_disabled = false;
           }
           $('#tab-detail').click();
+
+          if ($("#view-btn").is(":visible")){
+            $("#view-btn").click();
+          }
+          if ($('.complaint-win').is(":visible")) {
+            $('.complaint-win').hide();
+          }
         }
     }, "json")
     .fail(function( jqxhr, textStatus, error ) {
@@ -771,6 +780,13 @@ $(document).ready(function(){
       $("#edit-comment").hide();
     });
     $("#save-comment-btn").click(function(event){
+      var shopid = $("#complaint-shop-id").val();
+      var star5 = $("#l_"+shopid).attr("data-s5") == null ? 0 : Number($("#l_"+shopid).attr("data-s5"));
+      var star4 = $("#l_"+shopid).attr("data-s4") == null ? 0 : Number($("#l_"+shopid).attr("data-s4"));
+      var star3 = $("#l_"+shopid).attr("data-s3") == null ? 0 : Number($("#l_"+shopid).attr("data-s3"));
+      var star2 = $("#l_"+shopid).attr("data-s2") == null ? 0 : Number($("#l_"+shopid).attr("data-s2"));
+      var star1 = $("#l_"+shopid).attr("data-s1") == null ? 0 : Number($("#l_"+shopid).attr("data-s1"));
+
       var stars = Number($(".comment:checked").val());
       if (stars >= 1 && stars <= 5){
         var url = home + 'php/edit_nearby_shop.php';
@@ -784,11 +800,46 @@ $(document).ready(function(){
           function(d) {
             if (d.result != null && d.result == 0){
               alert(hashMap.Get(String(d.error)));
+              if (d.error == 207){
+                $("#save-comment-btn").hide();
+                $("#cancel-comment-btn").hide();
+                $("#edit-comment").hide();
+              }
             }
             else {
               $("#save-comment-btn").hide();
               $("#cancel-comment-btn").hide();
               $("#edit-comment").hide();
+
+              // update comment values
+              switch (stars){
+                case 1:
+                  star1++;
+                  $("#l_"+shopid).attr("data-s1", String(star1));
+                  break;
+                case 2:
+                  star2++;
+                  $("#l_"+shopid).attr("data-s2", String(star2));
+                  break;
+                case 3:
+                  star3++;
+                  $("#l_"+shopid).attr("data-s3", String(star3));
+                  break;
+                case 4:
+                  star4++;
+                  $("#l_"+shopid).attr("data-s4", String(star4));
+                  break;
+                case 5:
+                  star5++;
+                  $("#l_"+shopid).attr("data-s5", String(star5));
+                  break;
+              }
+              var comments = get_comment_avg_points(star5, star4, star3, star2, star1);
+              if (comments.total > 0){
+                $("#stars").show();
+                $("#average_points").text(comments.avg.toFixed(1));
+                $("#comments").text(comments.total.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+              }
             }
         }, "json")
         .fail(function( jqxhr, textStatus, error ) {
@@ -879,6 +930,7 @@ $(document).ready(function(){
       var c = Number($("#edit-att_tag_div").attr("data-c"));
       var a = $("#edit-att_tag_div").attr("data-a");
       var openid = $("#openid").val();
+      var shopid = $("#complaint-shop-id").val();
 
       var div = $('<div/>').addClass('myerror').css("color", "red");
       var valid = true;
@@ -937,6 +989,8 @@ $(document).ready(function(){
                       $("#att-tag-block").hide();
                       $("#att-tag").html("");
                     }
+                    $('#l_'+shopid).attr("data-c", String(cat_id));
+                    $('#l_'+shopid).attr("data-a", att_ids);
                   }
                   $("#save-attributes-btn").removeAttr("disabled");
               }, "json")
@@ -971,6 +1025,7 @@ $(document).ready(function(){
                       $("#att-tag-block").hide();
                       $("#att-tag").html("");
                     }
+                    $('#l_'+shopid).attr("data-a", att_ids);
                   }
                   $("#save-attributes-btn").removeAttr("disabled");
               }, "json")
@@ -1018,6 +1073,7 @@ $(document).ready(function(){
                     $("#att-tag-block").hide();
                     $("#att-tag").html("");
                   }
+                  $('#l_'+shopid).attr("data-a", att_ids);
                 }
                 $("#save-attributes-btn").removeAttr("disabled");
             }, "json")
@@ -1232,6 +1288,7 @@ $(document).ready(function(){
 
     // save/cancel tags
     $("#save-tag-btn").click(function(event){
+      var shopid = $("#complaint-shop-id").val();
       $(this).attr("disabled", true);
       var fp0 = Number($("#edit-free_parking").attr("data-fp")) == 1 ? 1 : null;
       var fw0 = Number($("#edit-free_wifi").attr("data-fw")) == 1 ? 1 : null;
@@ -1272,6 +1329,7 @@ $(document).ready(function(){
                 $("#tag-block").hide();
                 $("#tag").html("");
               }
+              $('#l_'+shopid).attr("data-r", rt1 == 1 ? "1" : "0");
             }
             $("#save-tag-btn").removeAttr("disabled");
         }, "json")
