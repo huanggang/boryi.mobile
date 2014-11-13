@@ -24,6 +24,9 @@ if (mysqli_connect_errno())
 }
 mysqli_set_charset($con, "UTF8");
 
+$today = new DateTime();
+$today = $today->format("Y-m-d");
+
 $u_unv_id = null;
 $total = 0;
 $recruitments = "";
@@ -48,7 +51,7 @@ if (is_null($json))
   $total = 0;
   if ($page == 1) // first page query total
   {
-    $query_1 = "SELECT COUNT(*) AS total FROM university_recruitments_unv_rcr WHERE unv_rcr_unv_id=".sqlstrval($u_unv_id);
+    $query_1 = "SELECT COUNT(*) AS total FROM university_recruitments_unv_rcr WHERE unv_rcr_unv_id=".sqlstrval($u_unv_id)." AND unv_rcr_date>=".sqlstr($today);
     $result = mysqli_query($con, $query_1);
     if ($row = mysqli_fetch_array($result))
     {
@@ -62,7 +65,7 @@ if (is_null($json))
     $start = ($page - 1) * $per_page;
     if ($max > $start)
     {
-      $query_1 = "SELECT unv_rcr_date, unv_rcr_unv_cmp_id, unv_rcr_place, unv_cmp_name FROM university_recruitments_unv_rcr LEFT JOIN university_companies_unv_cmp ON unv_rcr_unv_cmp_id=unv_cmp_id WHERE unv_rcr_unv_id=".sqlstrval($u_unv_id)." ORDER BY unv_rcr_date DESC LIMIT ".sqlstrval($start).",".sqlstrval($per_page);
+      $query_1 = "SELECT unv_rcr_date, unv_rcr_unv_cmp_id, unv_rcr_place, unv_cmp_name FROM university_recruitments_unv_rcr LEFT JOIN university_companies_unv_cmp ON unv_rcr_unv_cmp_id=unv_cmp_id WHERE unv_rcr_unv_id=".sqlstrval($u_unv_id)." AND unv_rcr_date>=".sqlstr($today)." ORDER BY unv_rcr_date ASC LIMIT ".sqlstrval($start).",".sqlstrval($per_page);
       $result = mysqli_query($con, $query_1);
       while ($row = mysqli_fetch_array($result))
       {
