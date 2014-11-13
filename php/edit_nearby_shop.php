@@ -335,11 +335,11 @@ if (is_null($json))
                 $query_3 = "UPDATE nearby_shop_info_ns SET ns_star_5=ns_star_5+1 WHERE ns_id=".strval($id);
                 break;
             }
-            else
-            {
-              $json = "{\"result\":0,\"error\":".$errors["already comment"]."}";
-            }
             mysqli_query($con, $query_3);
+          }
+          else
+          {
+            $json = "{\"result\":0,\"error\":".$errors["already comment"]."}";
           }
           break;
         case 9: // GPS latitude, longitude

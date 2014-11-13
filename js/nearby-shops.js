@@ -1486,6 +1486,8 @@ $(document).ready(function(){
     $("#edit-cat_level_3_div").hide();
     $('#edit-cat_level_3').html("");
 
+    $('#edit-att_tag_div_block').show();
+
     // only certified owner can change categories, otherwise, attributes can be changed
     if (openid != null && openid.length > 0 && openid == coi){
       var grandparent = Math.floor(c / 10000.0) * 10000;
@@ -1515,6 +1517,9 @@ $(document).ready(function(){
           $("#edit-cat_level_3").val(String(c));
         }
       }
+    }
+    else if (a == null || a.length == 0){
+      $('#edit-att_tag_div_block').hide();
     }
     show_attributes(c, a);
   }
