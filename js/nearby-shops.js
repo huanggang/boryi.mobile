@@ -1,5 +1,17 @@
 $(document).ready(function(){
-  $('#tab-list').click(tabHandler);
+
+  $('#tab-list').bind('click', tabHandler);
+  $('#tab-list').bind('click', function(){
+    var id = $("#complaint-shop-id").val();
+    if (Number(id) > 0){
+      var t = $('#l_' + id).offset();
+      if (t.hasOwnProperty('top')){
+        $('html, body').animate({
+          scrollTop: t.top
+        }, 0);
+      }
+    }
+  });
   $('#back').click(function(event){
     if ($('#tab-list').hasClass("ui-tab-item-current")){
       $('#tab-detail').click();
@@ -593,7 +605,8 @@ $(document).ready(function(){
           var ss = merge_shop(d, shop);
           display_shop(ss);
           if (tab_detail_disabled){
-            $('#tab-detail').click(tabHandler);
+            $('#tab-detail').bind('click', tabHandler);
+            $('#tab-detail').bind('click', function(){window.scrollTo(0, 0);});
             tab_detail_disabled = false;
           }
           $('#tab-detail').click();

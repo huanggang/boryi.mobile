@@ -1,6 +1,17 @@
 $(document).ready(function(){
 
-  $('#tab-list').click(tabHandler);
+  $('#tab-list').bind('click', tabHandler);
+  $('#tab-list').bind('click', function(){
+    var id = $("#complaint-job-id").val();
+    if (Number(id) > 0){
+      var t = $('#l_' + id).offset();
+      if (t.hasOwnProperty('top')){
+        $('html, body').animate({
+          scrollTop: t.top
+        }, 0);
+      }
+    }
+  });
   $('#back').click(function(event){
     if ($('#tab-list').hasClass("ui-tab-item-current")){
       $('#tab-detail').click();
@@ -134,7 +145,7 @@ $(document).ready(function(){
       var div_date = div_distance.clone();
       for (var i = 0; i < rjobs.length; i++){
         var rjob = rjobs[i];
-        var row = li.clone().attr("data-i", rjob.i).attr("data-lat", rjob.lat).attr("data-lng", rjob.lng).attr("data-d", rjob.d).attr("data-s", rjob.s).attr("data-t", rjob.t).attr("data-ty", rjob.ty).attr("data-sx", rjob.sx).attr("data-al", rjob.al).attr("data-ah", rjob.ah).attr("data-hl", rjob.hl).attr("data-hh", rjob.hh).attr("data-edu", rjob.edu).attr("data-exp", rjob.exp).attr("data-sl", rjob.sl).attr("data-sh", rjob.sh).attr("data-c", rjob.c);
+        var row = li.clone().attr("data-i", rjob.i).attr("data-lat", rjob.lat).attr("data-lng", rjob.lng).attr("data-d", rjob.d).attr("data-s", rjob.s).attr("data-t", rjob.t).attr("data-ty", rjob.ty).attr("data-sx", rjob.sx).attr("data-al", rjob.al).attr("data-ah", rjob.ah).attr("data-hl", rjob.hl).attr("data-hh", rjob.hh).attr("data-edu", rjob.edu).attr("data-exp", rjob.exp).attr("data-sl", rjob.sl).attr("data-sh", rjob.sh).attr("data-c", rjob.c).attr("id", "l_"+rjob.i);
         row = row
           .append(div_row.clone().append(div_job.clone().append(rjob.t)).append(div_distance.clone().append(worktypes[rjob.ty-1])))
           .append(div_row_fc.clone().append(div_company.clone().append(rjob.c)).append(div_distance.clone().append(String(Math.ceil(rjob.d * 100)*10) + "米")));
@@ -496,7 +507,8 @@ $(document).ready(function(){
           var js = merge_job(d, job);
           display_job(js);
           if (tab_detail_disabled){
-            $('#tab-detail').click(tabHandler);
+            $('#tab-detail').bind('click', tabHandler);
+            $('#tab-detail').bind('click', function(){window.scrollTo(0, 0);});
             tab_detail_disabled = false;
           }
           $('#tab-detail').click();

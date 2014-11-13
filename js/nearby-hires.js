@@ -1,6 +1,17 @@
 $(document).ready(function(){
 
-  $('#tab-list').click(tabHandler);
+  $('#tab-list').bind('click', tabHandler);
+  $('#tab-list').bind('click', function(){
+    var id = $("#complaint-hire-id").val();
+    if (Number(id) > 0){
+      var t = $('#l_' + id).offset();
+      if (t.hasOwnProperty('top')){
+        $('html, body').animate({
+          scrollTop: t.top
+        }, 0);
+      }
+    }
+  });
   $('#back').click(function(event){
     if ($('#tab-list').hasClass("ui-tab-item-current")){
       $('#tab-detail').click();
@@ -134,7 +145,7 @@ $(document).ready(function(){
       var div_date = div_duration.clone();
       for (var i = 0; i < rhires.length; i++){
         var rhire = rhires[i];
-        var row = li.clone().attr("data-i", rhire.i).attr("data-lat", rhire.lat).attr("data-lng", rhire.lng).attr("data-d", rhire.d).attr("data-s", rhire.s).attr("data-t", rhire.t).attr("data-l", rhire.l).attr("data-dr", rhire.dr).attr("data-c", rhire.c);
+        var row = li.clone().attr("data-i", rhire.i).attr("data-lat", rhire.lat).attr("data-lng", rhire.lng).attr("data-d", rhire.d).attr("data-s", rhire.s).attr("data-t", rhire.t).attr("data-l", rhire.l).attr("data-dr", rhire.dr).attr("data-c", rhire.c).attr("id", "l_"+rhire.i);
         row = row
           .append(div_row.clone().append(div_hire.clone().append(rhire.t)).append(div_duration.clone().append(rhire.dr + "天")))
           .append(div_row_fc.clone().append(div_contact.clone().append(rhire.c)).append(div_distance.clone().append(String(Math.ceil(rhire.d * 100)*10) + "米")))
@@ -303,7 +314,8 @@ $(document).ready(function(){
           var hs = merge_hire(d, hire);
           display_hire(hs);
           if (tab_detail_disabled){
-            $('#tab-detail').click(tabHandler);
+            $('#tab-detail').bind('click', tabHandler);
+            $('#tab-detail').bind('click', function(){window.scrollTo(0, 0);});
             tab_detail_disabled = false;
           }
           $('#tab-detail').click();

@@ -1,6 +1,17 @@
 $(document).ready(function(){
 
-  $('#tab-list').click(tabHandler);
+  $('#tab-list').bind('click', tabHandler);
+  $('#tab-list').bind('click', function(){
+    var id = $("#complaint-news-id").val();
+    if (Number(id) > 0){
+      var t = $('#l_' + id).offset();
+      if (t.hasOwnProperty('top')){
+        $('html, body').animate({
+          scrollTop: t.top
+        }, 0);
+      }
+    }
+  });
   $('#back').click(function(event){
     if ($('#tab-list').hasClass("ui-tab-item-current")){
       $('#tab-detail').click();
@@ -196,7 +207,7 @@ $(document).ready(function(){
       var div_valid_date = div_row.clone().addClass("fb");
       for (var i = 0; i < rnewss.length; i++){
         var rnews = rnewss[i];
-        var row = li.clone().attr("data-i", rnews.i).attr("data-lat", rnews.lat).attr("data-lng", rnews.lng).attr("data-d", rnews.d).attr("data-c", rnews.c).attr("data-t", rnews.t).attr("data-s", rnews.s).attr("data-e", rnews.e);
+        var row = li.clone().attr("data-i", rnews.i).attr("data-lat", rnews.lat).attr("data-lng", rnews.lng).attr("data-d", rnews.d).attr("data-c", rnews.c).attr("data-t", rnews.t).attr("data-s", rnews.s).attr("data-e", rnews.e).attr("id", "l_"+rnews.i);
         row = row
           .append(div_row.clone().append(div_news.clone().append(rnews.t)))
           .append(div_row_fc.clone().append(div_category.clone().append(map_categories.Get(String(rnews.c)))).append(div_distance.clone().append(String(Math.ceil(rnews.d * 100)*10) + "米")))
@@ -354,7 +365,8 @@ $(document).ready(function(){
           var ns = merge_news(d, news);
           display_news(ns);
           if (tab_detail_disabled){
-            $('#tab-detail').click(tabHandler);
+            $('#tab-detail').bind('click', tabHandler);
+            $('#tab-detail').bind('click', function(){window.scrollTo(0, 0);});
             tab_detail_disabled = false;
           }
           $('#tab-detail').click();
