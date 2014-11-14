@@ -1,5 +1,16 @@
 $(document).ready(function(){
-  $('#tab-list').click(tabHandler);
+  $('#tab-list').bind('click', tabHandler);
+  $('#tab-list').bind('click', function(){
+    var id = $("#recruitment-id").val();
+    if (id != null && id.length > 0){
+      var t = $('#l_' + id).offset();
+      if (t.hasOwnProperty('top')){
+        $('html, body').animate({
+          scrollTop: t.top
+        }, 0);
+      }
+    }
+  });
   $('#back').click(function(event){
     if ($('#tab-list').hasClass("ui-tab-item-current")){
       $('#tab-detail').click();
@@ -70,7 +81,8 @@ $(document).ready(function(){
       var div_place = div_row.clone().addClass("fl fb w75");
       for (var i = 0; i < recruitments.length; i++){
         var recruitment = recruitments[i];
-        var row = li.clone().attr("data-i", recruitment.i).attr("data-n", recruitment.n).attr("data-d", recruitment.d).attr("data-p", recruitment.p);
+        var date = new Date(recruitment.d.slice(0,10));
+        var row = li.clone().attr("data-i", recruitment.i).attr("data-n", recruitment.n).attr("data-d", recruitment.d).attr("data-p", recruitment.p).attr("id", "l_"+String(recruitment.i)+String(date.getTime()));
         row = row
           .append(div_row.clone().append(div_recruitment.clone().append(recruitment.n)))
           .append(div_row_fc.clone().append(div_place.clone().append(recruitment.p)).append(div_date.clone().append(recruitment.d.slice(0,10))))
@@ -89,6 +101,8 @@ $(document).ready(function(){
         recruitment.n = $(this).attr("data-n");
         recruitment.d = $(this).attr("data-d");
         recruitment.p = $(this).attr("data-p");
+        var date = new Date(recruitment.d.slice(0,10));
+        $("#recruitment-id").val(String(recruitment.i) + String(date.getTime()));
 
         get_recruitment(recruitment);
       });
@@ -100,12 +114,6 @@ $(document).ready(function(){
     var url = home + 'php/get_university_recruitments.php';
     var params = new Object();
     params.oi = openid;
-    var hash = null;
-    if (page.i > 0){
-      var obj = get_ids();
-      params.s = obj.ids;
-      hash = obj.hash;
-    }
 
     $.post(url, params, 
       function(d) {
@@ -248,7 +256,8 @@ $(document).ready(function(){
           var rs = merge_recruitment(d, recruitment);
           display_recruitment(rs);
           if (tab_detail_disabled){
-            $('#tab-detail').click(tabHandler);
+            $('#tab-detail').bind('click', tabHandler);
+            $('#tab-detail').bind('click', function(){window.scrollTo(0, 0);});
             tab_detail_disabled = false;
           }
           $('#tab-detail').click();
