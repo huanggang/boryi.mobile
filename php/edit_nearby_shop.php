@@ -335,7 +335,10 @@ if (is_null($json))
                 $query_3 = "UPDATE nearby_shop_info_ns SET ns_star_5=ns_star_5+1 WHERE ns_id=".strval($id);
                 break;
             }
-            mysqli_query($con, $query_3);
+            if ($star >=1 && $star <= 5)
+            {
+              mysqli_query($con, $query_3);
+            }
           }
           else
           {

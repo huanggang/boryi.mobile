@@ -159,6 +159,7 @@ $(document).ready(function(){
         $("#keyword_s").val(keyword != null ? keyword : "");
         $("#restroom_s").val(restroom == 1 ? "1" : "0");
         $(".list").html("").append(html_searching);
+        $("#more").hide();
         page.i = 0;
         get_shops(openid, cat_id, keyword, restroom);
         $("#expand-search").click();
@@ -183,6 +184,9 @@ $(document).ready(function(){
       shop_location.lat = shop.lat;
       shop_location.lng = shop.lng;
       shop_location.d = shop.d;
+      shop_location.c = shop.c;
+      shop_location.n = shop.n;
+      shop_location.r = shop.r;
       hash[String(shop.id)] = shop_location;
     }
     if (ids.length > 0){
@@ -205,6 +209,9 @@ $(document).ready(function(){
       shop.lat = rshop.lat;
       shop.lng = rshop.lng;
       shop.d = rshop.d;
+      shop.c = rshop.c;
+      shop.n = rshop.n;
+      shop.r = rshop.r;
       shops.push(shop);
     }
     return ss;
@@ -218,6 +225,9 @@ $(document).ready(function(){
         rshop.lat = shop_location.lat;
         rshop.lng = shop_location.lng;
         rshop.d = shop_location.d;
+        rshop.c = shop_location.c;
+        rshop.n = shop_location.n;
+        rshop.r = shop_location.r;
       }
     }
     return rshops;

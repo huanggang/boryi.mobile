@@ -124,6 +124,7 @@ $(document).ready(function(){
         var openid = $("#openid").val();
         $("#category_id").val(cat_id > 0 ? String(cat_id) : "0");
         $(".list").html("").append(html_searching);
+        $("#more").hide();
         page.i = 0;
         get_newss(openid, cat_id);
         $("#expand-search").click();
@@ -148,6 +149,7 @@ $(document).ready(function(){
       news_location.lat = news.lat;
       news_location.lng = news.lng;
       news_location.d = news.d;
+      news_location.c = news.c;
       hash[String(news.id)] = news_location;
     }
     if (ids.length > 0){
@@ -170,6 +172,7 @@ $(document).ready(function(){
       news.lat = rnews.lat;
       news.lng = rnews.lng;
       news.d = rnews.d;
+      news.c = rnews.c;
       newss.push(news);
     }
     return ns;
@@ -183,6 +186,7 @@ $(document).ready(function(){
         rnews.lat = news_location.lat;
         rnews.lng = news_location.lng;
         rnews.d = news_location.d;
+        rnews.c = news_location.c;
       }
     }
     return rnewss;

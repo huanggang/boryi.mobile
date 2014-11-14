@@ -139,7 +139,6 @@ $(document).ready(function(){
   }
 
   function display_recruitment(recruitment){
-    $("#viewed").text(hire.vws == null ? "0" : hire.vws.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
     $("#title").text(recruitment.n);
     $("#date").text(recruitment.d);
     $("#place").text(recruitment.p);
@@ -278,19 +277,29 @@ $(document).ready(function(){
     var div_major = div_row.clone().addClass("fb job-major");
     var div_place = div_row.clone().addClass("fb job-place");
     var div_salary = div_row.clone().addClass("fb salary job-salary");
-    var div_content = div_row.clone().addClass("job-content");
+    var div_content = div_row.clone().addClass("job-content hd");
     for (var i = 0; i < jobs.length; i++){
       var job = jobs[i];
       var row = li.clone().attr("id", "j_"+job.i).attr("data-i", String(job.i))
-        .append(div_row.clone().append(div_title.clone().append(job.t)))
-        .append(div_row_fc.clone().append(div_edu.clone().append(job.e)).append(div_number.clone().append(job.tt+"人")))
-        .append(div_row_fc.clone().append(div_major.clone().append(job.m)))
-        .append(div_row_fc.clone().append(div_place.clone().append(job.p)))
-        .append(div_row_fc.clone().append(div_salary.clone().append(job.s)))
-        .append(div_row_fc.clone().append(div_content.clone().append(job.c.replace("\r\n","<br/>").replace("\n","<br/>").replace("\r","<br/>"))))
-        .append(div_row_fc.clone());
+        .append(div_row.clone().append(div_title.clone().append(job.t)));
+      if (job.tt != null){
+        row = row.append(div_row_fc.clone().append(div_edu.clone().append(job.e)).append(div_number.clone().append(job.tt+"人")));
+      }
+      if (job.m != null){
+        row = row.append(div_row_fc.clone().append(div_major.clone().append(job.m)));
+      }
+      if (job.p != null){
+        row = row.append(div_row_fc.clone().append(div_place.clone().append(job.p)));
+      }
+      if (job.s != null){
+        row = row.append(div_row_fc.clone().append(div_salary.clone().append(job.s)));
+      }
+      if (job.c != null){
+        row = row.append(div_row_fc.clone().append(div_content.clone().append(job.c.replace("\r\n","<br/>").replace("\n","<br/>").replace("\r","<br/>"))));
+      }
+      row = row.append(div_row_fc.clone());
 
-      $("#jobs .list").append(row);
+      $("#jobs .job-list").append(row);
     }
 
     $("#jobs .list-item").click(function(event){

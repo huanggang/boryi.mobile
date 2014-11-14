@@ -113,7 +113,7 @@ if (is_null($json))
 
   for ($i = $length; $i < sizeof($nh_ids); $i++)
   {
-    $hires = $hires.",{\"i\":".jsonstrval($nh_ids[$i][0]).",\"lat\":".jsonstrval($nh_ids[$i][1]).",\"lng\":".jsonstrval($$nh_ids[$i][2]).",\"d\":".jsonstrval($nh_ids[$i][3])."}";
+    $hires = $hires.",{\"i\":".jsonstrval($nh_ids[$i][0]).",\"lat\":".jsonstrval($nh_ids[$i][1]).",\"lng\":".jsonstrval($nh_ids[$i][2]).",\"d\":".jsonstrval($nh_ids[$i][3])."}";
   }
   $hires = substr($hires, 1);
   
