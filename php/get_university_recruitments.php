@@ -9,10 +9,10 @@ if (is_null($openid))
   echo "{\"result\":0,\"error\":".$errors["missing params"]."}";
   exit;
 }
-$page = isset($_POST["p"]) ? str2int($_POST["p"]) : 1;
-if ($page <= 0)
+$page = isset($_POST["p"]) ? str2int($_POST["p"]) : 0;
+if ($page < 0)
 {
-  $page = 1;
+  $page = 0;
 }
 
 $con=mysqli_connect($db_host, $db_user, $db_pwd, $db_name);
@@ -49,7 +49,7 @@ if (is_null($u_unv_id))
 if (is_null($json))
 {
   $total = 0;
-  if ($page == 1) // first page query total
+  if ($page == 0) // first page query total
   {
     $query_1 = "SELECT COUNT(*) AS total FROM university_recruitments_unv_rcr WHERE unv_rcr_unv_id=".sqlstrval($u_unv_id)." AND unv_rcr_date>=".sqlstr($today);
     $result = mysqli_query($con, $query_1);
@@ -59,10 +59,10 @@ if (is_null($json))
       mysqli_free_result($result);
     }
   }
-  if ($page > 1 || $total > 0)
+  if ($page > 0 || $total > 0)
   {
     $max = $per_page * $max_pages;
-    $start = ($page - 1) * $per_page;
+    $start = $page * $per_page;
     if ($max > $start)
     {
       $query_1 = "SELECT unv_rcr_date, unv_rcr_unv_cmp_id, unv_rcr_place, unv_cmp_name FROM university_recruitments_unv_rcr LEFT JOIN university_companies_unv_cmp ON unv_rcr_unv_cmp_id=unv_cmp_id WHERE unv_rcr_unv_id=".sqlstrval($u_unv_id)." AND unv_rcr_date>=".sqlstr($today)." ORDER BY unv_rcr_date ASC LIMIT ".sqlstrval($start).",".sqlstrval($per_page);

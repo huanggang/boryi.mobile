@@ -114,6 +114,7 @@ $(document).ready(function(){
     var url = home + 'php/get_university_recruitments.php';
     var params = new Object();
     params.oi = openid;
+    params.p = page.i;
 
     $.post(url, params, 
       function(d) {
