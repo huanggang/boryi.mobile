@@ -80,7 +80,20 @@
       });
     };
 
-    var is_required = true;
+    $.validator.addMethod("isRealName", function (value, element) {
+        return this.optional(element) || /^[\u4E00-\u9FA5]+$/.test(value);
+    }, "包含非法字符");
+
+    $.validator.addMethod("isQQ", function (value, element) {
+        return this.optional(element) || /^\s*[1-9][0-9]{4,9}\s*$/.test(value);
+    }, "包含非法字符");
+
+    $.validator.addMethod("isMobile", function(value, element) {
+      var length = value.length;
+      var mobile = /^1[3458]\d{9}$/;
+      return this.optional(element) || length == 11 && mobile.exec(value);
+    }, "请正确填写您的手机号码");
+
     // the form validator
     var validator = $("form").validate({
       errorPlacement: function(error, element) {
@@ -89,30 +102,104 @@
       submitHandler: postInfo,
       rules: { 
         company: { 
-          required: is_required,
+          required: !0,
+          minlength: 2,
+          maxlength: 64,
         },
         address: { 
-          required: is_required,
+          required: !0,
+          minlength: 2,
+          maxlength: 256,
         },
         job_title: { 
-          required: is_required,
+          required: !0,
+          minlength: 2,
+          maxlength: 32,
         },
         salary: { 
-          required: is_required,
+          required: !0,
+          maxlength: 32,
+        },
+        mobile: { 
+          isMobile: !0,
+        },
+        qq:{
+          isQQ: !0,
+        },
+        email: {
+          email: !0,
+          maxlength: 32,
+        },
+        cnt_name: { 
+          isRealName: !0,
+          maxlength: 16,
+        },
+        cnt_mobile: { 
+          isMobile: !0,
+        },
+        cnt_qq:{
+          isQQ: !0,
+        },
+        cnt_name1: { 
+          isRealName: !0,
+          maxlength: 16,
+        },
+        cnt_mobile1: { 
+          isMobile: !0,
+        },
+        cnt_qq1:{
+          isQQ: !0,
         },
       }, 
-      messages: { 
-        company: { 
+      messages: {
+        company: {
           required: "就业单位名称不能为空",
+          minlength: "太短了",
+          maxlength: "请不要超过64个字符",
         },
         address: { 
           required: "就业单位地址不能为空",
+          minlength: "太短了",
         },
         job_title: { 
           required: "工作岗位/职务不能为空",
+          minlength: "太短了",
+          maxlength: "不要超过32个字符",
         },
         salary: { 
           required: "工资不能为空",
+          maxlength: "最多32个字",
+        },
+        mobile: { 
+          required: "手机号码不能为空",
+          isMobile: "请输入正确的手机号",
+        },
+        qq:{
+          isQQ: "请输入正确的QQ号码",
+        },
+        email:{
+          email: "请输入正确的邮箱",
+          maxlength: "最多32个字符",
+        },
+        cnt_name: { 
+          isRealName: "请输入正确的姓名",
+          maxlength: "最多16个字",
+        },
+        cnt_mobile: { 
+          isMobile: "请输入正确的手机号",
+        },
+        cnt_qq:{
+          isQQ: "请输入正确的QQ号码",
+        },
+        cnt_name1: { 
+          isRealName: "请输入正确的姓名",
+          maxlength: "最多16个字",
+        },
+        cnt_mobile1: { 
+          isMobile: "请输入正确的手机号",
+        },
+        cnt_qq1:{
+          isQQ: "请输入正确的QQ号码",
         },
       },
     });
