@@ -128,7 +128,7 @@ $(document).ready(function(){
         }).fail(function(xhr, status, msg) {
             waitLoading.stop();
             $('#search-btn').removeAttr("disabled");
-            alert('网络不太给力，请重试');
+            alert('网络出现问题，请刷新页面。');
         });
     }
 
@@ -260,7 +260,7 @@ $(document).ready(function(){
         }).fail(function(xhr, status, msg) {
             waitLoading.stop();
             $("#more").show();
-            alert('网络不太给力，请重试'); 
+            alert('网络出现问题，请刷新页面。'); 
         }); 
     }
 

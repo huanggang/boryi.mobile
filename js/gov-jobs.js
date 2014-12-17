@@ -127,7 +127,7 @@ function loadData() {
 		error : function() {
 			loading = false;
 			waitLoading.stop();
-			alert('网络错误,请重试');
+			alert('网络出现问题，请刷新页面。');
 		}
 	});
 

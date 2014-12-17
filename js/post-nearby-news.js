@@ -48,7 +48,7 @@ $(document).ready(function(){
       })
     .fail(function( jqxhr, textStatus, error ) {
       var err = textStatus + ", " + error;
-      //alert( "网络出现问题，请重新刷新页面。");
+      //alert( "网络出现问题，请刷新页面。");
     });
 
     // show categories of news
@@ -61,7 +61,7 @@ $(document).ready(function(){
     }
   }
 
-  $('#cat_level_1').click(function(event){
+  $('#cat_level_1').change(function(event){
     $('#cat_level_1').parent().find(".myerror").remove();
     $('#cat_level_2_div').hide();
     $('#cat_level_2').html("");
@@ -79,7 +79,7 @@ $(document).ready(function(){
       }
     }
   });
-  $('#cat_level_2').click(function(event){
+  $('#cat_level_2').change(function(event){
     $('#cat_level_1').parent().find(".myerror").remove();
   });
 

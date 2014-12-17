@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta http-equiv="Cache-Control" content="no-cache"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="MobileOptimized" content="240"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <meta name="format-detection" content="email=no"/>
+  <meta name="format-detection" content="address=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="msapplication-tap-highlight" content="no"/>
+  <title>伯益网&dash;&dash;帮助</title>
+  <link href="css/base.css" rel="stylesheet" type="text/css"/>
+  <link href="css/tab.css" rel="stylesheet" type="text/css"/>
+  <script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
+  <script src="js/tab.js" type="text/javascript"></script>
+  <style type="text/css">
+  #help {
+    margin-left: 10px;
+    margin-right: 10px;
+    color: #000;
+  }
+  dl {
+    display: block;
+    cursor: pointer;
+    margin-top: 15px;
+  }
+  dd {
+    display: none;
+    padding-top: 3px;
+    margin-top: 5px;
+    margin-left: 10px;
+    line-height:20pt
+  }
+  dd {
+    display: none;
+    padding-top: 3px;
+    margin-top: 5px;
+    margin-left: 10px;
+    line-height:20pt
+  }
+  dd li {
+    padding: 2px;
+    background-color: #f9f9f9;
+  }
+  </style>
+  <script type="text/javascript"> 
+  $(document).ready(function(){
+    $('li.ui-tab-item').bind('click', tabHandler);
+    $('dl').bind('click', 
+      function(){
+        $(this).find('dd').toggle();
+      }
+    );
+  });
+  </script>
+</head>
+<body>
+  <header>
+    <span>伯益网微信公众号的帮助</span>
+    <div class="fc"></div>
+  </header>
+  <div class="ui-tab ui-tab-transparent">
+    <ul class="ui-tab-items">
+      <li class="ui-tab-item ui-tab-item-current" data-name="menu">
+        <a class="ui-tab-item-link">菜单</a>
+      </li>
+      <li class="ui-tab-item" data-name="function">
+        <a class="ui-tab-item-link">问题</a>
+      </li>
+      <li class="ui-tab-item" data-name="cases">
+        <a class="ui-tab-item-link">案例</a>
+      </li>
+    </ul>
+  </div>
+  <div id="help">
+  <div class="ui-tab-content ui-tab-content-current fc" data-name="menu">
+    <div>
+      <h3>搜工作</h3>
+      <dl>
+        <dt>· 各人才网</dt>
+        <dd>
+          <ol>
+            <li>全国各知名人才网发布的网络招聘信息</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 政府官网</dt>
+        <dd>
+          <ol>
+            <li>各级、各地政府部门在其官网发布的公务员招考信息、事业单位及国企的招聘信息</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 名企官网</dt>
+        <dd>
+          <ol>
+            <li>国内知名企业在其官网发布的招聘信息</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 附近招工</dt>
+        <dd>
+          <ol>
+            <li>附近企业或个人发布的招聘信息，须签订劳动合同</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 周边包工</dt>
+        <dd>
+          <ol>
+            <li>附近工程承包商或包工头发布的招聘信息</li>
+          </ol>
+        </dd>
+      </dl>
+      <h3>我发布</h3>
+      <dl>
+        <dt>· 附近招工</dt>
+        <dd>
+          <ol>
+            <li>发布企业或个人的招聘信息，须签订劳动合同，可以被附近用户搜索</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 周边包工</dt>
+        <dd>
+          <ol>
+            <li>发布工程承包商或包工头的招聘信息，可以被附近用户搜索</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 附近商家</dt>
+        <dd>
+          <ol>
+            <li>发布商家信息，可以被附近用户搜索</li>
+            <li>商家按：餐饮美食、娱乐健身丽人、购物、居民服务、出行游玩、酒店住宿、医疗卫生、教育培训、企业服务分类</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 广告讯息</dt>
+        <dd>
+          <ol>
+            <li>发布广告及讯息，可以被附近用户搜索</li>
+            <li>广告及讯息包含：商家广告、社区活动、房产讯息、二手讯息、金融讯息、寻人寻物、通知通告七大类</li>
+          </ol>
+        </dd>
+      </dl>
+      <h3>社区</h3>
+      <dl>
+        <dt>· 附近商家</dt>
+        <dd>
+          <ol>
+            <li>搜索附近各类商家信息</li>
+            <li>商家按：餐饮美食、娱乐健身丽人、购物、居民服务、出行游玩、酒店住宿、医疗卫生、教育培训、企业服务分类</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 广告讯息</dt>
+        <dd>
+          <ol>
+            <li>搜索附近商家或者个人发布的各类广告及讯息</li>
+            <li>广告及讯息包含：商家广告、社区活动、房产讯息、二手讯息、金融讯息、寻人寻物、通知通告七大类</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 我的信用</dt>
+        <dd>
+          <ol>
+            <li>您的信用积分决定您能否发布信息及发布信息的数量</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 我的位置</dt>
+        <dd>
+          <ol>
+            <li>如果您未开启手机的定位服务(GPS)或者未允许伯益网公众号自动获取您的位置，您可以手动设置地理位置，以便搜索周边的各种信息</li>
+          </ol>
+        </dd>
+      </dl>
+
+    </div>
+  </div>
+  <div class="ui-tab-content fc" data-name="function">
+    <div>
+      <dl>
+        <dt>· 如何打开手机的定位服务(GPS)？</dt>
+        <dd>
+          <ol>
+            <li>苹果(IOS)手机用户：在 “设置” -> “隐私” -> “定位服务” 中，开启定位服务, 并允许微信使用定位服务。</li>
+            <li>安卓(Android)手机用户：在 “系统设置” -> “位置服务”中，开启GPS卫星定位。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 如何授权伯益网公众号自动获取您的位置信息？</dt>
+        <dd>
+          <ol>
+            <li>打开伯益网公众号，点击右上角图标，开启 “提供位置信息”。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 如何查看任意地点周边的各种信息？</dt>
+        <dd>
+          <ol>
+            <li>关闭手机的定位服务(GPS)，在伯益网公众号中，点击 “社区” -> “我的位置”，在地图上拖动图标到您的目标地点后 “发送”，您即可以查看目标地点附近五公里之内的各种信息。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 如何提升我的信用积分？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，您可以通过发布合法、真实、有效的各类信息，或者举报非法、虚假、垃圾信息而获取信用积分。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 为什么我的信用积分是负数？</dt>
+        <dd>
+          <ol>
+            <li>你发布了非法、虚假、垃圾信息而被举报，或者恶意举报了合法、真实、有效的信息。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 如何搜索全国各地的招聘信息？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “搜工作” -> “各人才网”，设置您的期望及自身条件后 “搜索”。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 如何搜索全国各地的公务员招考信息、事业单位招聘信息？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “搜工作” -> “政府官网”， 设置条件后 “搜索”。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 如何搜索全国各地知名企业的招聘信息？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “搜工作” -> “名企官网”， 设置条件后 “搜索”。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 如何查看您当前位置附近的招聘信息？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “搜工作” -> “附近招工”，浏览您当前位置附近最多五公里之内的招聘信息。</li>
+            <li>您可以授权伯益网公众号自动获取您的位置，或者手动设置地理位置。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 如何查看您当前位置周边工程承包商或包工头发布的招工信息？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “搜工作” -> “周边包工”，浏览您当前位置周围最多五公里之内的包工信息。</li>
+            <li>您可以授权伯益网公众号自动获取您的位置，或者手动设置地理位置。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 如何搜索您当前位置附近的各类商家？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “社区” -> “附近商家”，点击右上角 “展开搜索”，设置条件后 “搜索”。</li>
+            <li>您可以授权伯益网公众号自动获取您的位置，或者手动设置地理位置。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 如何搜索您当前位置附近的各类广告及讯息？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “社区” -> “广告讯息”，点击右上角 “展开搜索”，设置条件后 “搜索”。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 企业或者个人：如何发布招聘信息？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “我发布” -> “附近招工”，填写招聘信息后发布。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 工程承包商或者包工头：如何发布包工信息？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “我发布” -> “周边包工”，填写招工信息后发布。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 商家或者店铺：如何发布商家信息？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “我发布” -> “附近商家”，选择商家类别并填写商家信息后发布。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 商家或者个人：如何发布广告及讯息？</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “我发布” -> “广告讯息”，选择讯息类别并填写讯息内容后发布。</li>
+          </ol>
+        </dd>
+      </dl>
+    </div>
+  </div>
+  <div class="ui-tab-content fc" data-name="cases">
+    <div>
+      <dl>
+        <dt>· 某女士现在深圳，却想在长沙五一广场附近找工作</dt>
+        <dd>
+          <ol>
+            <li>关闭手机的定位服务(GPS)，在伯益网公众号中，点击 “社区” -> “我的位置”，搜索栏输入 “五一广场”，选择 “湖南省长沙市芙蓉区五一广场”，点击右上角的 “发送”，再点击菜单中的 “搜工作” -> “附近招工”，查看五一广场附近的招工信息。</li>
+          </ol>
+        </dd>
+      </dl>
+
+      <dl>
+        <dt>· 某女同学尚在某高校读大四，打算在北京市找份财务实习工作</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “搜工作” -> “各人才网”，设置搜索条件：工作地：北京；工作性质：实习；关键词：财务；学历：本科；性别：女，点击 “搜索” 查看职位。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 某同学勤工俭学，想找份学校附近的兼职工作</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “搜工作” -> “附近招工”，查看学校附近的招工信息。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 某包工头想召集本村及附近村庄的人赴深圳某社区承接装修工程</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “我发布” -> “周边包工”，填写所需工种、工作地、工作期限及其他信息后 “发布”。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 某老板想找住在附近的人做保姆，周一至周五白天帮忙带小孩</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “我发布” -> “附近招工”，设置公司名：私人，职位名：保姆，并填写其他信息后 “发布”。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 某人就餐时间新到一地，想就近找家快餐店</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “社区” -> “附近商家”，点击右上角 “展开搜索”，按类别：餐饮美食 -> 小吃快餐，点击 “搜索”。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 某人新到一地工作，想在公司附近租房</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “社区” -> “广告讯息”，点击右上角 “展开搜索”，按类别：房产讯息 -> 住房出租，点击 “搜索”。</li>
+          </ol>
+        </dd>
+      </dl>
+      <dl>
+        <dt>· 某人想找住在附近的人一起拼车上班</dt>
+        <dd>
+          <ol>
+            <li>在伯益网公众号中，点击 “我发布” -> “广告讯息”，设置所属类别：社区活动 -> 拼车，并填写其他信息后 “发布”。</li>
+          </ol>
+        </dd>
+      </dl>
+    </div>
+  </div>
+  </div>
+  <footer>
+    <div>
+      &copy;2014&nbsp;伯益&nbsp;&nbsp;湘ICP备13011766
+    </div>
+  </footer>
+</body>
+</html>

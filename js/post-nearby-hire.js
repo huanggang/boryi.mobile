@@ -45,7 +45,7 @@ $(document).ready(function(){
       })
     .fail(function( jqxhr, textStatus, error ) {
       var err = textStatus + ", " + error;
-      //alert( "网络出现问题，请重新刷新页面。");
+      //alert( "网络出现问题，请刷新页面。");
     });
   }
 

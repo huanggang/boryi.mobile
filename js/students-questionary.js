@@ -31,7 +31,7 @@
         }
       }
 
-      document.title = '伯益网--' + university_name;
+      document.title = '伯益校园招聘之' + university_name;
       $('#banner').html(university_name +'--毕业生调查问卷');
 
       if (state < 3){
@@ -73,10 +73,12 @@
           contentType: 'application/json',
           processData:false
       }).done(function(d) {
-          alert('感谢您的参与!');
+          if (confirm('录入成功，感谢您的配合。')){
+            window.close();
+          }
           //window.location.href = home;
       }).fail(function(xhr, status, msg) {
-          alert('网络不太给力，请重试');
+          alert('无法连接到服务器，请重新提交。');
       });
     };
 

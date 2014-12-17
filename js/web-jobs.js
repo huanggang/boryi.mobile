@@ -233,7 +233,7 @@
     }).fail(function(xhr, status, msg) {
         waitLoading.stop();
         $('#search-btn').removeAttr('disabled');
-        alert('网络不太给力，请重试');
+        alert('网络出现问题，请刷新页面。');
     });
   };
 
@@ -637,7 +637,7 @@
         showPropArr(j['phn'], 'phone', 'phone-block', "tel", "phone", '[<span class="call">拨打</span>]');
         showPropArr(j['mbl'], 'cell', 'cell-block', "tel", "mobile", '[<span class="call">拨打</span>]');
     }).fail(function(xhr, status, msg) { 
-        alert('网络不太给力，拿不到工作信息，请重试'); 
+        alert('网络出现问题，请刷新页面。'); 
     }); 
   }
 
@@ -659,7 +659,7 @@
         showJobs(d); 
     }).fail(function(xhr, status, msg) { 
         waitLoading.stop();
-        alert('网络不太给力，请重试'); 
+        alert('网络出现问题，请刷新页面。'); 
     }); 
   }
 

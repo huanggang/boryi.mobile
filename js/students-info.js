@@ -43,7 +43,7 @@
         }
       }
 
-      document.title = '伯益网--' + university_name;
+      document.title = '伯益校园招聘之' + university_name;
       $('#banner').html(university_name +'--学生信息表');
 
       if (state < 3){
@@ -55,34 +55,6 @@
         }
       }
     }
-
-    var collages = [
-      {id:1,name:"林学院"},
-      {id:2,name:"生命科学与技术学院"}, 
-      {id:3,name:"材料科学与工程学院"}, 
-      {id:4,name:"交通运输与物流学院"},
-      {id:5,name:"机电工程学院"}, 
-      {id:6,name:"风景园林学院"}, 
-      {id:7,name:"家具与艺术设计学院"}, 
-      {id:8,name:"计算机与信息工程学院"}, 
-      {id:9,name:"土木工程与力学学院"}, 
-      {id:10,name:"商学院"}, 
-      {id:11,name:"外国语学院"}, 
-      {id:12,name:"旅游学院"}, 
-      {id:13,name:"食品科学与工程学院"}, 
-      {id:14,name:"理学院"}, 
-      {id:15,name:"政法学院"}, 
-      {id:16,name:"经济学院"}, 
-      {id:17,name:"班戈学院"}, 
-      {id:18,name:"体育学院"}, 
-      {id:19,name:"音乐系"}, 
-      {id:20,name:"思想政治理论课教学部"}, 
-      {id:21,name:"继续教育学院"}, 
-      {id:22,name:"国际学院"}, 
-      {id:23,name:"涉外学院"},
-    ];
-
-    setSelections(collages, 'college', null, true);
 
     $('#dob').change(function(){
       var val = $(this, 'option:selected').val();
@@ -108,7 +80,7 @@
         dob: dob_val,
         enrolled: $('#enrolled option:selected').val(),
         graduated: $('#graduated').val(),
-        college: $('#college option:selected').html(),
+        college: $('#college').val(),
         department: $('#department').val(),
         major: $('#major').val(),
         class: $('#class').val(),
@@ -132,10 +104,12 @@
           contentType: 'application/json',
           processData:false
       }).done(function(d) {
-          alert('录入成功!');
+          if (confirm('录入成功，感谢您的配合。')){
+            window.close();
+          }
           //window.location.href = home;
       }).fail(function(xhr, status, msg) {
-          alert('网络不太给力，请重试');
+          alert('无法连接到服务器，请重新提交。');
       });
     };
 

@@ -15,7 +15,7 @@
 		  alert('发送成功!');
 		  //window.location.href = home;
 		}).fail(function(xhr, status, msg) {
-		  alert('网络不太给力，请重试');
+		  alert('网络出现问题，请刷新页面。');
 		});
 	}
 

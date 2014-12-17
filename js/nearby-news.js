@@ -94,7 +94,7 @@ $(document).ready(function(){
       }
     });
 
-    $('#cat_level_1').click(function(event){
+    $('#cat_level_1').change(function(event){
       $('#cat_level_2_div').hide();
       $('#cat_level_2').html("");
       var parent_id = Number($('#cat_level_1 option:selected').val());
