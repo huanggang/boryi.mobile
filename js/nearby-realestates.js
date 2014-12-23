@@ -463,7 +463,7 @@ $(document).ready(function(){
                           $("#houses-list").append(row);
                           for (var k = 0; k < f.hs.length; k++){
                             var h = f.hs[k];
-                            var s = h.s == null ? "不可售" : (h.s == 0 ? "可售" : (h.s == 1 ? "已售" : "不详"));
+                            var s = h.s==null?"不详":(h.s==0?"可售":(h.s==1?"已售":(h.s==-1?"不可售":(h.s=-2?"销控":(h.s=-3?"变更":(h.s=-4?"抵押":(h.s=-5?"冻结":"不详")))))));
                             var row = li.clone()
                               .append(div_row.clone().append(div_house.clone().append("房号："+h.h)).append(div_status.clone().append(s)));
                             var oa = null;
