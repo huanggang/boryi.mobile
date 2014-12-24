@@ -65,6 +65,12 @@ while ($row = mysqli_fetch_array($result))
     $ncbh_asking_price = $row['ncbh_asking_price'];
     $ncbh_sold_price = $row['ncbh_sold_price'];
     $ncbh_sold_date = $row['ncbh_sold_date'];
+    $date1 = new DateTime($ncbh_sold_date);
+    $date2 = new DateTime("2014-12-20");
+    if ($date1 < $date2)
+    {
+      $ncbh_sold_date = null;
+    }
   }
   else
   {
