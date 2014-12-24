@@ -113,7 +113,7 @@ $(document).ready(function(){
   }
 
   function merge_communities_ids(rcommunities, hash){
-    for (var i = 0; i < rhires.length; i++){
+    for (var i = 0; i < rcommunities.length; i++){
       var rcommunity = rcommunities[i];
       var community_location = hash[String(rcommunity.i)];
       if (community_location != null){
