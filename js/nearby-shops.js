@@ -747,7 +747,10 @@ $(document).ready(function(){
     var atts = attributes.split(",");
     var attr = "";
     for (var i = 0; i < atts.length; i++){
-      attr = attr + " " + map_categories.Get(atts[i]);
+      var a = map_categories.Get(atts[i]);
+      if (a != null){
+        attr = attr + " " + a;
+      }
     }
     if (attr.length > 0){
       attr = attr.substr(1);
