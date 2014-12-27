@@ -161,6 +161,7 @@ $(document).ready(function(){
         $(".list").html("").append(html_searching);
         $("#more").hide();
         page.i = 0;
+        shops.length = 0;
         get_shops(openid, cat_id, keyword, restroom);
         $("#expand-search").click();
         $('#tab-list').click();

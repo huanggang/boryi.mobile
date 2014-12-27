@@ -126,6 +126,7 @@ $(document).ready(function(){
         $(".list").html("").append(html_searching);
         $("#more").hide();
         page.i = 0;
+        newss.length = 0;
         get_newss(openid, cat_id);
         $("#expand-search").click();
         $('#tab-list').click();
